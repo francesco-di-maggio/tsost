@@ -7,7 +7,7 @@ import { START, END } from "../../project";
 const MONTH = 36;
 const LANE = 58;
 const CARD = 190;
-const AXIS = 44;
+const AXIS = 60;
 
 const monthsBetween = (a: Date, b: Date) =>
   (b.getUTCFullYear() - a.getUTCFullYear()) * 12 + b.getUTCMonth() - a.getUTCMonth() + (b.getUTCDate() - 1) / 31;
@@ -30,6 +30,9 @@ const height = AXIS + (lanes.length + 1) * LANE + 24;
 
 const years: number[] = [];
 for (let y = origin.getUTCFullYear() + 1; y <= END.getUTCFullYear(); y++) years.push(y);
+const months: Date[] = [];
+for (let d = new Date(origin); d <= END; d = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1))) months.push(d);
+const NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const now = x(new Date());
 const years_list = [...new Set(dated.map((i) => i.year!))];
 ---
@@ -40,21 +43,23 @@ const years_list = [...new Set(dated.map((i) => i.year!))];
   <div class="panel tl" data-now={now}>
     <div class="track" style={`width:${width}px;height:${height}px`}>
       <div class="axis" style={`bottom:${AXIS}px;width:${x(END) - 24}px`}></div>
-      {years.map((y) => {
-        const left = x(new Date(Date.UTC(y, 0, 1)));
-        return <span class="year label" style={`left:${left}px;bottom:${AXIS - 30}px`}>{y}</span>;
-      })}
-      <span class="start label" style={`left:24px;bottom:${AXIS - 30}px`}>Start</span>
+      {months.map((m) => (
+        <span class:list={["month", { jan: m.getUTCMonth() === 0 }]} style={`left:${x(m)}px;bottom:${AXIS - 22}px`}>{NAMES[m.getUTCMonth()]}</span>
+      ))}
+      {years.map((y) => (
+        <span class="year label" style={`left:${x(new Date(Date.UTC(y, 0, 1)))}px;bottom:${AXIS - 46}px`}>{y}</span>
+      ))}
+      <span class="start label" style={`left:24px;bottom:${AXIS - 46}px`}>Start</span>
       <div class="now" style={`left:${now}px;bottom:${AXIS - 8}px;height:${height - AXIS - 8}px`}><span class="label">Now</span></div>
       {events.map(({ item, left, lane, span }) => (
         <Fragment>
           {span > 0 && <div class="span" style={`left:${left}px;width:${span}px;bottom:${AXIS - 2}px`}></div>}
           <div class="stem" style={`left:${left}px;bottom:${AXIS}px;height:${(lane + 1) * LANE - 18}px`}></div>
           <a class="event" href={item.href} style={`left:${left}px;bottom:${AXIS + (lane + 1) * LANE - 18}px;width:${CARD - 14}px`}>
-            <span class="label">{item.date!.toISOString().slice(0, 7)} · {TYPES[item.type].title}</span>
+            <span class="label">{item.date!.toISOString().slice(0, 7)} · {TYPES[item.type].one}</span>
             <span class="t">{item.title.split(":")[0]}</span>
           </a>
-          <i class="dot" style={`left:${left}px;bottom:${AXIS}px`}></i>
+          <i class:list={["dot", { planned: item.date! > new Date() }]} style={`left:${left}px;bottom:${AXIS}px`}></i>
         </Fragment>
       ))}
     </div>
@@ -82,17 +87,18 @@ const years_list = [...new Set(dated.map((i) => i.year!))];
   .tl { overflow-x: auto; padding: 0; scrollbar-width: thin; }
   .track { position: relative; }
   .axis { position: absolute; left: 24px; height: 1px; background: var(--dim); }
-  .year, .start { position: absolute; transform: translateX(-50%); }
-  .start { transform: none; }
-  .year::before { content: ""; position: absolute; left: 50%; bottom: 26px; width: 1px; height: 8px; background: var(--dim); }
+  .year, .start { position: absolute; }
+  .month { position: absolute; padding-left: 3px; border-left: 1px solid var(--line); font: 10px/14px var(--mono); color: var(--dim); }
+  .month.jan { border-left-color: var(--dim); color: var(--ink); }
   .now { position: absolute; width: 0; border-left: 1px dashed var(--ink); }
   .now .label { position: absolute; top: -2px; left: 6px; color: var(--ink); }
   .span { position: absolute; height: 5px; border-radius: 3px; background: var(--ink); opacity: 0.35; }
   .stem { position: absolute; width: 1px; background: var(--line); }
   .dot { position: absolute; width: 9px; height: 9px; margin: 0 0 -4px -4px; border-radius: 50%; background: var(--ink); }
+  .dot.planned { background: var(--surface); border: 1.5px solid var(--ink); }
   .event { position: absolute; z-index: 1; display: block; padding: 0 6px 0 8px; border-left: 1px solid var(--ink);
            background: var(--surface); text-decoration: none; }
-  .event .label { display: block; }
+  .event .label { display: block; white-space: nowrap; }
   .event .t { display: block; font-size: 14px; line-height: 18px; font-weight: 600;
               white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .event:hover .t { text-decoration: underline; text-decoration-color: var(--dim); }

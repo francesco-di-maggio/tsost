@@ -54,10 +54,11 @@ const courses = defineCollection({
     code: z.string(),
     institution: z.string(),
     period: z.string(),
-    teachers: z.array(z.string()),
+    status: z.enum(["planned"]).optional(),
+    teachers: z.array(z.string()).default([]),
     start: z.coerce.date(),
-    end: z.coerce.date(),
-    site: z.url(),
+    end: z.coerce.date().optional(),
+    site: z.url().optional(),
   }),
 });
 

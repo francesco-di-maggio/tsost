@@ -2,9 +2,9 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import { url } from "./url";
 
 export const TYPES = {
-  tesi: { title: "TESI", caption: "Tangible and Embodied Sound Interaction: the toolkit of this research. Thing, smart, sound." },
-  publications: { title: "Publications", caption: "Papers, workshops and book chapters, with BibTeX and DOI." },
-  courses: { title: "Courses", caption: "Teaching." },
+  tesi: { one: "TESI", title: "TESI", caption: "Tangible and Embodied Sound Interaction: the toolkit of this research. Thing, smart, sound." },
+  publications: { one: "Publication", title: "Publications", caption: "Papers, workshops and book chapters, with BibTeX and DOI." },
+  courses: { one: "Course", title: "Courses", caption: "Teaching." },
 } as const;
 
 export type Type = keyof typeof TYPES;
@@ -46,7 +46,7 @@ function label(entry: Entry) {
   switch (entry.collection) {
     case "publications": return [entry.data.kind, entry.data.year, entry.data.status].filter(Boolean).join(" · ");
     case "tesi": return kind(entry);
-    case "courses": return `${entry.data.code} · ${entry.data.start.getUTCFullYear()}`;
+    case "courses": return [entry.data.code, entry.data.start.getUTCFullYear(), entry.data.status].filter(Boolean).join(" · ");
   }
 }
 
@@ -144,9 +144,10 @@ export function facts(entry: Entry): [string, string, string?][] {
         ["Code", d.code],
         ["Institution", d.institution],
         ["Period", d.period],
-        ["Dates", `${day(d.start)} – ${day(d.end)}`],
-        ["Teachers", d.teachers.join(", ")],
-        ["Site", d.site.replace(/^https:\/\//, ""), d.site],
+        ...(d.status ? [["Status", "Planned"] as [string, string]] : []),
+        ["Dates", d.end ? `${day(d.start)} – ${day(d.end)}` : `From ${month(d.start)}`],
+        ...(d.teachers.length ? [["Teachers", d.teachers.join(", ")] as [string, string]] : []),
+        ...(d.site ? [["Site", strip(d.site), d.site] as [string, string, string]] : []),
       ];
     }
   }
