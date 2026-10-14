@@ -1,41 +1,59 @@
 ---
 import Base from "../../layouts/Base.astro";
 import { STAGES, TYPES, type Stage } from "../../items";
-import { part, partLabel, parts } from "../../tesi";
+import { part, parts } from "../../tesi";
 
 const list = await parts();
-const stages = Object.keys(STAGES) as Stage[];
+const DEFINITION: Record<Stage, string> = {
+  node: "Senses the body, the object and the space.",
+  network: "Connects nodes, software and people.",
+  mapping: "Turns data into sound parameters.",
+  sound: "Makes it audible.",
+};
+const stages = (Object.keys(STAGES) as Stage[]).map((s, i) => ({
+  s, n: String(i + 1).padStart(2, "0"), parts: list.filter((p) => part(p).stages.includes(s)),
+}));
 ---
 <Base title="TESI" description={TYPES.tesi.caption}>
-  <h1>TESI</h1>
-  <p class="lead">Tangible and Embodied Sound Interaction: a modular toolkit from node to sound.</p>
-  <div class="panel matrix">
-    <table>
-      <thead>
-        <tr><th class="label">Part</th>{stages.map((s) => <th class="label stage">{STAGES[s]}</th>)}</tr>
-      </thead>
-      <tbody>
-        {list.map((p) => (
-          <tr class:list={{ on: part(p).status === "current" }}>
-            <td><a href={p.href}><b>{p.title}</b><span class="label">{partLabel(p)}</span></a></td>
-            {stages.map((s) => <td class="stage">{part(p).stages.includes(s) && <i class="dot" aria-label={STAGES[s]}></i>}</td>)}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
+  <h1 class="thesis">TESI<span>Tangible and Embodied Sound Interaction</span></h1>
+  <p class="lead">A modular toolkit in four stages, from sensing to sound.</p>
+  <ol class="flow">
+    {stages.map(({ s, n, parts }) => (
+      <li class="stage">
+        <div class="head">
+          <span class="label">{n}</span>
+          <h2>{STAGES[s]}</h2>
+          <p>{DEFINITION[s]}</p>
+        </div>
+        <ul>
+          {parts.map((p) => (
+            <li><a class:list={["part", part(p).status]} href={p.href}>
+              <b>{p.title.replace(/:.*/, "")}</b>
+              <span class="label">{part(p).status}</span>
+            </a></li>
+          ))}
+        </ul>
+      </li>
+    ))}
+  </ol>
 </Base>
 
 <style>
-  .matrix { padding: 4px 14px; overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; }
-  th, td { padding: 10px 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
-  tr:last-child td { border-bottom: 0; }
-  .stage { width: 72px; text-align: center; }
-  td a { display: block; text-decoration: none; }
-  td a b { display: block; font-size: 15px; line-height: 20px; font-weight: 600; }
-  td a:hover b { text-decoration: underline; text-decoration-color: var(--dim); }
-  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--ink); }
-  .on .dot { background: var(--accent); }
-  @media (max-width: 480px) { .stage { width: 52px; } }
+  .flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 8px 0 0; padding: 0; list-style: none; }
+  .stage { display: flex; flex-direction: column; gap: 10px; }
+  .stage .head { padding-top: 10px; border-top: 2px solid var(--ink); }
+  .stage .head .label { display: block; }
+  .stage h2 { margin: 2px 0 4px; font-size: 20px; line-height: 24px; font-weight: 600; letter-spacing: -0.01em; }
+  .stage .head p { margin: 0; min-height: 40px; font-size: 14px; line-height: 20px; color: var(--dim); text-wrap: balance; }
+  .stage ul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+  .part { display: block; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius-control);
+          background: var(--surface); text-decoration: none; }
+  .part:hover { border-color: var(--dim); }
+  .part b { display: block; font-size: 14px; line-height: 18px; font-weight: 600; }
+  .part .label { display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+  .part.current .label { color: var(--ink); }
+  .part.current .label::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  @media (max-width: 640px) {
+    .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 24px; }
+  }
 </style>
