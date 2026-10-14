@@ -18,11 +18,13 @@ const papers = defineCollection({
     authors: z.array(z.string()),
     venue: z.string(),
     kind: z.string(),
-    year: z.number(),
+    year: z.number().optional(),
+    status: z.string().optional(),
     date: z.coerce.date().optional(),
     publisher: z.string().optional(),
     doi: z.string().optional(),
     pdf: z.string().optional(),
+    links: z.array(z.url()).default([]),
     key: z.string(),
     note: z.string().optional(),
   }),
@@ -41,16 +43,6 @@ const tools = defineCollection({
   }),
 });
 
-const workshops = defineCollection({
-  loader: load("workshops"),
-  schema: z.object({
-    ...base,
-    venue: z.string(),
-    format: z.string(),
-    date: z.coerce.date(),
-  }),
-});
-
 const courses = defineCollection({
   loader: load("courses"),
   schema: z.object({
@@ -65,4 +57,4 @@ const courses = defineCollection({
   }),
 });
 
-export const collections = { papers, tools, workshops, courses };
+export const collections = { papers, tools, courses };

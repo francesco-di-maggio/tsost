@@ -6,7 +6,7 @@ export function bibtex({ data }: CollectionEntry<"papers">) {
     ["author", data.authors.map(lastFirst).join(" and ")],
     ["booktitle", data.venue],
     ["publisher", data.publisher],
-    ["year", String(data.year)],
+    ["year", data.year ? String(data.year) : undefined],
     ["doi", data.doi],
   ];
   const body = fields.filter(([, v]) => v).map(([k, v]) => `  ${k} = {${v}}`).join(",\n");

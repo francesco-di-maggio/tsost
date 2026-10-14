@@ -2,9 +2,8 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import { url } from "./url";
 
 export const TYPES = {
-  papers: { title: "Papers", caption: "Publications with BibTeX and DOI." },
+  papers: { title: "Papers", caption: "Papers, workshops and book chapters, with BibTeX and DOI." },
   tools: { title: "Tools", caption: "Software and toolkits, each in its own repository." },
-  workshops: { title: "Workshops", caption: "Studios and workshops at conferences." },
   courses: { title: "Courses", caption: "Teaching." },
 } as const;
 
@@ -29,9 +28,8 @@ const day = (d: Date) => d.toISOString().slice(0, 10);
 
 function label(entry: Entry) {
   switch (entry.collection) {
-    case "papers": return `${entry.data.kind} · ${entry.data.year}`;
+    case "papers": return `${entry.data.kind} · ${entry.data.year ?? entry.data.status}`;
     case "tools": return entry.data.version;
-    case "workshops": return `${entry.data.format} · ${entry.data.venue}`;
     case "courses": return `${entry.data.code} · ${entry.data.start.getUTCFullYear()}`;
   }
 }
@@ -40,7 +38,6 @@ function when(entry: Entry): { date?: Date; year?: number } {
   switch (entry.collection) {
     case "papers": return { date: entry.data.date, year: entry.data.year };
     case "tools": return {};
-    case "workshops": return { date: entry.data.date, year: entry.data.date.getUTCFullYear() };
     case "courses": return { date: entry.data.start, year: entry.data.start.getUTCFullYear() };
   }
 }
@@ -96,10 +93,11 @@ export function facts(entry: Entry): [string, string, string?][] {
         ["Authors", d.authors.join(", ")],
         ["Venue", d.venue],
         ["Type", d.kind],
-        ["Year", String(d.year)],
+        d.year ? ["Year", String(d.year)] : ["Status", d.status ?? ""],
         ...(d.publisher ? [["Publisher", d.publisher] as [string, string]] : []),
         ...(d.doi ? [["DOI", d.doi, `https://doi.org/${d.doi}`] as [string, string, string]] : []),
         ...(d.pdf ? [["PDF", "Download", d.pdf] as [string, string, string]] : []),
+        ...d.links.map((l) => ["Link", l.replace(/^https:\/\//, "").replace(/\/$/, ""), l] as [string, string, string]),
         ...(d.note ? [["Note", d.note] as [string, string]] : []),
       ];
     }
@@ -113,10 +111,6 @@ export function facts(entry: Entry): [string, string, string?][] {
         ["Site", d.site.replace(/^https:\/\//, "").replace(/\/$/, ""), d.site],
         ["Repository", d.repository.replace(/^https:\/\//, ""), d.repository],
       ];
-    }
-    case "workshops": {
-      const d = entry.data;
-      return [["Format", d.format], ["Venue", d.venue], ["Date", day(d.date)]];
     }
     case "courses": {
       const d = entry.data;
