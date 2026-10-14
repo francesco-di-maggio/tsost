@@ -1,6 +1,6 @@
 ---
 title: "Node v2: custom PCB"
-summary: "Second iteration: a custom PCB around an ESP32 Feather, with motion, light, distance, touch and audio sensors, networked over OOCSI."
+summary: "Custom PCB around an ESP32 Feather, with six sensors, over OOCSI."
 layer: thing
 iteration: 2
 status: earlier

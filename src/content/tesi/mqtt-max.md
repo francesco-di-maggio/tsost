@@ -1,6 +1,6 @@
 ---
 title: "mqtt-max"
-summary: "MQTT for Max: client, broker, send and receive, Homie. Includes the Remote, a web app that sends touch, motion and mic level from a browser."
+summary: "MQTT for Max: client, broker, Homie, and the Remote web app."
 layer: smart
 status: current
 specs: [["Host", "Max"], ["Protocol", "MQTT, Homie 5"], ["Version", "0.1.0, unreleased"], ["Licence", "MIT"]]

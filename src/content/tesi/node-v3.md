@@ -1,6 +1,6 @@
 ---
 title: "Node v3: ESP32-S3 AudioBoard"
-summary: "Third iteration: a ready-made ESP32-S3 board with speaker codec and microphones, so the node produces sound itself."
+summary: "Ready-made ESP32-S3 board with speaker and microphones."
 layer: thing
 iteration: 3
 status: current

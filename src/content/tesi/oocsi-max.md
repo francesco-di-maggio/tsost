@@ -1,6 +1,6 @@
 ---
 title: "oocsi-max"
-summary: "OOCSI for Max: connects Max to OOCSI servers to send and receive messages and track client presence."
+summary: "OOCSI for Max: messages and presence."
 layer: smart
 status: earlier
 specs: [["Host", "Max"], ["Protocol", "OOCSI"]]
