@@ -203,17 +203,8 @@ function render() {
   button.removeAttribute("disabled");
   button.textContent = connected ? "Disconnect" : "Connect";
   button.classList.toggle("on", connected);
-  renderHere(connected, list);
   (window as unknown as { tsostDevices: unknown }).tsostDevices = { self: id(), list, connected };
   window.dispatchEvent(new CustomEvent("tsost:devices"));
-}
-
-// Devices on the current page, shown at the end of the page.
-function renderHere(connected: boolean, list: [string, Device][]) {
-  const here = document.getElementById("node-here");
-  if (!here) return;
-  here.hidden = !connected;
-  $("node-here-list").textContent = list.filter(([, d]) => d.path === page()).map(([n]) => n).join(", ") || "—";
 }
 
 function showPanel(open: boolean) {
