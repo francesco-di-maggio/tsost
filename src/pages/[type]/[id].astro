@@ -3,8 +3,8 @@ import { render } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import Facts from "../../components/Facts.astro";
 import ItemRow from "../../components/ItemRow.astro";
-import { LAYERS, TYPES, facts, items, related, type Item } from "../../items";
-import { part, partLabel } from "../../tesi";
+import { TYPES, facts, items, related, type Item } from "../../items";
+import { partLabel } from "../../tesi";
 import { url } from "../../url";
 import { bibtex } from "../../bibtex";
 
@@ -18,7 +18,7 @@ const links = await related(item);
 ---
 <Base title={item.title} description={item.summary}>
   {item.type === "tesi" ? (
-    <span class="label"><a class="crumb" href={url(`tesi/${LAYERS[part(item).layer].slug}/`)}>TESI · {LAYERS[part(item).layer].title}</a> · {partLabel(item)}</span>
+    <span class="label"><a class="crumb" href={url("tesi/")}>TESI</a> · {partLabel(item)}</span>
   ) : (
     <span class="label">{TYPES[item.type].title} · {item.label}</span>
   )}

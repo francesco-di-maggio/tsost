@@ -1,20 +1,41 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { LAYERS, TYPES, type Layer } from "../../items";
-import { partsOf } from "../../tesi";
-import { url } from "../../url";
+import { STAGES, TYPES, type Stage } from "../../items";
+import { part, partLabel, parts } from "../../tesi";
 
-const layers = await Promise.all((Object.keys(LAYERS) as Layer[]).map(async (l) => ({ ...LAYERS[l], count: (await partsOf(l)).length })));
+const list = await parts();
+const stages = Object.keys(STAGES) as Stage[];
 ---
 <Base title="TESI" description={TYPES.tesi.caption}>
   <h1>TESI</h1>
-  <p class="lead">Tangible and Embodied Sound Interaction: a modular toolkit in three layers.</p>
-  <ul class="rows">
-    {layers.map((l) => (
-      <li><a class="panel" href={url(`tesi/${l.slug}/`)}>
-        <span><span class="label">{l.title} · {l.word} · {l.count}</span><span class="caption">{l.caption}</span></span>
-        <span class="arrow">→</span>
-      </a></li>
-    ))}
-  </ul>
+  <p class="lead">Tangible and Embodied Sound Interaction: a modular toolkit from node to sound.</p>
+  <div class="panel matrix">
+    <table>
+      <thead>
+        <tr><th class="label">Part</th>{stages.map((s) => <th class="label stage">{STAGES[s]}</th>)}</tr>
+      </thead>
+      <tbody>
+        {list.map((p) => (
+          <tr class:list={{ on: part(p).status === "current" }}>
+            <td><a href={p.href}><b>{p.title}</b><span class="label">{partLabel(p)}</span></a></td>
+            {stages.map((s) => <td class="stage">{part(p).stages.includes(s) && <i class="dot" aria-label={STAGES[s]}></i>}</td>)}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
 </Base>
+
+<style>
+  .matrix { padding: 4px 14px; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 10px 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+  tr:last-child td { border-bottom: 0; }
+  .stage { width: 72px; text-align: center; }
+  td a { display: block; text-decoration: none; }
+  td a b { display: block; font-size: 15px; line-height: 20px; font-weight: 600; }
+  td a:hover b { text-decoration: underline; text-decoration-color: var(--dim); }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--ink); }
+  .on .dot { background: var(--accent); }
+  @media (max-width: 480px) { .stage { width: 52px; } }
+</style>

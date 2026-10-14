@@ -31,12 +31,12 @@ const publications = defineCollection({
   }),
 });
 
-// TESI: the toolkit. Each part sits in a layer; hardware has numbered iterations.
+// TESI: the toolkit. Each part covers one or more stages; nodes have numbered iterations.
 const tesi = defineCollection({
   loader: load("tesi"),
   schema: z.object({
     ...base,
-    layer: z.enum(["thing", "smart", "sound"]),
+    stages: z.array(z.enum(["node", "network", "mapping", "sound"])).min(1),
     iteration: z.number().optional(),
     status: z.enum(["current", "exploring", "earlier"]),
     start: z.coerce.date().optional(),

@@ -4,7 +4,7 @@ import ItemRow from "../../components/ItemRow.astro";
 import { TYPES, itemsOf, types, type Type } from "../../items";
 
 export async function getStaticPaths() {
-  // TESI has its own page, arranged by layer.
+  // TESI has its own page: parts by stage.
   return (await types()).filter((t) => t !== "tesi").map((type) => ({ params: { type } }));
 }
 
