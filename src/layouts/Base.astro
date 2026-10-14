@@ -46,7 +46,7 @@ const current = (p: string) => (p ? path.startsWith(url(p)) : path === url());
 </head>
 <body>
 <header transition:persist="header">
-  <a class="mark" href={url()}>TSOST</a>
+  <a class="mark" href={url()}><svg viewBox="-9 -9 18 18" aria-hidden="true"><circle class="ring" r="7" /><circle class="core" r="3" /></svg>TSOST</a>
   <div class="end">
     <button id="header-ping" type="button" hidden>Ping</button>
     <button id="node-status" class="off" type="button" aria-expanded="false" aria-controls="node-panel" title="This browser as a node"><span id="node-status-text">Connect</span></button>
