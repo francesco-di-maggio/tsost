@@ -108,11 +108,17 @@ function onPong(by: string, payload: string) {
 // Tells views (the Graph) that a device pinged or replied.
 function signal(kind: "ping" | "pong", device: string) {
   window.dispatchEvent(new CustomEvent("tsost:signal", { detail: { kind, device } }));
-  // The logo ripples with every ping heard, on every page.
-  const mark = document.querySelector(".mark svg");
-  mark?.classList.remove("heard");
-  void (mark as SVGElement | null)?.getBoundingClientRect();
-  mark?.classList.add("heard");
+  if (kind === "ping") echo();
+}
+
+// The logo ripples once when a ping is sent, on every page. The class is removed afterwards, so navigating does not replay it.
+function echo() {
+  const mark = document.querySelector<SVGElement>(".mark svg");
+  if (!mark) return;
+  mark.classList.remove("heard");
+  void mark.getBoundingClientRect();
+  mark.classList.add("heard");
+  mark.addEventListener("animationend", () => mark.classList.remove("heard"), { once: true });
 }
 
 function onMessage(topic: string, payload: Buffer) {
