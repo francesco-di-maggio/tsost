@@ -10,8 +10,7 @@ const layers = await Promise.all((Object.keys(LAYERS) as Layer[]).map(async (l) 
 }));
 ---
 <Base title="TESI" description={TYPES.tesi.caption}>
-  <h1 class="thesis">TESI<span>Tangible and Embodied Sound Interaction</span></h1>
-  <p class="lead">A modular toolkit, from sensing to sound.</p>
+  <h1 class="thesis">TESI<span>A modular toolkit for tangible and embodied sound interaction</span></h1>
   {layers.map((l) => (
     <section class="layer">
       <h2 class="label">{l.title} <span>· {l.word}</span></h2>
