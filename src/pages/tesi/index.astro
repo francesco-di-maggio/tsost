@@ -12,22 +12,9 @@ const layers = await Promise.all((Object.keys(LAYERS) as Layer[]).map(async (l) 
 ---
 <Base title="TESI" description={TYPES.tesi.caption}>
   <h1 class="thesis">TESI<span>A modular toolkit for tangible and embodied sound interaction</span></h1>
-  <ol class="chain" aria-label="Signal path">
-    {layers.map((l) => {
-      const now = l.now.find((p) => part(p).status === "current") ?? l.now[0];
-      return (
-        <li>
-          <i></i>
-          <span class="label">{l.title}</span>
-          {now && <a href={now.href}>{now.title.replace(/:.*/, "")}</a>}
-        </li>
-      );
-    })}
-  </ol>
   {layers.map((l) => (
     <section class="layer">
       <h2 class="label">{l.title} <span>· {l.word}</span></h2>
-      <p class="caption">{l.caption}</p>
       <div class="panel lists parts">
         <List items={l.now} label={partLabel} on={(p) => part(p).status === "current"} />
         {l.earlier.length > 0 && (
@@ -42,15 +29,6 @@ const layers = await Promise.all((Object.keys(LAYERS) as Layer[]).map(async (l) 
 </Base>
 
 <style>
-  /* The signal path: three stops on one line. */
-  .chain { display: grid; grid-template-columns: repeat(3, 1fr); margin: 4px 0 8px; padding: 0; list-style: none; }
-  .chain li { position: relative; display: flex; flex-direction: column; gap: 2px; padding-top: 18px; }
-  .chain li::before { content: ""; position: absolute; top: 5px; left: 0; right: 0; height: 1px; background: var(--dim); }
-  .chain li:last-child::before { right: auto; width: 12px; }
-  .chain i { position: absolute; top: 0; left: 0; width: 11px; height: 11px; border-radius: 50%; background: var(--ink); }
-  .chain .label { color: var(--ink); }
-  .chain a { font-size: 14px; color: var(--dim); text-decoration: none; }
-  .chain a:hover { color: var(--ink); }
   .layer { display: grid; gap: 6px; margin-top: min(16px, 2vh); }
   .layer h2 { margin: 0; color: var(--ink); }
   .layer h2 span { color: var(--dim); }
