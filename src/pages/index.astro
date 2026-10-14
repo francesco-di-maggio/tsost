@@ -1,0 +1,48 @@
+---
+import Base from "../layouts/Base.astro";
+import Facts from "../components/Facts.astro";
+import { url } from "../url";
+import { TYPES, types, itemsOf } from "../items";
+
+const keywords = ["Tangible Interaction", "Sound Design", "Decentralized Systems", "Smart Things"];
+const sections = await Promise.all((await types()).map(async (t) => ({ t, count: (await itemsOf(t)).length })));
+---
+<Base>
+  <h1>The Sound of Smart Things</h1>
+  <p class="lead">A research project exploring Tangible &amp; Embodied Sound Interaction (TESI).</p>
+
+  <div class="prose">
+    <p>TSOST studies sound as an interaction material in distributed systems of networked smart things. In everyday environments, the state and activity of such systems are mostly not visible. Sound can convey them without visual attention: it can stay in the periphery or move into focus, be continuous or discrete, and be directional.</p>
+    <p>The project designs autonomous, sensing, networked, sound-producing devices and uses that design work as the method of inquiry. The central artefact is TESI (Tangible Embodied Sound Interaction), a modular toolkit: a sensor node, network middleware and software for real-time sensor-to-sound mapping.</p>
+  </div>
+
+  <ul class="keywords" aria-label="Keywords">
+    {keywords.map((k) => <li class="label">{k}</li>)}
+  </ul>
+
+  <h2 class="label">Project</h2>
+  <Facts rows={[
+    ["PhD Candidate", "Francesco Di Maggio"],
+    ["Department", "Industrial Design, Eindhoven University of Technology"],
+    ["Supervisors", "Bart Hengeveld, Berry Eggen"],
+    ["Co-supervisor", "Rebecca Fiebrink, University of the Arts London"],
+  ]} />
+
+  <h2 class="label">Contents</h2>
+  <ul class="rows">
+    {sections.map(({ t, count }) => (
+      <li><a class="panel" href={url(`${t}/`)}>
+        <span><span class="label">{TYPES[t].title} · {count}</span><span class="caption">{TYPES[t].caption}</span></span>
+        <span class="arrow">→</span>
+      </a></li>
+    ))}
+    <li><a class="panel" href={url("timeline/")}>
+      <span><span class="label">Timeline</span><span class="caption">All dated items, newest first.</span></span>
+      <span class="arrow">→</span>
+    </a></li>
+    <li><a class="panel" href={url("graph/")}>
+      <span><span class="label">Graph</span><span class="caption">The site as a network of items and references.</span></span>
+      <span class="arrow">→</span>
+    </a></li>
+  </ul>
+</Base>

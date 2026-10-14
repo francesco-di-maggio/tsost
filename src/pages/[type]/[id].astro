@@ -1,0 +1,39 @@
+---
+import { render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import Facts from "../../components/Facts.astro";
+import ItemRow from "../../components/ItemRow.astro";
+import { TYPES, facts, items, related, type Item } from "../../items";
+import { bibtex } from "../../bibtex";
+
+export async function getStaticPaths() {
+  return (await items()).map((item) => ({ params: { type: item.type, id: item.id }, props: { item } }));
+}
+
+const { item } = Astro.props as { item: Item };
+const { Content } = await render(item.entry);
+const links = await related(item);
+---
+<Base title={item.title} description={item.summary}>
+  <span class="label">{TYPES[item.type].title} · {item.label}</span>
+  <h1>{item.title}</h1>
+  <p class="lead">{item.summary}</p>
+
+  <Facts rows={facts(item.entry)} />
+
+  {item.entry.body?.trim() && <div class="prose body"><Content /></div>}
+
+  {item.entry.collection === "papers" && (
+    <details class="panel bib">
+      <summary class="label">BibTeX</summary>
+      <pre><code>{bibtex(item.entry)}</code></pre>
+    </details>
+  )}
+
+  {links.length > 0 && (
+    <Fragment>
+      <h2 class="label">Related</h2>
+      <ul class="rows">{links.map((i) => <ItemRow item={i} label={`${TYPES[i.type].title} · ${i.label}`} />)}</ul>
+    </Fragment>
+  )}
+</Base>

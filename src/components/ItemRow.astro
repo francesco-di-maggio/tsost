@@ -1,0 +1,11 @@
+---
+import type { Item } from "../items";
+
+interface Props { item: Item; label?: string }
+
+const { item, label = item.label } = Astro.props;
+---
+<li><a class="panel" href={item.href}>
+  <span><span class="label">{label}</span><span class="title">{item.title}</span><span class="caption">{item.summary}</span></span>
+  <span class="arrow">→</span>
+</a></li>

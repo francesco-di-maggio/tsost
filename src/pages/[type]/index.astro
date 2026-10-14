@@ -1,0 +1,20 @@
+---
+import Base from "../../layouts/Base.astro";
+import ItemRow from "../../components/ItemRow.astro";
+import { TYPES, itemsOf, types, type Type } from "../../items";
+
+export async function getStaticPaths() {
+  return (await types()).map((type) => ({ params: { type } }));
+}
+
+const type = Astro.params.type as Type;
+const { title, caption } = TYPES[type];
+const list = await itemsOf(type);
+---
+<Base title={title} description={caption}>
+  <h1>{title}</h1>
+  <p class="lead">{caption}</p>
+  <ul class="rows">
+    {list.map((item) => <ItemRow item={item} />)}
+  </ul>
+</Base>

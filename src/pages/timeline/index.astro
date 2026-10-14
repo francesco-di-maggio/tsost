@@ -1,0 +1,100 @@
+---
+import Base from "../../layouts/Base.astro";
+import ItemRow from "../../components/ItemRow.astro";
+import { TYPES, items, type Item } from "../../items";
+import { START, END } from "../../project";
+
+const MONTH = 36;
+const LANE = 58;
+const CARD = 190;
+const AXIS = 44;
+
+const monthsBetween = (a: Date, b: Date) =>
+  (b.getUTCFullYear() - a.getUTCFullYear()) * 12 + b.getUTCMonth() - a.getUTCMonth() + (b.getUTCDate() - 1) / 31;
+const origin = new Date(Date.UTC(START.getUTCFullYear(), START.getUTCMonth(), 1));
+const x = (d: Date) => Math.round(monthsBetween(origin, d) * MONTH) + 24;
+const width = x(END) + CARD + 24;
+
+const dated = (await items()).filter((i) => i.date);
+const end = (i: Item) => (i.entry.collection === "courses" ? i.entry.data.end : undefined);
+
+// Oldest first, each card in the lowest lane where it does not overlap the previous card.
+const lanes: number[] = [];
+const events = [...dated].reverse().map((item) => {
+  const left = x(item.date!);
+  let lane = lanes.findIndex((right) => right < left);
+  if (lane === -1) lane = lanes.length;
+  lanes[lane] = left + CARD;
+  return { item, left, lane, span: end(item) ? x(end(item)!) - left : 0 };
+});
+const height = AXIS + (lanes.length + 1) * LANE + 24;
+
+const years: number[] = [];
+for (let y = origin.getUTCFullYear() + 1; y <= END.getUTCFullYear(); y++) years.push(y);
+const now = x(new Date());
+const years_list = [...new Set(dated.map((i) => i.year!))];
+---
+<Base title="Timeline" description="From the start of the research to now and what is planned.">
+  <h1>Timeline</h1>
+  <p class="lead">From the start of the research ({START.toISOString().slice(0, 7)}) to now and what is planned. Scroll sideways.</p>
+
+  <div class="panel tl" data-now={now}>
+    <div class="track" style={`width:${width}px;height:${height}px`}>
+      <div class="axis" style={`bottom:${AXIS}px;width:${x(END) - 24}px`}></div>
+      {years.map((y) => {
+        const left = x(new Date(Date.UTC(y, 0, 1)));
+        return <span class="year label" style={`left:${left}px;bottom:${AXIS - 30}px`}>{y}</span>;
+      })}
+      <span class="start label" style={`left:24px;bottom:${AXIS - 30}px`}>Start</span>
+      <div class="now" style={`left:${now}px;bottom:${AXIS - 8}px;height:${height - AXIS - 8}px`}><span class="label">Now</span></div>
+      {events.map(({ item, left, lane, span }) => (
+        <Fragment>
+          {span > 0 && <div class="span" style={`left:${left}px;width:${span}px;bottom:${AXIS - 2}px`}></div>}
+          <div class="stem" style={`left:${left}px;bottom:${AXIS}px;height:${(lane + 1) * LANE - 18}px`}></div>
+          <a class="event" href={item.href} style={`left:${left}px;bottom:${AXIS + (lane + 1) * LANE - 18}px;width:${CARD - 14}px`}>
+            <span class="label">{item.date!.toISOString().slice(0, 7)} · {TYPES[item.type].title}</span>
+            <span class="t">{item.title.split(":")[0]}</span>
+          </a>
+          <i class="dot" style={`left:${left}px;bottom:${AXIS}px`}></i>
+        </Fragment>
+      ))}
+    </div>
+  </div>
+
+  {years_list.map((year) => (
+    <Fragment>
+      <h2 class="label">{year}</h2>
+      <ul class="rows">
+        {dated.filter((i) => i.year === year).map((i) => <ItemRow item={i} label={`${TYPES[i.type].title} · ${i.label}`} />)}
+      </ul>
+    </Fragment>
+  ))}
+</Base>
+
+<script>
+  // Open with "now" in view.
+  document.addEventListener("astro:page-load", () => {
+    const tl = document.querySelector<HTMLElement>(".tl");
+    if (tl) tl.scrollLeft = Number(tl.dataset.now) - tl.clientWidth * 0.6;
+  });
+</script>
+
+<style>
+  .tl { overflow-x: auto; padding: 0; scrollbar-width: thin; }
+  .track { position: relative; }
+  .axis { position: absolute; left: 24px; height: 1px; background: var(--dim); }
+  .year, .start { position: absolute; transform: translateX(-50%); }
+  .start { transform: none; }
+  .year::before { content: ""; position: absolute; left: 50%; bottom: 26px; width: 1px; height: 8px; background: var(--dim); }
+  .now { position: absolute; width: 0; border-left: 1px dashed var(--ink); }
+  .now .label { position: absolute; top: -2px; left: 6px; color: var(--ink); }
+  .span { position: absolute; height: 5px; border-radius: 3px; background: var(--ink); opacity: 0.35; }
+  .stem { position: absolute; width: 1px; background: var(--line); }
+  .dot { position: absolute; width: 9px; height: 9px; margin: 0 0 -4px -4px; border-radius: 50%; background: var(--ink); }
+  .event { position: absolute; z-index: 1; display: block; padding: 0 6px 0 8px; border-left: 1px solid var(--ink);
+           background: var(--surface); text-decoration: none; }
+  .event .label { display: block; }
+  .event .t { display: block; font-size: 14px; line-height: 18px; font-weight: 600;
+              white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .event:hover .t { text-decoration: underline; text-decoration-color: var(--dim); }
+</style>
