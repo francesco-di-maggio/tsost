@@ -72,8 +72,8 @@ const current = (p: string) => (p ? path.startsWith(url(p)) : path === url());
   <slot />
 </main>
 <footer class="label">
-  <span>TU/e Industrial Design</span>
-  <a href="https://github.com/francesco-di-maggio">Francesco Di Maggio</a>
+  <span>© {new Date().getFullYear()} Francesco Di Maggio</span>
+  <a href="https://github.com/francesco-di-maggio">GitHub</a>
 </footer>
 <script>
   import { start } from "../node";
