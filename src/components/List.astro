@@ -1,0 +1,12 @@
+---
+import type { Item } from "../items";
+
+interface Props { items: Item[]; label: (i: Item) => string; on?: (i: Item) => boolean }
+
+const { items, label, on = () => false } = Astro.props;
+---
+<ul class="list">
+  {items.map((i) => (
+    <li><a class:list={{ on: on(i) }} href={i.href}><b>{i.title}</b><span class="label">{label(i)}</span></a></li>
+  ))}
+</ul>

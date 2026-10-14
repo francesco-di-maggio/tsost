@@ -119,6 +119,16 @@ a.panel .title + .caption { margin-top: 0; }
 .bib pre { margin: 10px 0 0; white-space: pre-wrap; word-break: break-word; }
 .caption { display: block; font-size: 15px; line-height: 20px; color: var(--dim); }
 .arrow { font: 400 18px/20px var(--mono); color: var(--dim); }
+/* One item per line inside a panel: title left, label right. */
+.list { margin: 0; padding: 0; list-style: none; }
+.list li + li { border-top: 1px solid var(--line); }
+.list a { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 44px; text-decoration: none; }
+.list b { min-width: 0; font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.list a:hover b { text-decoration: underline; text-decoration-color: var(--dim); }
+.list .label { flex: none; display: flex; align-items: center; gap: 6px; }
+.list .on .label { color: var(--ink); }
+.list .on .label::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.panel.lists { padding: 0 14px; }
 .empty { color: var(--dim); font-size: 15px; }
 .crumb { text-decoration: none; }
 .crumb:hover { color: var(--ink); }

@@ -1,6 +1,7 @@
 ---
 import Base from "../../layouts/Base.astro";
 import { LAYERS, TYPES, type Layer } from "../../items";
+import List from "../../components/List.astro";
 import { part, partLabel, partsOf } from "../../tesi";
 
 // Each layer shows what is current or being explored; earlier parts fold away, so the page stays short as TESI grows.
@@ -15,22 +16,12 @@ const layers = await Promise.all((Object.keys(LAYERS) as Layer[]).map(async (l) 
     <section class="layer">
       <h2 class="label">{l.title} <span>· {l.word}</span></h2>
       <p class="caption">{l.caption}</p>
-      <div class="panel parts">
-        <ul>
-          {l.now.map((p) => (
-            <li><a class:list={{ on: part(p).status === "current" }} href={p.href}>
-              <b>{p.title}</b><span class="label">{partLabel(p)}</span>
-            </a></li>
-          ))}
-        </ul>
+      <div class="panel lists parts">
+        <List items={l.now} label={partLabel} on={(p) => part(p).status === "current"} />
         {l.earlier.length > 0 && (
           <details>
             <summary class="label">Earlier · {l.earlier.length}</summary>
-            <ul>
-              {l.earlier.map((p) => (
-                <li><a href={p.href}><b>{p.title}</b><span class="label">{partLabel(p)}</span></a></li>
-              ))}
-            </ul>
+            <List items={l.earlier} label={partLabel} />
           </details>
         )}
       </div>
@@ -43,18 +34,10 @@ const layers = await Promise.all((Object.keys(LAYERS) as Layer[]).map(async (l) 
   .layer h2 { margin: 0; color: var(--ink); }
   .layer h2 span { color: var(--dim); }
   .layer .caption { margin: 0 0 4px; }
-  .parts { padding: 0 14px; }
-  .parts ul { margin: 0; padding: 0; list-style: none; }
-  .parts li + li, .parts details, .parts details li { border-top: 1px solid var(--line); }
+  .parts details { border-top: 1px solid var(--line); }
   .parts summary { display: flex; align-items: center; min-height: 40px; cursor: pointer; list-style: none; }
   .parts summary::-webkit-details-marker { display: none; }
   .parts summary::after { content: "+"; margin-left: auto; font: 400 16px var(--mono); }
   .parts details[open] summary::after { content: "−"; }
   .parts details a b { font-weight: 500; color: var(--dim); }
-  .parts a { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 44px; text-decoration: none; }
-  .parts b { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .parts a:hover b { text-decoration: underline; text-decoration-color: var(--dim); }
-  .parts .label { flex: none; display: flex; align-items: center; gap: 6px; }
-  .parts .on .label { color: var(--ink); }
-  .parts .on .label::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 </style>

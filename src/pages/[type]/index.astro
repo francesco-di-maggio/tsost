@@ -1,10 +1,10 @@
 ---
 import Base from "../../layouts/Base.astro";
-import ItemRow from "../../components/ItemRow.astro";
+import List from "../../components/List.astro";
 import { TYPES, itemsOf, types, type Type } from "../../items";
 
 export async function getStaticPaths() {
-  // TESI has its own page: parts by stage.
+  // TESI has its own page: parts by layer.
   return (await types()).filter((t) => t !== "tesi").map((type) => ({ params: { type } }));
 }
 
@@ -21,9 +21,7 @@ const groups = [...new Set(list.map(group))].sort((a, b) => (Number(b) || 9999) 
   {groups.map((g) => (
     <Fragment>
       <h2 class="label">{g}</h2>
-      <ul class="rows">
-        {list.filter((i) => group(i) === g).map((item) => <ItemRow item={item} label={item.kind} />)}
-      </ul>
+      <div class="panel lists"><List items={list.filter((i) => group(i) === g)} label={(i) => i.kind} /></div>
     </Fragment>
   ))}
 </Base>
