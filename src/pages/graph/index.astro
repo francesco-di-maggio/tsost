@@ -60,7 +60,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         dot.setAttribute("class", name === state.self ? "visitor self" : "visitor");
         dot.dataset.name = name;
         const title = document.createElementNS(NS, "title");
-        title.textContent = name.toUpperCase();
+        title.textContent = name;
         dot.append(title);
         layer.append(dot);
       });
