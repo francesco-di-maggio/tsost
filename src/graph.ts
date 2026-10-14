@@ -1,7 +1,7 @@
 import { TYPES, items, types } from "./items";
 import { url } from "./url";
 
-export type Node = { id: string; label: string; kind: "project" | "type" | "item"; href: string; x: number; y: number };
+export type Node = { id: string; label: string; kind: "project" | "type" | "item"; href: string; x: number; y: number; current?: boolean };
 export type Edge = { a: string; b: string; kind: "tree" | "ref" };
 
 export const WIDTH = 640;
@@ -10,7 +10,7 @@ const PAD = { left: 40, right: 210, y: 40 };
 
 const short = (title: string) => {
   const head = title.split(":")[0];
-  return head.length > 28 ? head.slice(0, 27) + "…" : head;
+  return head.length > 32 ? head.slice(0, 31) + "…" : head;
 };
 
 // The site as a network: project → sections → items, plus the references between items.
@@ -23,7 +23,7 @@ export async function graph() {
     edges.push({ a: "project", b: type, kind: "tree" });
   }
   for (const item of all) {
-    nodes.push({ id: item.key, label: short(item.title), kind: "item", href: item.href, x: 0, y: 0 });
+    nodes.push({ id: item.key, label: short(item.title), kind: "item", href: item.href, x: 0, y: 0, current: item.current });
     edges.push({ a: item.type, b: item.key, kind: "tree" });
     for (const key of item.related) {
       if (!edges.some((e) => e.kind === "ref" && e.a === key && e.b === item.key)) edges.push({ a: item.key, b: key, kind: "ref" });

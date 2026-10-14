@@ -19,6 +19,7 @@ export type Item = {
   label: string;
   kind: string;
   end?: Date;
+  current: boolean;
   date?: Date;
   year?: number;
   href: string;
@@ -72,6 +73,7 @@ function toItem(entry: Entry): Item {
     summary: entry.data.summary,
     label: label(entry),
     kind: kind(entry),
+    current: entry.collection === "tesi" && entry.data.status === "current",
     href: url(`${entry.collection}/${entry.id}/`),
     related: entry.data.related,
     entry,

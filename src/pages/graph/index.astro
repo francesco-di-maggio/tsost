@@ -18,7 +18,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         return <line class={e.kind} x1={a.x} y1={a.y} x2={b.x} y2={b.y} />;
       })}
       {nodes.map((n) => (
-        <a href={n.href} class={n.kind} data-path={n.href.slice(base.length) || "/"} data-x={n.x} data-y={n.y}>
+        <a href={n.href} class:list={[n.kind, { on: n.current }]} data-path={n.href.slice(base.length) || "/"} data-x={n.x} data-y={n.y}>
           <circle cx={n.x} cy={n.y} r={R[n.kind]} />
           <text x={n.x + R[n.kind] + 6} y={n.y + 4}>{n.label}</text>
         </a>
@@ -110,6 +110,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   text { font: 500 11px var(--mono); fill: var(--ink); }
   .type text, .project text { letter-spacing: 0.08em; text-transform: uppercase; }
   .item text { fill: var(--dim); }
+  .on circle { fill: var(--accent); stroke: var(--accent); }
   a:hover text { fill: var(--ink); text-decoration: underline; }
   a:hover circle { stroke: var(--accent); }
   :global(#live .visitor) { fill: var(--ok); stroke: none; }

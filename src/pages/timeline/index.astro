@@ -57,7 +57,7 @@ const now = x(new Date());
             <span class="label">{item.date!.toISOString().slice(0, 7)} · {TYPES[item.type].one}</span>
             <span class="t">{item.title}</span>
           </a>
-          <i class:list={["dot", { planned: item.date! > new Date() }]} style={`left:${left}px;bottom:${AXIS}px`}></i>
+          <i class:list={["dot", { planned: item.date! > new Date(), on: item.current }]} style={`left:${left}px;bottom:${AXIS}px`}></i>
         </Fragment>
       ))}
     </div>
@@ -85,6 +85,7 @@ const now = x(new Date());
   .span { position: absolute; height: 5px; border-radius: 3px; background: var(--ink); opacity: 0.35; }
   .stem { position: absolute; width: 1px; background: var(--line); }
   .dot { position: absolute; width: 9px; height: 9px; margin: 0 0 -4px -4px; border-radius: 50%; background: var(--ink); }
+  .dot.on { background: var(--accent); }
   .dot.planned { background: var(--surface); border: 1.5px solid var(--ink); }
   .event { position: absolute; z-index: 1; display: block; padding: 0 6px 0 8px; border-left: 1px solid var(--ink);
            background: var(--surface); text-decoration: none; }
