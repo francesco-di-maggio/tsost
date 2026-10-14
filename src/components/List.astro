@@ -2,7 +2,7 @@
 import type { Item } from "../items";
 
 // One row per item: title with a short line underneath, and one value on the right.
-interface Props { items: Item[]; meta?: (i: Item) => string; aside: (i: Item) => string; on?: (i: Item) => boolean }
+interface Props { items: Item[]; meta?: (i: Item) => string; aside?: (i: Item) => string; on?: (i: Item) => boolean }
 
 const { items, meta, aside, on = () => false } = Astro.props;
 ---
@@ -10,7 +10,7 @@ const { items, meta, aside, on = () => false } = Astro.props;
   {items.map((i) => (
     <li><a class:list={{ on: on(i) }} href={i.href}>
       <span class="text"><b>{i.title}</b>{meta && <span class="sub">{meta(i)}</span>}</span>
-      <span class="label">{aside(i)}</span>
+      {aside ? <span class="label">{aside(i)}</span> : <span class="arrow">→</span>}
     </a></li>
   ))}
 </ul>

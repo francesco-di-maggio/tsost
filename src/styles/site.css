@@ -139,6 +139,8 @@ a.panel .title + .caption { margin-top: 0; }
 .list .sub { font-size: 14px; line-height: 18px; color: var(--dim); }
 .list a:hover b { text-decoration: underline; text-decoration-color: var(--dim); text-underline-offset: 3px; }
 .list .label { flex: none; display: flex; align-items: center; gap: 6px; }
+.list .arrow { flex: none; }
+.list a:hover .arrow { color: var(--ink); }
 .list .on .label { color: var(--ink); }
 .list .on .label::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 .panel.lists { padding: 0 14px; }
