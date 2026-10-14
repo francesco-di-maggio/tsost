@@ -29,14 +29,18 @@ const deviceTopic = () => `${PREFIX}/5/${id()}`;
 const toId = (text: string) =>
   text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s/g, "-").replace(/[^a-z0-9-]/g, "");
 
-// One ID per tab: two tabs are two nodes.
-function id() {
-  let value = read("tsost-node-id");
+// One ID per tab: two tabs are two nodes. The generated default is kept, so an emptied field returns to it.
+function defaultId() {
+  let value = read("tsost-node-default");
   if (!value) {
     value = `${kind()}-${Math.floor(Math.random() * 0x10000).toString(16).padStart(4, "0")}`;
-    write("tsost-node-id", value);
+    write("tsost-node-default", value);
   }
   return value;
+}
+
+function id() {
+  return read("tsost-node-id") || defaultId();
 }
 
 function kind() {
@@ -104,6 +108,11 @@ function onPong(by: string, payload: string) {
 // Tells views (the Graph) that a device pinged or replied.
 function signal(kind: "ping" | "pong", device: string) {
   window.dispatchEvent(new CustomEvent("tsost:signal", { detail: { kind, device } }));
+  // The logo ripples with every ping heard, on every page.
+  const mark = document.querySelector(".mark svg");
+  mark?.classList.remove("heard");
+  void (mark as SVGElement | null)?.getBoundingClientRect();
+  mark?.classList.add("heard");
 }
 
 function onMessage(topic: string, payload: Buffer) {
@@ -125,7 +134,7 @@ function setStatus(text: string, state: string) {
 
 async function connect() {
   if (client) return;
-  const name = toId(( $("node-name") as HTMLInputElement).value) || id();
+  const name = toId(($("node-name") as HTMLInputElement).value) || defaultId();
   write("tsost-node-id", name);
   write("tsost-node-on", "1");
   unlock();
@@ -193,6 +202,7 @@ function render() {
   const connected = Boolean(client);
   const list = online();
   const name = $("node-name") as HTMLInputElement;
+  name.placeholder = defaultId();
   if (document.activeElement !== name) name.value = id();
   name.disabled = connected;
   if (connected && client?.connected) setStatus(`${id()} · ${list.length}`, "ok");
@@ -230,8 +240,8 @@ export function start() {
   $("header-ping").addEventListener("click", ping);
   $("node-name").addEventListener("change", (e) => {
     const input = e.target as HTMLInputElement;
-    input.value = toId(input.value) || id();
-    write("tsost-node-id", input.value);
+    input.value = toId(input.value) || defaultId();
+    write("tsost-node-id", input.value === defaultId() ? null : input.value);
   });
   document.addEventListener("astro:page-load", () => {
     if (client?.connected && ready) client.publishAsync(`${deviceTopic()}/page/path`, page(), RETAINED);

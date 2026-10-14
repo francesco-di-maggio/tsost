@@ -26,6 +26,9 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 .mark svg .core { fill: var(--accent); stroke: none; }
 .mark svg .ring { transform-box: fill-box; transform-origin: center; animation: breathe 3s ease-in-out infinite; }
 @keyframes breathe { 50% { transform: scale(1.2); opacity: 0.4; } }
+.mark svg .wave { opacity: 0; transform-box: fill-box; transform-origin: center; stroke: var(--accent); }
+.mark svg.heard .wave { animation: heard 1s ease-out; }
+@keyframes heard { from { opacity: 0.9; transform: scale(1); } to { opacity: 0; transform: scale(3.5); } }
 .end { display: flex; align-items: center; gap: 6px; min-width: 0; }
 #node-status { display: flex; align-items: center; gap: 7px; min-width: 0; height: 26px; padding: 0 10px;
                border: 1px solid var(--line); border-radius: 999px; background: none; cursor: pointer;
