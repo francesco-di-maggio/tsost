@@ -87,8 +87,16 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     if (!svg || svg.dataset.zoom) return;
     svg.dataset.zoom = "1";
     const [x0, y0, w0, h0] = svg.getAttribute("viewBox")!.split(" ").map(Number);
-    let box = { x: x0, y: y0, w: w0, h: h0 };
+    // On narrow screens the graph opens zoomed in, as if it were 560 px wide; zoom out or drag to see the rest.
+    const rect = svg.getBoundingClientRect();
+    const k0 = Math.min(1, rect.width / 560), w1 = w0 * k0, h1 = w1 * (rect.height / rect.width);
+    // Centred on the TSOST node.
+    const centre = svg.querySelector<SVGAElement>("a.project");
+    const cx = centre ? Number(centre.dataset.x) : x0 + w0 / 2, cy = centre ? Number(centre.dataset.y) : y0 + h0 / 2;
+    const start = k0 < 1 ? { x: cx - w1 / 2, y: cy - h1 / 2, w: w1, h: h1 } : { x: x0, y: y0, w: w0, h: h0 };
+    let box = { ...start };
     const set = () => svg.setAttribute("viewBox", `${box.x} ${box.y} ${box.w} ${box.h}`);
+    set();
     const toSvg = (cx: number, cy: number) => {
       const r = svg.getBoundingClientRect();
       return { x: box.x + ((cx - r.left) / r.width) * box.w, y: box.y + ((cy - r.top) / r.height) * box.h };
@@ -129,7 +137,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     svg.addEventListener("pointercancel", up);
     // A drag is not a click on a node.
     svg.addEventListener("click", (e) => { if (moved >= 4) e.preventDefault(); }, true);
-    svg.addEventListener("dblclick", () => { box = { x: x0, y: y0, w: w0, h: h0 }; set(); });
+    svg.addEventListener("dblclick", () => { box = { ...start }; set(); });
   }
   document.addEventListener("astro:page-load", zoomable);
 
@@ -141,6 +149,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 <style>
   .graph { position: relative; overflow: hidden; padding: 8px; }
   svg { display: block; width: 100%; height: auto; touch-action: none; cursor: grab; user-select: none; }
+  @media (max-width: 560px) { svg { aspect-ratio: 1; } }
   svg:active { cursor: grabbing; }
   line.tree { stroke: var(--line); stroke-width: 1; }
   line.ref { stroke: var(--ink); stroke-width: 1.25; }
