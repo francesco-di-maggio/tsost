@@ -12,4 +12,5 @@ export async function partsOf(layer: Layer) {
   return (await itemsOf("tesi")).filter((i) => part(i).layer === layer).sort(order);
 }
 
-export const partLabel = (i: Item) => [part(i).iteration && `v${part(i).iteration}`, part(i).status].filter(Boolean).join(" · ");
+// The title already names the iteration (Node v3).
+export const partLabel = (i: Item) => part(i).status;

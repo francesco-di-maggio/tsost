@@ -44,7 +44,7 @@ export type Layer = keyof typeof LAYERS;
 function kind(entry: Entry) {
   switch (entry.collection) {
     case "publications": return entry.data.kind;
-    case "tesi": return [LAYERS[entry.data.layer].title, entry.data.iteration && `v${entry.data.iteration}`, entry.data.status].filter(Boolean).join(" · ");
+    case "tesi": return [LAYERS[entry.data.layer].title, entry.data.status].join(" · ");
     case "courses": return entry.data.code;
   }
 }
