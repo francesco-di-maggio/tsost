@@ -130,18 +130,17 @@ a.panel .title + .caption { margin-top: 0; }
 .bib pre { margin: 10px 0 0; white-space: pre-wrap; word-break: break-word; }
 .caption { display: block; font-size: 15px; line-height: 20px; color: var(--dim); }
 .arrow { font: 400 18px/20px var(--mono); color: var(--dim); }
-/* One item per line inside a panel: title left, label right. */
+/* Lists: one row per item inside a panel. Title and a short line on the left, one value on the right. */
 .list { margin: 0; padding: 0; list-style: none; }
 .list li + li { border-top: 1px solid var(--line); }
-.list a { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 44px; text-decoration: none; }
-.list b { min-width: 0; font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.list a:hover b { text-decoration: underline; text-decoration-color: var(--dim); }
+.list a { display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 60px; padding: 12px 0; text-decoration: none; }
+.list .text { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.list b { font-size: 15px; line-height: 20px; font-weight: 600; text-wrap: balance; }
+.list .sub { font-size: 14px; line-height: 18px; color: var(--dim); }
+.list a:hover b { text-decoration: underline; text-decoration-color: var(--dim); text-underline-offset: 3px; }
 .list .label { flex: none; display: flex; align-items: center; gap: 6px; }
 .list .on .label { color: var(--ink); }
 .list .on .label::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-/* Wrap: long titles take two lines instead of an ellipsis. */
-.list.wrap a { padding: 11px 0; }
-.list.wrap b { white-space: normal; text-wrap: balance; }
 .panel.lists { padding: 0 14px; }
 .empty { color: var(--dim); font-size: 15px; }
 .crumb { text-decoration: none; }

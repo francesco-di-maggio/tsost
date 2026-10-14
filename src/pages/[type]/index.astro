@@ -11,13 +11,13 @@ export async function getStaticPaths() {
 const type = Astro.params.type as Type;
 const { title, caption } = TYPES[type];
 const list = await itemsOf(type);
-// Every section is one calm list; publications show year and venue.
-const short = (i: (typeof list)[number]) => (i.entry.data as { short?: string }).short ?? "";
-const byYear = type === "publications";
-const years = list.map((i) => i.year).filter(Boolean) as number[];
-const span = byYear && years.length ? ` ${Math.min(...years)}–${Math.max(...years)}` : "";
+// Under the title: venue and type for publications, code and status for courses.
+const meta = (i: (typeof list)[number]) => {
+  const d = i.entry.data as { short?: string; kind?: string; code?: string; status?: string };
+  return type === "publications" ? `${d.short} · ${d.kind}` : [d.code, d.status && "Planned"].filter(Boolean).join(" · ");
+};
 ---
 <Base title={title} description={caption}>
-  <h1 class="thesis">{title}<span>{caption.replace(/\.$/, "")}{span && `,${span}`}</span></h1>
-  <div class="panel lists"><List items={list} label={(i) => (byYear ? [i.year, short(i)].join(" · ") : i.kind)} wrap={byYear} /></div>
+  <h1 class="thesis">{title}<span>{caption.replace(/\.$/, "")}</span></h1>
+  <div class="panel lists"><List items={list} meta={meta} aside={(i) => String(i.year ?? "")} /></div>
 </Base>

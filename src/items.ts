@@ -33,11 +33,11 @@ const strip = (u: string) => u.replace(/^https:\/\//, "").replace(/\/$/, "");
 // A file in public/, or a full URL.
 const asset = (path: string) => (/^https?:/.test(path) ? path : `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${path}`);
 
-// TESI layers: what a part does, and the project's word for it.
+// TESI components, as defined in the TEI '26 paper.
 export const LAYERS = {
-  thing: { title: "Hardware", word: "thing", caption: "The node: sensors, processor, network." },
-  smart: { title: "Middleware", word: "smart", caption: "Communication between nodes and software: protocols and their hosts." },
-  sound: { title: "Software", word: "sound", caption: "Mapping and sound, in the designer's own environment." },
+  thing: { title: "Hardware", caption: "A device integrating multiple sensors." },
+  smart: { title: "Middleware", caption: "Network communication." },
+  sound: { title: "Software", caption: "Real-time sensor-to-sound mapping." },
 } as const;
 export type Layer = keyof typeof LAYERS;
 
