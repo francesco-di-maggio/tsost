@@ -180,20 +180,9 @@ async function disconnect() {
   closing.removeAllListeners();
   await closing.endAsync();
   devices.clear();
-  showPanel(false);
   render();
 }
 
-// A new ID while connected: leave the network as the old device, join again as the new one.
-async function rename(value: string) {
-  const name = toId(value) || defaultId();
-  if (name === id()) return;
-  const wasConnected = Boolean(client);
-  await disconnect();
-  write("tsost-node-id", name === defaultId() ? null : name);
-  if (wasConnected) connect();
-  else render();
-}
 
 // Online: devices under the prefix whose $state is ready.
 export function online(): [string, Device][] {
@@ -218,6 +207,12 @@ function render() {
   const name = $("node-name") as HTMLInputElement;
   name.placeholder = defaultId();
   if (document.activeElement !== name) name.value = id();
+  // As in the mqtt-max Remote: the ID is locked while connected; disconnect to change it.
+  name.disabled = connected;
+  $("node-online").hidden = !connected;
+  const button = $("node-connect");
+  button.textContent = connected ? "Disconnect" : "Connect";
+  button.classList.toggle("on", connected);
   if (connected && client?.connected) setStatus(`${id()} · ${list.length}`, "ok");
   else if (!connected) setStatus("Connect", "off");
   $("header-ping").hidden = !connected;
@@ -244,12 +239,14 @@ export function start() {
   document.addEventListener("pointerdown", closeOnOutside);
   document.addEventListener("keydown", (e) => e.key === "Escape" && showPanel(false));
   document.addEventListener("astro:before-preparation", () => showPanel(false));
-  $("node-connect").addEventListener("click", disconnect);
+  // Disconnect keeps the panel open, offline: the ID can be changed, then Connect again.
+  $("node-connect").addEventListener("click", () => (client ? disconnect() : connect()));
   $("header-ping").addEventListener("click", ping);
   $("node-name").addEventListener("change", (e) => {
     const input = e.target as HTMLInputElement;
-    rename(input.value);
-    input.value = id();
+    const name = toId(input.value) || defaultId();
+    write("tsost-node-id", name === defaultId() ? null : name);
+    input.value = name;
   });
   document.addEventListener("astro:page-load", () => {
     if (client?.connected && ready) client.publishAsync(`${deviceTopic()}/page/path`, page(), RETAINED);
