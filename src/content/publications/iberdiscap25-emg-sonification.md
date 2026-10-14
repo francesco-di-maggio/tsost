@@ -4,6 +4,7 @@ summary: "A low-cost system that turns muscle activity (EMG) into real-time soun
 authors: ["José Manuel Corredera", "Francesco Di Maggio", "Atau Tanaka", "Elisa López-Dolado"]
 venue: "Advances in Applied Technologies for Disability and Inclusion (IBERDISCAP 2025)"
 kind: Book chapter
+year: 2025
 status: Forthcoming
 publisher: Springer
 key: Corredera2026

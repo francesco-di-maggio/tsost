@@ -23,7 +23,7 @@ const links = await related(item);
 
   {item.entry.body?.trim() && <div class="prose body"><Content /></div>}
 
-  {item.entry.collection === "papers" && (
+  {item.entry.collection === "publications" && (
     <details class="panel bib">
       <summary class="label">BibTeX</summary>
       <pre><code>{bibtex(item.entry)}</code></pre>

@@ -12,7 +12,7 @@ const type = Astro.params.type as Type;
 const { title, caption } = TYPES[type];
 const list = await itemsOf(type);
 // Grouped by year, or by status (e.g. Forthcoming) for items without one; newest first.
-const group = (i: (typeof list)[number]) => (i.year ? String(i.year) : (i.entry.data as { status?: string }).status ?? "Undated");
+const group = (i: (typeof list)[number]) => (i.year ? String(i.year) : "Undated");
 const groups = [...new Set(list.map(group))].sort((a, b) => (Number(b) || 9999) - (Number(a) || 9999));
 ---
 <Base title={title} description={caption}>

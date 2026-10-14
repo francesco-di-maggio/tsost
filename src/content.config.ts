@@ -2,7 +2,7 @@ import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
-// Related items are named "collection/id", e.g. "papers/tei25-decentralized-tuis".
+// Related items are named "collection/id", e.g. "publications/tei25-decentralized-tuis".
 const base = {
   title: z.string(),
   summary: z.string(),
@@ -11,8 +11,8 @@ const base = {
 
 const load = (name: string) => glob({ pattern: "**/*.md", base: `./src/content/${name}` });
 
-const papers = defineCollection({
-  loader: load("papers"),
+const publications = defineCollection({
+  loader: load("publications"),
   schema: z.object({
     ...base,
     authors: z.array(z.string()),
@@ -38,7 +38,7 @@ const tesi = defineCollection({
     ...base,
     layer: z.enum(["thing", "smart", "sound"]),
     iteration: z.number().optional(),
-    status: z.enum(["current", "earlier"]),
+    status: z.enum(["current", "exploring", "earlier"]),
     start: z.coerce.date().optional(),
     end: z.coerce.date().optional(),
     specs: z.array(z.tuple([z.string(), z.string()])).default([]),
@@ -61,4 +61,4 @@ const courses = defineCollection({
   }),
 });
 
-export const collections = { papers, tesi, courses };
+export const collections = { publications, tesi, courses };

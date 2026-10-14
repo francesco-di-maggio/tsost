@@ -1,6 +1,6 @@
 import type { CollectionEntry } from "astro:content";
 
-export function bibtex({ data }: CollectionEntry<"papers">) {
+export function bibtex({ data }: CollectionEntry<"publications">) {
   const fields: [string, string | undefined][] = [
     ["title", data.title],
     ["author", data.authors.map(lastFirst).join(" and ")],

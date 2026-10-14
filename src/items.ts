@@ -3,7 +3,7 @@ import { url } from "./url";
 
 export const TYPES = {
   tesi: { title: "TESI", caption: "Tangible and Embodied Sound Interaction: the toolkit of this research. Thing, smart, sound." },
-  papers: { title: "Papers", caption: "Papers, workshops and book chapters, with BibTeX and DOI." },
+  publications: { title: "Publications", caption: "Papers, workshops and book chapters, with BibTeX and DOI." },
   courses: { title: "Courses", caption: "Teaching." },
 } as const;
 
@@ -36,7 +36,7 @@ export const LAYERS = { thing: "Thing", smart: "Smart", sound: "Sound" } as cons
 
 function kind(entry: Entry) {
   switch (entry.collection) {
-    case "papers": return entry.data.kind;
+    case "publications": return entry.data.kind;
     case "tesi": return [LAYERS[entry.data.layer], entry.data.iteration && `v${entry.data.iteration}`, entry.data.status].filter(Boolean).join(" · ");
     case "courses": return entry.data.code;
   }
@@ -44,7 +44,7 @@ function kind(entry: Entry) {
 
 function label(entry: Entry) {
   switch (entry.collection) {
-    case "papers": return `${entry.data.kind} · ${entry.data.year ?? entry.data.status}`;
+    case "publications": return [entry.data.kind, entry.data.year, entry.data.status].filter(Boolean).join(" · ");
     case "tesi": return kind(entry);
     case "courses": return `${entry.data.code} · ${entry.data.start.getUTCFullYear()}`;
   }
@@ -53,7 +53,7 @@ function label(entry: Entry) {
 // When an item starts, and, for periods, when it ends. A current period runs to today.
 function when(entry: Entry): { date?: Date; year?: number; end?: Date } {
   switch (entry.collection) {
-    case "papers": return { date: entry.data.date, year: entry.data.year };
+    case "publications": return { date: entry.data.date, year: entry.data.year };
     case "tesi": {
       const { start, end, status } = entry.data;
       if (!start) return {};
@@ -79,9 +79,9 @@ function toItem(entry: Entry): Item {
   };
 }
 
-// Newest first; items without a date last.
-const newest = (a: Item, b: Item) =>
-  (b.year ?? 0) - (a.year ?? 0) || (b.date?.valueOf() ?? 0) - (a.date?.valueOf() ?? 0);
+// Newest first. A year without a date counts as the end of that year; no year at all sorts last.
+const time = (i: Item) => i.date?.valueOf() ?? (i.year ? Date.UTC(i.year, 11, 31) : 0);
+const newest = (a: Item, b: Item) => time(b) - time(a);
 
 export async function items() {
   const all = (await Promise.all(Object.keys(TYPES).map((t) => getCollection(t as Type)))).flat().map(toItem);
@@ -109,13 +109,14 @@ export async function related(item: Item) {
 
 export function facts(entry: Entry): [string, string, string?][] {
   switch (entry.collection) {
-    case "papers": {
+    case "publications": {
       const d = entry.data;
       return [
         ["Authors", d.authors.join(", ")],
         ["Venue", d.venue],
         ["Type", d.kind],
-        d.year ? ["Year", String(d.year)] : ["Status", d.status ?? ""],
+        ...(d.year ? [["Year", String(d.year)] as [string, string]] : []),
+        ...(d.status ? [["Status", d.status] as [string, string]] : []),
         ...(d.publisher ? [["Publisher", d.publisher] as [string, string]] : []),
         ...(d.doi ? [["DOI", d.doi, `https://doi.org/${d.doi}`] as [string, string, string]] : []),
         ...(d.pdf ? [["PDF", "Download", asset(d.pdf)] as [string, string, string]] : []),
@@ -130,7 +131,7 @@ export function facts(entry: Entry): [string, string, string?][] {
       return [
         ["Layer", LAYERS[d.layer]],
         ...(d.iteration ? [["Iteration", String(d.iteration)] as [string, string]] : []),
-        ["Status", d.status === "current" ? "Current" : "Earlier"],
+        ["Status", d.status[0].toUpperCase() + d.status.slice(1)],
         ...(period ? [["Period", period] as [string, string]] : []),
         ...d.specs,
         ...(d.site ? [["Site", strip(d.site), d.site] as [string, string, string]] : []),

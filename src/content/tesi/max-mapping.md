@@ -1,8 +1,8 @@
 ---
-title: "Mapping in Max"
-summary: "Max patches that map sensor data to sound, with machine-learning mapping (FluCoMa) and Ableton Live."
+title: "Sound in Max"
+summary: "The full chain in Max: sensor input, mapping to sound, and output as sound, MIDI to a DAW, or OSC."
 layer: sound
-status: earlier
-specs: [["Host", "Max, Ableton Live"], ["Mapping", "FluCoMa"]]
+status: current
+specs: [["Host", "Max"], ["Mapping", "FluCoMa (machine learning)"], ["Output", "Sound, MIDI (to DAWs, e.g. Ableton Live), OSC"]]
 repository: "https://github.com/francesco-di-maggio/tesi"
 ---

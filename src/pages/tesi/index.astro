@@ -5,9 +5,10 @@ import { LAYERS, TYPES, itemsOf, type Item } from "../../items";
 
 const parts = await itemsOf("tesi");
 const data = (i: Item) => i.entry.data as { layer: keyof typeof LAYERS; status: string; iteration?: number };
-// Current first, then later iterations before earlier ones.
+// Current, then exploring, then earlier; later iterations first.
+const RANK: Record<string, number> = { current: 0, exploring: 1, earlier: 2 };
 const order = (a: Item, b: Item) =>
-  Number(data(b).status === "current") - Number(data(a).status === "current") || (data(b).iteration ?? 0) - (data(a).iteration ?? 0);
+  RANK[data(a).status] - RANK[data(b).status] || (data(b).iteration ?? 0) - (data(a).iteration ?? 0);
 const layers = (Object.keys(LAYERS) as (keyof typeof LAYERS)[]).map((layer) => ({
   layer,
   parts: parts.filter((p) => data(p).layer === layer).sort(order),
