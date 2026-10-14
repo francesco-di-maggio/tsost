@@ -38,7 +38,7 @@ const now = x(new Date());
   <h1>Timeline</h1>
   <p class="lead">June 2024 to now, and planned events.</p>
 
-  <div class="panel tl" data-now={now}>
+  <div class="panel tl" data-origin={origin.toISOString()} data-month={MONTH}>
     <div class="track" style={`width:${width}px;height:${height}px`}>
       <div class="axis" style={`bottom:${AXIS}px;width:${x(END) - 24}px`}></div>
       {months.map((m) => (
@@ -49,6 +49,7 @@ const now = x(new Date());
       ))}
       <span class="start label" style={`left:24px;bottom:${AXIS - 46}px`}>Start</span>
       <div class="now" style={`left:${now}px;bottom:${AXIS - 8}px;height:${height - AXIS - 8}px`}><span class="label">Now</span></div>
+      <i class="today" style={`left:${now}px;bottom:${AXIS}px`}></i>
       {events.map(({ item, left, lane, span }) => (
         <Fragment>
           {span > 0 && <div class="span" style={`left:${left}px;width:${span}px;bottom:${AXIS - 2}px`}></div>}
@@ -57,7 +58,7 @@ const now = x(new Date());
             <span class="label">{item.date!.toISOString().slice(0, 7)} · {TYPES[item.type].one}</span>
             <span class="t">{item.title}</span>
           </a>
-          <i class:list={["dot", { planned: item.date! > new Date(), on: item.current }]} style={`left:${left}px;bottom:${AXIS}px`}></i>
+          <i class:list={["dot", { planned: item.date! > new Date() }]} style={`left:${left}px;bottom:${AXIS}px`}></i>
         </Fragment>
       ))}
     </div>
@@ -66,10 +67,15 @@ const now = x(new Date());
 </Base>
 
 <script>
-  // Open with "now" in view.
+  // Today's dot and line are placed in the browser, so they move with the calendar; then "now" is scrolled into view.
   document.addEventListener("astro:page-load", () => {
     const tl = document.querySelector<HTMLElement>(".tl");
-    if (tl) tl.scrollLeft = Number(tl.dataset.now) - tl.clientWidth * 0.6;
+    if (!tl) return;
+    const origin = new Date(tl.dataset.origin!), d = new Date();
+    const months = (d.getUTCFullYear() - origin.getUTCFullYear()) * 12 + d.getUTCMonth() - origin.getUTCMonth() + (d.getUTCDate() - 1) / 31;
+    const left = Math.round(months * Number(tl.dataset.month)) + 24;
+    for (const el of tl.querySelectorAll<HTMLElement>(".now, .today")) el.style.left = `${left}px`;
+    tl.scrollLeft = left - tl.clientWidth * 0.6;
   });
 </script>
 
@@ -85,7 +91,10 @@ const now = x(new Date());
   .span { position: absolute; height: 5px; border-radius: 3px; background: var(--ink); opacity: 0.35; }
   .stem { position: absolute; width: 1px; background: var(--line); }
   .dot { position: absolute; width: 9px; height: 9px; margin: 0 0 -4px -4px; border-radius: 50%; background: var(--ink); }
-  .dot.on { background: var(--accent); }
+  /* Today: the one living dot. */
+  .today { position: absolute; z-index: 2; width: 11px; height: 11px; margin: 0 0 -5px -5px; border-radius: 50%; background: var(--accent); }
+  .today::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 1px solid var(--accent); animation: pulse 2s ease-out infinite; }
+  @keyframes pulse { from { transform: scale(1); opacity: 0.8; } to { transform: scale(3); opacity: 0; } }
   .dot.planned { background: var(--surface); border: 1.5px solid var(--ink); }
   .event { position: absolute; z-index: 1; display: block; padding: 0 6px 0 8px; border-left: 1px solid var(--ink);
            background: var(--surface); text-decoration: none; }
