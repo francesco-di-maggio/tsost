@@ -4,7 +4,7 @@ import Facts from "../components/Facts.astro";
 import { url } from "../url";
 import { TYPES, types, itemsOf } from "../items";
 
-const keywords = ["Tangible Interaction", "Sound Design", "Decentralized Systems", "Smart Things"];
+const keywords = ["Tangible", "Embodied", "Distributed", "Networked", "Sound", "Interaction"];
 const sections = await Promise.all((await types()).map(async (t) => ({ t, count: (await itemsOf(t)).length })));
 ---
 <Base>
@@ -13,7 +13,7 @@ const sections = await Promise.all((await types()).map(async (t) => ({ t, count:
 
   <div class="prose">
     <p>TSOST studies sound as an interaction material in distributed systems of networked smart things. In everyday environments, the state and activity of such systems are mostly not visible. Sound can convey them without visual attention: it can stay in the periphery or move into focus, be continuous or discrete, and be directional.</p>
-    <p>The project designs autonomous, sensing, networked, sound-producing devices and uses that design work as the method of inquiry. The central artefact is TESI (Tangible Embodied Sound Interaction), a modular toolkit: a sensor node, network middleware and software for real-time sensor-to-sound mapping.</p>
+    <p>The project designs autonomous, sensing, networked, sound-producing devices and uses that design work as the method of inquiry. The central artefact is TESI (Tangible and Embodied Sound Interaction), a modular toolkit: a sensor node, network middleware and software for real-time sensor-to-sound mapping.</p>
   </div>
 
   <ul class="keywords" aria-label="Keywords">
@@ -37,11 +37,11 @@ const sections = await Promise.all((await types()).map(async (t) => ({ t, count:
       </a></li>
     ))}
     <li><a class="panel" href={url("timeline/")}>
-      <span><span class="label">Timeline</span><span class="caption">From the start of the research to now and what is planned.</span></span>
+      <span><span class="label">Timeline</span><span class="caption">June 2024 to now, and planned events.</span></span>
       <span class="arrow">→</span>
     </a></li>
     <li><a class="panel" href={url("graph/")}>
-      <span><span class="label">Graph</span><span class="caption">The site as a network of items and references.</span></span>
+      <span><span class="label">Graph</span><span class="caption">Sections, items and the references between them.</span></span>
       <span class="arrow">→</span>
     </a></li>
   </ul>

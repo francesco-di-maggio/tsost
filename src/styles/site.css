@@ -7,6 +7,9 @@ body {
   background: var(--bg); color: var(--ink);
   font: 17px/1.55 var(--sans); -webkit-tap-highlight-color: transparent;
 }
+/* Short texts break into even lines, so no line ends with a single word. */
+h1, h2, .lead, .caption, a.panel .title, .event .t { text-wrap: balance; }
+
 main { flex: 1; display: flex; flex-direction: column; gap: 10px; }
 a { color: inherit; text-underline-offset: 3px; text-decoration-color: var(--dim); }
 a:hover { text-decoration-color: var(--ink); }

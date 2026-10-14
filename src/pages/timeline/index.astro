@@ -1,6 +1,5 @@
 ---
 import Base from "../../layouts/Base.astro";
-import ItemRow from "../../components/ItemRow.astro";
 import { TYPES, items } from "../../items";
 import { START, END } from "../../project";
 
@@ -34,11 +33,10 @@ const months: Date[] = [];
 for (let d = new Date(origin); d <= END; d = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1))) months.push(d);
 const NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const now = x(new Date());
-const years_list = [...new Set(dated.map((i) => i.year!))];
 ---
-<Base title="Timeline" description="From the start of the research to now and what is planned.">
+<Base title="Timeline" description="June 2024 to now, and planned events.">
   <h1>Timeline</h1>
-  <p class="lead">From the start of the research ({START.toISOString().slice(0, 7)}) to now and what is planned. Scroll sideways.</p>
+  <p class="lead">June 2024 to now, and planned events.</p>
 
   <div class="panel tl" data-now={now}>
     <div class="track" style={`width:${width}px;height:${height}px`}>
@@ -65,14 +63,6 @@ const years_list = [...new Set(dated.map((i) => i.year!))];
     </div>
   </div>
 
-  {years_list.map((year) => (
-    <Fragment>
-      <h2 class="label">{year}</h2>
-      <ul class="rows">
-        {dated.filter((i) => i.year === year).map((i) => <ItemRow item={i} label={`${TYPES[i.type].title} · ${i.label}`} />)}
-      </ul>
-    </Fragment>
-  ))}
 </Base>
 
 <script>

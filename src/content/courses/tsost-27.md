@@ -1,6 +1,6 @@
 ---
 title: "The Sound of Smart Things"
-summary: "Next run of the elective. Course material moves from Obsidian Publish to this site."
+summary: "Next run of the elective."
 code: DCM180
 institution: "Industrial Design, Eindhoven University of Technology"
 period: "2026–2027, semester B, Q4"
