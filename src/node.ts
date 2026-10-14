@@ -216,14 +216,23 @@ function renderHere(connected: boolean, list: [string, Device][]) {
   $("node-here-list").textContent = list.filter(([, d]) => d.path === page()).map(([n]) => n).join(", ") || "—";
 }
 
-function togglePanel() {
-  const panel = $("node-panel");
-  panel.hidden = !panel.hidden;
-  $("node-status").setAttribute("aria-expanded", String(!panel.hidden));
+function showPanel(open: boolean) {
+  $("node-panel").hidden = !open;
+  $("node-status").setAttribute("aria-expanded", String(open));
+}
+
+// Closes on a click outside, on Esc, and when a link is followed.
+function closeOnOutside(e: Event) {
+  const target = e.target as Node;
+  if ($("node-panel").hidden || $("node-panel").contains(target) || $("node-status").contains(target)) return;
+  showPanel(false);
 }
 
 export function start() {
-  $("node-status").addEventListener("click", togglePanel);
+  $("node-status").addEventListener("click", () => showPanel(Boolean($("node-panel").hidden)));
+  document.addEventListener("pointerdown", closeOnOutside);
+  document.addEventListener("keydown", (e) => e.key === "Escape" && showPanel(false));
+  document.addEventListener("astro:before-preparation", () => showPanel(false));
   $("node-connect").addEventListener("click", () => (client ? disconnect() : connect()));
   $("node-ping").addEventListener("click", ping);
   $("node-name").addEventListener("change", (e) => {

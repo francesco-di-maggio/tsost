@@ -39,7 +39,11 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 #theme svg { display: none; }
 #theme[data-state="auto"] .auto, #theme[data-state="light"] .light, #theme[data-state="dark"] .dark { display: block; }
 
-#node-panel { display: grid; gap: 10px; }
+/* The node panel floats under the header: the page underneath does not move. */
+body { position: relative; }
+#node-panel { position: absolute; z-index: 10; top: calc(46px + env(safe-area-inset-top)); right: 16px;
+              width: min(360px, calc(100% - 32px)); display: grid; gap: 10px;
+              box-shadow: 0 12px 32px rgb(0 0 0 / 0.25); }
 #node-live { display: grid; gap: 10px; }
 #node-live:not([hidden]) { margin-top: -10px; }
 .field { display: flex; flex-direction: column; gap: 6px; }
