@@ -106,7 +106,6 @@ a.panel .title + .caption { margin-top: 0; }
 .prose.body { margin-top: 10px; }
 .keywords { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin: 4px 0 0; padding: 0; list-style: none; }
 .keywords li { padding: 2px 8px; border: 1px solid var(--line); border-radius: 999px; }
-.keywords li:first-child { padding: 0 6px 0 0; border: 0; }
 .bib summary { cursor: pointer; list-style: none; }
 .bib summary::-webkit-details-marker { display: none; }
 .bib summary::before { content: "+ "; }
