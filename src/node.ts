@@ -77,6 +77,7 @@ function ping() {
   if (now - lastPing < PING_GAP_MS) return;
   lastPing = now;
   blip(pitch(id()));
+  signal("ping", id());
   client.publish(`${PREFIX}/ping/${id()}`, String(Date.now()));
 }
 
@@ -86,6 +87,7 @@ function onPing(from: string, payload: string) {
   if (now - (heard.get(from) ?? 0) < PING_GAP_MS) return;
   heard.set(from, now);
   blip(pitch(from));
+  signal("ping", from);
   client?.publish(`${PREFIX}/pong/${from}/${id()}`, payload);
 }
 
@@ -93,9 +95,15 @@ function onPong(by: string, payload: string) {
   const sent = Number(payload);
   if (!sent) return;
   blip(pitch(by));
+  signal("pong", by);
   const entry = devices.get(by);
   if (entry) entry.rtt = Date.now() - sent;
   render();
+}
+
+// Tells views (the Graph) that a device pinged or replied.
+function signal(kind: "ping" | "pong", device: string) {
+  window.dispatchEvent(new CustomEvent("tsost:signal", { detail: { kind, device } }));
 }
 
 function onMessage(topic: string, payload: Buffer) {

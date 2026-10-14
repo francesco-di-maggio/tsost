@@ -22,6 +22,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
           <text x={n.x + R[n.kind] + 6} y={n.y + 4}>{n.label}</text>
         </a>
       ))}
+      <g id="ripples"></g>
       <g id="live"></g>
     </svg>
   </div>
@@ -56,6 +57,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
         dot.setAttribute("cy", String(cy + Math.sin(angle) * r));
         dot.setAttribute("r", "3.5");
         dot.setAttribute("class", name === state.self ? "visitor self" : "visitor");
+        dot.dataset.name = name;
         const title = document.createElementNS(NS, "title");
         title.textContent = name;
         dot.append(title);
@@ -64,7 +66,23 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     }
   }
 
+  // A ping or a reply spreads from the device's dot like a drop in water.
+  function ripple(e: Event) {
+    const { kind, device } = (e as CustomEvent<{ kind: string; device: string }>).detail;
+    const layer = document.getElementById("ripples");
+    const dot = [...document.querySelectorAll<SVGCircleElement>("#live circle.visitor")].find((c) => c.dataset.name === device);
+    if (!layer || !dot) return;
+    const ring = document.createElementNS(NS, "circle");
+    ring.setAttribute("cx", dot.getAttribute("cx")!);
+    ring.setAttribute("cy", dot.getAttribute("cy")!);
+    ring.setAttribute("r", "4");
+    ring.setAttribute("class", `ripple ${kind}`);
+    layer.append(ring);
+    ring.addEventListener("animationend", () => ring.remove());
+  }
+
   window.addEventListener("tsost:devices", draw);
+  window.addEventListener("tsost:signal", ripple);
   document.addEventListener("astro:page-load", draw);
 </script>
 
@@ -82,4 +100,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   a:hover circle { stroke: var(--accent); }
   :global(#live .visitor) { fill: var(--ok); stroke: none; }
   :global(#live .visitor.self) { fill: var(--accent); }
+  :global(#ripples .ripple) { fill: none; stroke: var(--ink); stroke-width: 1; transform-box: fill-box; transform-origin: center;
+                           animation: ripple 1.2s ease-out forwards; }
+  :global(#ripples .ripple.pong) { stroke: var(--ok); }
+  @keyframes ripple { from { transform: scale(1); opacity: 0.9; } to { transform: scale(12); opacity: 0; } }
 </style>
