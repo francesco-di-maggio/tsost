@@ -70,7 +70,7 @@ async function announce(c: MqttClient) {
 }
 
 // Ping: every device plays the caller's tone and replies; the caller hears each reply as it arrives.
-function ping() {
+export function ping() {
   if (!client?.connected) return;
   unlock();
   const now = performance.now();

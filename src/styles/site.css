@@ -75,7 +75,7 @@ nav sup { margin-left: 2px; font-size: 8px; line-height: 0; vertical-align: 5px;
 h1 { margin: 0 0 4px; font-size: clamp(28px, 7vw, 36px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
 .lead { margin: 0 0 min(8px, 1vh); color: var(--dim); }
 h1.thesis { margin-bottom: min(16px, 2vh); }
-h1.thesis span { display: block; margin-top: 6px; font-size: 0.62em; font-weight: 500; letter-spacing: -0.01em; color: var(--dim); }
+h1.thesis span { display: block; margin-top: 8px; font-size: 16px; line-height: 1.35; font-weight: 500; letter-spacing: -0.01em; color: var(--dim); }
 h2.label { margin: min(16px, 2vh) 0 0; }
 .prose > :first-child { margin-top: 0; }
 .prose > :last-child { margin-bottom: 0; }
