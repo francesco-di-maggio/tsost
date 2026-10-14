@@ -1,7 +1,7 @@
 ---
 title: "Node v2: custom PCB"
 summary: "Custom PCB around an ESP32 Feather, with six sensors, over OOCSI."
-stages: [node, network]
+layer: thing
 iteration: 2
 status: earlier
 start: 2025-02-01

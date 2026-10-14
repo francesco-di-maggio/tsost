@@ -33,15 +33,18 @@ const strip = (u: string) => u.replace(/^https:\/\//, "").replace(/\/$/, "");
 // A file in public/, or a full URL.
 const asset = (path: string) => (/^https?:/.test(path) ? path : `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${path}`);
 
-// TESI stages, in signal order.
-export const STAGES = { node: "Node", network: "Network", mapping: "Mapping", sound: "Sound" } as const;
-export type Stage = keyof typeof STAGES;
-const stageNames = (stages: Stage[]) => stages.map((st) => STAGES[st]).join(" · ");
+// TESI layers: what a part does, and the project's word for it.
+export const LAYERS = {
+  thing: { title: "Hardware", word: "thing", caption: "The node: sensors, processor, network." },
+  smart: { title: "Middleware", word: "smart", caption: "Communication between nodes and software: protocols and their hosts." },
+  sound: { title: "Software", word: "sound", caption: "Mapping and sound, in the designer's own environment." },
+} as const;
+export type Layer = keyof typeof LAYERS;
 
 function kind(entry: Entry) {
   switch (entry.collection) {
     case "publications": return entry.data.kind;
-    case "tesi": return [stageNames(entry.data.stages), entry.data.iteration && `v${entry.data.iteration}`, entry.data.status].filter(Boolean).join(" · ");
+    case "tesi": return [LAYERS[entry.data.layer].title, entry.data.iteration && `v${entry.data.iteration}`, entry.data.status].filter(Boolean).join(" · ");
     case "courses": return entry.data.code;
   }
 }
@@ -134,7 +137,7 @@ export function facts(entry: Entry): [string, string, string?][] {
       const d = entry.data;
       const period = d.start && `${month(d.start)} – ${d.end ? month(d.end) : d.status === "current" ? "now" : ""}`;
       return [
-        ["Stages", stageNames(d.stages)],
+        ["Layer", LAYERS[d.layer].title],
         ...(d.iteration ? [["Iteration", String(d.iteration)] as [string, string]] : []),
         ["Status", d.status[0].toUpperCase() + d.status.slice(1)],
         ...(period ? [["Period", period] as [string, string]] : []),

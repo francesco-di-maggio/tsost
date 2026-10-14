@@ -1,59 +1,39 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { STAGES, TYPES, type Stage } from "../../items";
-import { part, parts } from "../../tesi";
+import { LAYERS, TYPES, type Layer } from "../../items";
+import { part, partLabel, partsOf } from "../../tesi";
 
-const list = await parts();
-const DEFINITION: Record<Stage, string> = {
-  node: "Senses the body, the object and the space.",
-  network: "Connects nodes, software and people.",
-  mapping: "Turns data into sound parameters.",
-  sound: "Makes it audible.",
-};
-const stages = (Object.keys(STAGES) as Stage[]).map((s, i) => ({
-  s, n: String(i + 1).padStart(2, "0"), parts: list.filter((p) => part(p).stages.includes(s)),
-}));
+const layers = await Promise.all((Object.keys(LAYERS) as Layer[]).map(async (l) => ({ ...LAYERS[l], parts: await partsOf(l) })));
 ---
 <Base title="TESI" description={TYPES.tesi.caption}>
   <h1 class="thesis">TESI<span>Tangible and Embodied Sound Interaction</span></h1>
-  <p class="lead">A modular toolkit in four stages, from sensing to sound.</p>
-  <ol class="flow">
-    {stages.map(({ s, n, parts }) => (
-      <li class="stage">
-        <div class="head">
-          <span class="label">{n}</span>
-          <h2>{STAGES[s]}</h2>
-          <p>{DEFINITION[s]}</p>
-        </div>
-        <ul>
-          {parts.map((p) => (
-            <li><a class:list={["part", part(p).status]} href={p.href}>
-              <b>{p.title.replace(/:.*/, "")}</b>
-              <span class="label">{part(p).status}</span>
-            </a></li>
-          ))}
-        </ul>
-      </li>
-    ))}
-  </ol>
+  <p class="lead">A modular toolkit, from sensing to sound.</p>
+  {layers.map((l) => (
+    <section class="layer">
+      <h2 class="label">{l.title} <span>· {l.word}</span></h2>
+      <p class="caption">{l.caption}</p>
+      <ul class="panel parts">
+        {l.parts.map((p) => (
+          <li><a class:list={{ on: part(p).status === "current" }} href={p.href}>
+            <b>{p.title}</b><span class="label">{partLabel(p)}</span>
+          </a></li>
+        ))}
+      </ul>
+    </section>
+  ))}
 </Base>
 
 <style>
-  .flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 8px 0 0; padding: 0; list-style: none; }
-  .stage { display: flex; flex-direction: column; gap: 10px; }
-  .stage .head { padding-top: 10px; border-top: 2px solid var(--ink); }
-  .stage .head .label { display: block; }
-  .stage h2 { margin: 2px 0 4px; font-size: 20px; line-height: 24px; font-weight: 600; letter-spacing: -0.01em; }
-  .stage .head p { margin: 0; min-height: 40px; font-size: 14px; line-height: 20px; color: var(--dim); text-wrap: balance; }
-  .stage ul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
-  .part { display: block; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius-control);
-          background: var(--surface); text-decoration: none; }
-  .part:hover { border-color: var(--dim); }
-  .part b { display: block; font-size: 14px; line-height: 18px; font-weight: 600; }
-  .part .label { display: flex; align-items: center; gap: 6px; margin-top: 2px; }
-  .part.current .label { color: var(--ink); }
-  .part.current .label::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-  @media (max-width: 640px) {
-    .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 24px; }
-  }
+  .layer { display: grid; gap: 6px; margin-top: min(16px, 2vh); }
+  .layer h2 { margin: 0; color: var(--ink); }
+  .layer h2 span { color: var(--dim); }
+  .layer .caption { margin: 0 0 4px; }
+  .parts { margin: 0; padding: 0 14px; list-style: none; }
+  .parts li + li { border-top: 1px solid var(--line); }
+  .parts a { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 44px; text-decoration: none; }
+  .parts b { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .parts a:hover b { text-decoration: underline; text-decoration-color: var(--dim); }
+  .parts .label { flex: none; display: flex; align-items: center; gap: 6px; }
+  .parts .on .label { color: var(--ink); }
+  .parts .on .label::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 </style>
