@@ -25,6 +25,7 @@ const papers = defineCollection({
     doi: z.string().optional(),
     pdf: z.string().optional(),
     links: z.array(z.url()).default([]),
+    licence: z.string().optional(),
     key: z.string(),
     note: z.string().optional(),
   }),

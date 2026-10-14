@@ -8,6 +8,7 @@ year: 2026
 date: 2026-06-24
 key: DiMaggio2026
 doi: "10.5281/zenodo.20784244"
+licence: "CC BY 4.0"
 note: "Di Maggio and van Riet contributed equally."
 ---
 

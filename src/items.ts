@@ -25,6 +25,8 @@ export type Item = {
 };
 
 const day = (d: Date) => d.toISOString().slice(0, 10);
+// A file in public/, or a full URL.
+const asset = (path: string) => (/^https?:/.test(path) ? path : `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${path}`);
 
 function label(entry: Entry) {
   switch (entry.collection) {
@@ -96,7 +98,8 @@ export function facts(entry: Entry): [string, string, string?][] {
         d.year ? ["Year", String(d.year)] : ["Status", d.status ?? ""],
         ...(d.publisher ? [["Publisher", d.publisher] as [string, string]] : []),
         ...(d.doi ? [["DOI", d.doi, `https://doi.org/${d.doi}`] as [string, string, string]] : []),
-        ...(d.pdf ? [["PDF", "Download", d.pdf] as [string, string, string]] : []),
+        ...(d.pdf ? [["PDF", "Download", asset(d.pdf)] as [string, string, string]] : []),
+        ...(d.licence ? [["Licence", d.licence] as [string, string]] : []),
         ...d.links.map((l) => ["Link", l.replace(/^https:\/\//, "").replace(/\/$/, ""), l] as [string, string, string]),
         ...(d.note ? [["Note", d.note] as [string, string]] : []),
       ];
