@@ -19,6 +19,7 @@ const meta = (i: (typeof list)[number]) => {
 };
 ---
 <Base title={title} description={caption}>
-  <h1 class="thesis">{title}<span>{caption.replace(/\.$/, "")}</span></h1>
+  <h1>{title}</h1>
+  <p class="lead">{caption}</p>
   <div class="panel lists"><List items={list} meta={meta} /></div>
 </Base>

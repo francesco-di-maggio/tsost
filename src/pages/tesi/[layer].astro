@@ -15,7 +15,8 @@ const parts = await partsOf(layer);
 ---
 <Base title={`TESI · ${title}`} description={caption}>
   <a class="label crumb" href={url("tesi/")}>TESI</a>
-  <h1 class="thesis">{title}<span>{caption.replace(/\.$/, "")}</span></h1>
+  <h1>{title}</h1>
+  <p class="lead">{caption}</p>
   <div class="panel lists">
     <List items={parts} aside={(p) => part(p).status} on={(p) => part(p).status === "current"} />
   </div>

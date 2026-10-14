@@ -6,8 +6,8 @@ import { url } from "../../url";
 const layers = (Object.keys(LAYERS) as Layer[]).map((l) => LAYERS[l]);
 ---
 <Base title="TESI" description={TYPES.tesi.caption}>
-  <h1 class="thesis">TESI<span>A modular toolkit for tangible and embodied sound interaction</span></h1>
-  <p class="intro">TESI lets interaction designers work with sound in their design context, linking gestures, materials and spatial relationships to sound. <a href={url("publications/tei26-tesi/")}>TEI&nbsp;'26&nbsp;paper</a></p>
+  <h1>TESI</h1>
+  <p class="lead">A modular toolkit for tangible and embodied sound interaction.</p>
   <div class="panel lists">
     <ul class="list">
       {layers.map((l) => (
@@ -20,6 +20,3 @@ const layers = (Object.keys(LAYERS) as Layer[]).map((l) => LAYERS[l]);
   </div>
 </Base>
 
-<style>
-  .intro { margin: 0 0 4px; font-size: 16px; line-height: 1.5; text-wrap: pretty; }
-</style>
