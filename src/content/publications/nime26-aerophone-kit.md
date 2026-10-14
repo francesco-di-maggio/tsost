@@ -2,6 +2,7 @@
 title: "The Aerophone Kit: A Toolkit for Pneumatic Musical Instrument Design"
 summary: "Modular pneumatic instruments, without electronics."
 authors: ["Francesco Di Maggio", "Catharina Maria van Riet", "Sergio Picella", "Berry Eggen", "Bart Hengeveld"]
+short: "NIME"
 venue: "NIME '26: International Conference on New Interfaces for Musical Expression, London, UK"
 kind: Paper
 year: 2026

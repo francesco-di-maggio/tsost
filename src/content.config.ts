@@ -17,6 +17,7 @@ const publications = defineCollection({
     ...base,
     authors: z.array(z.string()),
     venue: z.string(),
+    short: z.string(),
     kind: z.string(),
     year: z.number().optional(),
     status: z.string().optional(),

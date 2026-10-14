@@ -75,9 +75,18 @@ nav a:hover, nav a[aria-current] { color: var(--ink); }
 nav sup { margin-left: 2px; font-size: 8px; line-height: 0; vertical-align: 5px; color: var(--dim); }
 
 h1 { margin: 0 0 4px; font-size: clamp(28px, 7vw, 36px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
-.lead { margin: 0 0 min(8px, 1vh); color: var(--dim); }
+.lead { margin: 0 0 min(8px, 1vh); font-size: 16px; color: var(--dim); }
 h1.thesis { margin-bottom: min(16px, 2vh); }
-h1.thesis span { display: block; margin-top: 8px; font-size: 16px; line-height: 1.35; font-weight: 500; letter-spacing: -0.01em; color: var(--dim); }
+/* Home: the ripple from the preview image, the same living dot as on the timeline. */
+main { position: relative; }
+.mark-ripple { position: absolute; top: -4px; right: 4px; width: 52px; height: 52px; overflow: visible; }
+.mark-ripple circle { fill: none; stroke: var(--ink); stroke-width: 1; }
+.mark-ripple .r1 { opacity: 0.5; } .mark-ripple .r2 { opacity: 0.3; } .mark-ripple .r3 { opacity: 0.15; }
+.mark-ripple .core { fill: var(--accent); stroke: none; }
+.mark-ripple .r1 { transform-origin: center; transform-box: fill-box; animation: breathe 3s ease-in-out infinite; }
+@keyframes breathe { 50% { transform: scale(1.15); opacity: 0.25; } }
+@media (max-width: 560px) { .mark-ripple { display: none; } }
+h1.thesis span { display: block; margin-top: 10px; font-size: 16px; line-height: 1.5; font-weight: 400; letter-spacing: 0; color: var(--dim); }
 h2.label { margin: min(16px, 2vh) 0 0; }
 .prose > :first-child { margin-top: 0; }
 .prose > :last-child { margin-bottom: 0; }

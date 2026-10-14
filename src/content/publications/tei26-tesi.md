@@ -2,6 +2,7 @@
 title: "TESI: A Toolkit for Tangible and Embodied Sound Interaction"
 summary: "A modular toolkit for sound across networked tangible interfaces."
 authors: ["Francesco Di Maggio", "Bart Hengeveld", "Mathias Funk", "Rebecca Fiebrink"]
+short: "TEI"
 venue: "TEI '26: Twentieth International Conference on Tangible, Embedded, and Embodied Interaction, Chicago, IL, USA"
 kind: Paper
 year: 2026

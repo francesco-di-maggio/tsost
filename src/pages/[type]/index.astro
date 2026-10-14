@@ -11,17 +11,19 @@ export async function getStaticPaths() {
 const type = Astro.params.type as Type;
 const { title, caption } = TYPES[type];
 const list = await itemsOf(type);
-// Grouped by year, or by status (e.g. Forthcoming) for items without one; newest first.
+// Publications are grouped by year, newest first; other sections are one list.
+const byYear = type === "publications";
 const group = (i: (typeof list)[number]) => (i.year ? String(i.year) : "Undated");
-const groups = [...new Set(list.map(group))].sort((a, b) => (Number(b) || 9999) - (Number(a) || 9999));
+const groups = byYear ? [...new Set(list.map(group))] : [""];
+const years = list.map((i) => i.year).filter(Boolean) as number[];
+const span = byYear && years.length ? ` ${Math.min(...years)}–${Math.max(...years)}` : "";
 ---
 <Base title={title} description={caption}>
-  <h1>{title}</h1>
-  <p class="lead">{caption}</p>
+  <h1 class="thesis">{title}<span>{caption.replace(/\.$/, "")}{span && `,${span}`}</span></h1>
   {groups.map((g) => (
     <Fragment>
-      <h2 class="label">{g}</h2>
-      <div class="panel lists"><List items={list.filter((i) => group(i) === g)} label={(i) => i.kind} /></div>
+      {g && <h2 class="label">{g}</h2>}
+      <div class="panel lists"><List items={g ? list.filter((i) => group(i) === g) : list} label={(i) => i.kind} /></div>
     </Fragment>
   ))}
 </Base>

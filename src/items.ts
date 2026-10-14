@@ -3,8 +3,8 @@ import { url } from "./url";
 
 export const TYPES = {
   tesi: { one: "TESI", title: "TESI", caption: "Tangible and Embodied Sound Interaction. Thing, smart, sound." },
-  publications: { one: "Publication", title: "Publications", caption: "Papers, workshops and book chapters, with BibTeX and DOI." },
-  courses: { one: "Course", title: "Courses", caption: "Teaching." },
+  publications: { one: "Publication", title: "Publications", caption: "Papers, workshops and book chapters." },
+  courses: { one: "Course", title: "Courses", caption: "Courses at TU/e Industrial Design." },
 } as const;
 
 export type Type = keyof typeof TYPES;
@@ -43,9 +43,9 @@ export type Layer = keyof typeof LAYERS;
 
 function kind(entry: Entry) {
   switch (entry.collection) {
-    case "publications": return entry.data.kind;
+    case "publications": return `${entry.data.short} · ${entry.data.kind}`;
     case "tesi": return [LAYERS[entry.data.layer].title, entry.data.status].join(" · ");
-    case "courses": return entry.data.code;
+    case "courses": return [entry.data.start.getUTCFullYear(), entry.data.status].filter(Boolean).join(" · ");
   }
 }
 
