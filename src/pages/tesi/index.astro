@@ -1,0 +1,28 @@
+---
+import Base from "../../layouts/Base.astro";
+import ItemRow from "../../components/ItemRow.astro";
+import { LAYERS, TYPES, itemsOf, type Item } from "../../items";
+
+const parts = await itemsOf("tesi");
+const data = (i: Item) => i.entry.data as { layer: keyof typeof LAYERS; status: string; iteration?: number };
+// Current first, then later iterations before earlier ones.
+const order = (a: Item, b: Item) =>
+  Number(data(b).status === "current") - Number(data(a).status === "current") || (data(b).iteration ?? 0) - (data(a).iteration ?? 0);
+const layers = (Object.keys(LAYERS) as (keyof typeof LAYERS)[]).map((layer) => ({
+  layer,
+  parts: parts.filter((p) => data(p).layer === layer).sort(order),
+}));
+const CAPTION = { thing: "Hardware: the sensor node.", smart: "Network: the middleware between nodes and software.", sound: "Software: mapping sensor data to sound." };
+---
+<Base title="TESI" description={TYPES.tesi.caption}>
+  <h1>TESI</h1>
+  <p class="lead">Tangible and Embodied Sound Interaction: the toolkit of this research, in three layers.</p>
+  {layers.map(({ layer, parts }) => (
+    <Fragment>
+      <h2 class="label">{LAYERS[layer]} · {CAPTION[layer]}</h2>
+      <ul class="rows">
+        {parts.map((p) => <ItemRow item={p} label={[data(p).iteration && `v${data(p).iteration}`, data(p).status].filter(Boolean).join(" · ")} />)}
+      </ul>
+    </Fragment>
+  ))}
+</Base>

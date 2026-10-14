@@ -2,8 +2,8 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import { url } from "./url";
 
 export const TYPES = {
+  tesi: { title: "TESI", caption: "Tangible and Embodied Sound Interaction: the toolkit of this research. Thing, smart, sound." },
   papers: { title: "Papers", caption: "Papers, workshops and book chapters, with BibTeX and DOI." },
-  tools: { title: "Tools", caption: "Software and toolkits, each in its own repository." },
   courses: { title: "Courses", caption: "Teaching." },
 } as const;
 
@@ -17,6 +17,8 @@ export type Item = {
   title: string;
   summary: string;
   label: string;
+  kind: string;
+  end?: Date;
   date?: Date;
   year?: number;
   href: string;
@@ -25,22 +27,39 @@ export type Item = {
 };
 
 const day = (d: Date) => d.toISOString().slice(0, 10);
+const month = (d: Date) => d.toISOString().slice(0, 7);
+const strip = (u: string) => u.replace(/^https:\/\//, "").replace(/\/$/, "");
 // A file in public/, or a full URL.
 const asset = (path: string) => (/^https?:/.test(path) ? path : `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${path}`);
+
+export const LAYERS = { thing: "Thing", smart: "Smart", sound: "Sound" } as const;
+
+function kind(entry: Entry) {
+  switch (entry.collection) {
+    case "papers": return entry.data.kind;
+    case "tesi": return [LAYERS[entry.data.layer], entry.data.iteration && `v${entry.data.iteration}`, entry.data.status].filter(Boolean).join(" · ");
+    case "courses": return entry.data.code;
+  }
+}
 
 function label(entry: Entry) {
   switch (entry.collection) {
     case "papers": return `${entry.data.kind} · ${entry.data.year ?? entry.data.status}`;
-    case "tools": return entry.data.version;
+    case "tesi": return kind(entry);
     case "courses": return `${entry.data.code} · ${entry.data.start.getUTCFullYear()}`;
   }
 }
 
-function when(entry: Entry): { date?: Date; year?: number } {
+// When an item starts, and, for periods, when it ends. A current period runs to today.
+function when(entry: Entry): { date?: Date; year?: number; end?: Date } {
   switch (entry.collection) {
     case "papers": return { date: entry.data.date, year: entry.data.year };
-    case "tools": return {};
-    case "courses": return { date: entry.data.start, year: entry.data.start.getUTCFullYear() };
+    case "tesi": {
+      const { start, end, status } = entry.data;
+      if (!start) return {};
+      return { date: start, year: start.getUTCFullYear(), end: end ?? (status === "current" ? new Date() : undefined) };
+    }
+    case "courses": return { date: entry.data.start, year: entry.data.start.getUTCFullYear(), end: entry.data.end };
   }
 }
 
@@ -52,6 +71,7 @@ function toItem(entry: Entry): Item {
     title: entry.data.title,
     summary: entry.data.summary,
     label: label(entry),
+    kind: kind(entry),
     href: url(`${entry.collection}/${entry.id}/`),
     related: entry.data.related,
     entry,
@@ -104,15 +124,17 @@ export function facts(entry: Entry): [string, string, string?][] {
         ...(d.note ? [["Note", d.note] as [string, string]] : []),
       ];
     }
-    case "tools": {
+    case "tesi": {
       const d = entry.data;
+      const period = d.start && `${month(d.start)} – ${d.end ? month(d.end) : d.status === "current" ? "now" : ""}`;
       return [
-        ["Host", d.host],
-        ["Protocol", d.protocol],
-        ["Version", d.version],
-        ["Licence", d.licence],
-        ["Site", d.site.replace(/^https:\/\//, "").replace(/\/$/, ""), d.site],
-        ["Repository", d.repository.replace(/^https:\/\//, ""), d.repository],
+        ["Layer", LAYERS[d.layer]],
+        ...(d.iteration ? [["Iteration", String(d.iteration)] as [string, string]] : []),
+        ["Status", d.status === "current" ? "Current" : "Earlier"],
+        ...(period ? [["Period", period] as [string, string]] : []),
+        ...d.specs,
+        ...(d.site ? [["Site", strip(d.site), d.site] as [string, string, string]] : []),
+        ...(d.repository ? [["Repository", strip(d.repository), d.repository] as [string, string, string]] : []),
       ];
     }
     case "courses": {

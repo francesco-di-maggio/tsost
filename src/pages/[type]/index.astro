@@ -4,17 +4,26 @@ import ItemRow from "../../components/ItemRow.astro";
 import { TYPES, itemsOf, types, type Type } from "../../items";
 
 export async function getStaticPaths() {
-  return (await types()).map((type) => ({ params: { type } }));
+  // TESI has its own page, arranged by layer.
+  return (await types()).filter((t) => t !== "tesi").map((type) => ({ params: { type } }));
 }
 
 const type = Astro.params.type as Type;
 const { title, caption } = TYPES[type];
 const list = await itemsOf(type);
+// Grouped by year, or by status (e.g. Forthcoming) for items without one; newest first.
+const group = (i: (typeof list)[number]) => (i.year ? String(i.year) : (i.entry.data as { status?: string }).status ?? "Undated");
+const groups = [...new Set(list.map(group))].sort((a, b) => (Number(b) || 9999) - (Number(a) || 9999));
 ---
 <Base title={title} description={caption}>
   <h1>{title}</h1>
   <p class="lead">{caption}</p>
-  <ul class="rows">
-    {list.map((item) => <ItemRow item={item} />)}
-  </ul>
+  {groups.map((g) => (
+    <Fragment>
+      <h2 class="label">{g}</h2>
+      <ul class="rows">
+        {list.filter((i) => group(i) === g).map((item) => <ItemRow item={item} label={item.kind} />)}
+      </ul>
+    </Fragment>
+  ))}
 </Base>

@@ -31,16 +31,19 @@ const papers = defineCollection({
   }),
 });
 
-const tools = defineCollection({
-  loader: load("tools"),
+// TESI: the toolkit. Each part sits in a layer; hardware has numbered iterations.
+const tesi = defineCollection({
+  loader: load("tesi"),
   schema: z.object({
     ...base,
-    host: z.string(),
-    protocol: z.string(),
-    version: z.string(),
-    licence: z.string(),
-    site: z.url(),
-    repository: z.url(),
+    layer: z.enum(["thing", "smart", "sound"]),
+    iteration: z.number().optional(),
+    status: z.enum(["current", "earlier"]),
+    start: z.coerce.date().optional(),
+    end: z.coerce.date().optional(),
+    specs: z.array(z.tuple([z.string(), z.string()])).default([]),
+    repository: z.url().optional(),
+    site: z.url().optional(),
   }),
 });
 
@@ -58,4 +61,4 @@ const courses = defineCollection({
   }),
 });
 
-export const collections = { papers, tools, courses };
+export const collections = { papers, tesi, courses };

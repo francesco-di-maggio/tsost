@@ -1,7 +1,7 @@
 ---
 import Base from "../../layouts/Base.astro";
 import ItemRow from "../../components/ItemRow.astro";
-import { TYPES, items, type Item } from "../../items";
+import { TYPES, items } from "../../items";
 import { START, END } from "../../project";
 
 const MONTH = 36;
@@ -16,7 +16,6 @@ const x = (d: Date) => Math.round(monthsBetween(origin, d) * MONTH) + 24;
 const width = x(END) + CARD + 24;
 
 const dated = (await items()).filter((i) => i.date);
-const end = (i: Item) => (i.entry.collection === "courses" ? i.entry.data.end : undefined);
 
 // Oldest first, each card in the lowest lane where it does not overlap the previous card.
 const lanes: number[] = [];
@@ -25,7 +24,7 @@ const events = [...dated].reverse().map((item) => {
   let lane = lanes.findIndex((right) => right < left);
   if (lane === -1) lane = lanes.length;
   lanes[lane] = left + CARD;
-  return { item, left, lane, span: end(item) ? x(end(item)!) - left : 0 };
+  return { item, left, lane, span: item.end ? x(item.end) - left : 0 };
 });
 const height = AXIS + (lanes.length + 1) * LANE + 24;
 
