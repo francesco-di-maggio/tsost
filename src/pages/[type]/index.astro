@@ -1,6 +1,7 @@
 ---
 import Base from "../../layouts/Base.astro";
 import List from "../../components/List.astro";
+import ItemRow from "../../components/ItemRow.astro";
 import { TYPES, itemsOf, types, type Type } from "../../items";
 
 export async function getStaticPaths() {
@@ -23,7 +24,11 @@ const span = byYear && years.length ? ` ${Math.min(...years)}–${Math.max(...ye
   {groups.map((g) => (
     <Fragment>
       {g && <h2 class="label">{g}</h2>}
-      <div class="panel lists"><List items={g ? list.filter((i) => group(i) === g) : list} label={(i) => i.kind} stacked={byYear} /></div>
+      {byYear ? (
+        <ul class="rows">{list.filter((i) => group(i) === g).map((i) => <ItemRow item={i} label={i.kind} />)}</ul>
+      ) : (
+        <div class="panel lists"><List items={list} label={(i) => i.kind} /></div>
+      )}
     </Fragment>
   ))}
 </Base>
