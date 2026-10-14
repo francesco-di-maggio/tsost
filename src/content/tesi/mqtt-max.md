@@ -3,6 +3,7 @@ title: "mqtt-max"
 summary: "MQTT for Max: client, broker, Homie, and the Remote web app."
 layer: smart
 status: current
+start: 2026-09-01
 specs: [["Host", "Max"], ["Protocol", "MQTT, Homie 5"], ["Version", "0.1.0, unreleased"], ["Licence", "MIT"]]
 site: "https://francesco-di-maggio.github.io/mqtt-max/"
 repository: "https://github.com/francesco-di-maggio/mqtt-max"
