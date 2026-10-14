@@ -40,6 +40,8 @@ const current = (p: string) => (p ? path.startsWith(url(p)) : path === url());
 <meta property="og:title" content={pageTitle}>
 <meta property="og:description" content={description}>
 <meta property="og:url" content={new URL(path, Astro.site)}>
+<meta property="og:image" content={new URL(url("og.png").replace(/\/$/, ""), Astro.site)}>
+<meta name="twitter:card" content="summary_large_image">
 <ClientRouter />
 </head>
 <body>
