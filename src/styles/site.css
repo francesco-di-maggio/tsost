@@ -21,34 +21,42 @@ a:hover { text-decoration-color: var(--ink); }
 header { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 28px; }
 .mark { font: 600 13px var(--mono); letter-spacing: 0.04em; text-decoration: none; }
 .end { display: flex; align-items: center; gap: 4px; min-width: 0; }
-#node-status { display: flex; align-items: center; gap: 7px; min-width: 0; padding: 0 4px; height: 28px;
-               border: 0; background: none; cursor: pointer; }
+#node-status { display: flex; align-items: center; gap: 7px; min-width: 0; height: 26px; padding: 0 10px;
+               border: 1px solid var(--line); border-radius: 999px; background: none; cursor: pointer;
+               font: 500 11px/20px var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); }
 #node-status span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-#node-status::before { content: ""; flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--dim); }
-#node-status.ok { color: var(--ink); }
-#node-status.ok::before { background: var(--ok); }
-#node-status.busy::before { background: var(--accent); animation: blink 0.8s steps(2) infinite; }
+#node-status::before { content: ""; flex: none; width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid var(--dim); box-sizing: border-box; }
+#node-status:hover { border-color: var(--dim); }
+#node-status.ok { text-transform: none; letter-spacing: 0; font-size: 12px; }
+#node-status.ok::before { background: var(--ok); border-color: var(--ok); }
+#node-status.busy { color: var(--dim); }
+#node-status.busy::before { background: var(--accent); border-color: var(--accent); animation: blink 0.8s steps(2) infinite; }
 #node-status.err { color: var(--err); }
-#node-status.err::before { background: var(--err); }
+#node-status.err::before { background: var(--err); border-color: var(--err); }
 @keyframes blink { 50% { opacity: 0.2; } }
 #theme { flex: none; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
          padding: 0; border: 0; background: none; color: var(--dim); cursor: pointer; }
 #theme svg { display: none; }
 #theme[data-state="auto"] .auto, #theme[data-state="light"] .light, #theme[data-state="dark"] .dark { display: block; }
 
-#node-panel { display: grid; gap: 0; }
-#node-panel .caption { margin: 0 0 8px; }
+#node-panel { display: grid; gap: 10px; }
+#node-panel .caption { margin: 0; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field input { width: 100%; height: 44px; padding: 0 12px; font: 16px var(--mono); color: var(--ink);
+               background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius-control); outline: none; }
+.field input:focus { border-color: var(--ink); }
+.field input:disabled { color: var(--dim); -webkit-text-fill-color: var(--dim); opacity: 1; }
 .device { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px;
           border-top: 1px solid var(--line); font: 500 13px var(--mono); font-variant-numeric: tabular-nums; }
-.device b { font-weight: 500; }
 .device.empty { color: var(--dim); }
-#node-list .device:first-child::before { content: none; }
-#node-connect { height: 44px; margin-top: 8px; padding: 0 14px; border-radius: var(--radius-control); border: 1px solid var(--ink);
-                background: var(--ink); color: var(--bg); font: 500 11px/20px var(--mono); letter-spacing: 0.08em;
-                text-transform: uppercase; text-align: left; cursor: pointer; }
+.buttons { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; }
+.buttons button { height: 44px; padding: 0 14px; border-radius: var(--radius-control); border: 1px solid var(--line);
+                  background: var(--bg); color: var(--ink); font: 500 11px/20px var(--mono); letter-spacing: 0.08em;
+                  text-transform: uppercase; text-align: left; cursor: pointer; }
+.buttons button:active { opacity: 0.7; }
+.buttons button:disabled { opacity: 0.4; cursor: default; }
+#node-connect { background: var(--ink); border-color: var(--ink); color: var(--bg); }
 #node-connect.on { background: var(--accent); border-color: var(--accent); color: #fff; }
-#node-connect:active { opacity: 0.7; }
-#node-connect:disabled { opacity: 0.5; cursor: default; }
 #node-here { margin: min(24px, 3vh) 0 0; }
 #node-here span { color: var(--ink); margin-left: 8px; }
 

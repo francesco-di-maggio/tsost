@@ -5,6 +5,7 @@ import { graph, WIDTH, HEIGHT } from "../../graph";
 const { nodes, edges } = await graph();
 const at = new Map(nodes.map((n) => [n.id, n]));
 const R = { project: 9, type: 6, item: 4 };
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 <Base title="Graph" description="The site as a network: sections, items and the references between them.">
   <h1>Graph</h1>
@@ -16,14 +17,56 @@ const R = { project: 9, type: 6, item: 4 };
         return <line class={e.kind} x1={a.x} y1={a.y} x2={b.x} y2={b.y} />;
       })}
       {nodes.map((n) => (
-        <a href={n.href} class={n.kind}>
+        <a href={n.href} class={n.kind} data-path={n.href.slice(base.length) || "/"} data-x={n.x} data-y={n.y}>
           <circle cx={n.x} cy={n.y} r={R[n.kind]} />
           <text x={n.x + R[n.kind] + 6} y={n.y + 4}>{n.label}</text>
         </a>
       ))}
+      <g id="live"></g>
     </svg>
   </div>
 </Base>
+
+<script>
+  // Live layer: connected devices as dots around the page each one is on.
+  type State = { self: string; list: [string, { path?: string }][]; connected: boolean };
+  const NS = "http://www.w3.org/2000/svg";
+
+  function draw() {
+    const layer = document.getElementById("live");
+    const state = (window as unknown as { tsostDevices?: State }).tsostDevices;
+    if (!layer) return;
+    layer.replaceChildren();
+    if (!state?.connected) return;
+    const anchors = [...document.querySelectorAll<SVGAElement>("svg a[data-path]")];
+    const at = (path: string) => anchors.find((a) => a.dataset.path === path) ?? anchors.find((a) => a.dataset.path === "/")!;
+    const groups = new Map<SVGAElement, string[]>();
+    for (const [name, d] of state.list) {
+      const a = at(d.path ?? "/");
+      groups.set(a, [...(groups.get(a) ?? []), name]);
+    }
+    for (const [a, names] of groups) {
+      const cx = Number(a.dataset.x), cy = Number(a.dataset.y);
+      names.forEach((name, i) => {
+        // Rings of 8 around the page node.
+        const ring = Math.floor(i / 8), angle = (i % 8) * (Math.PI / 4) + ring * 0.4 - Math.PI / 2;
+        const r = 16 + ring * 9;
+        const dot = document.createElementNS(NS, "circle");
+        dot.setAttribute("cx", String(cx + Math.cos(angle) * r));
+        dot.setAttribute("cy", String(cy + Math.sin(angle) * r));
+        dot.setAttribute("r", "3.5");
+        dot.setAttribute("class", name === state.self ? "visitor self" : "visitor");
+        const title = document.createElementNS(NS, "title");
+        title.textContent = name;
+        dot.append(title);
+        layer.append(dot);
+      });
+    }
+  }
+
+  window.addEventListener("tsost:devices", draw);
+  document.addEventListener("astro:page-load", draw);
+</script>
 
 <style>
   .graph { overflow-x: auto; padding: 8px; }
@@ -37,4 +80,6 @@ const R = { project: 9, type: 6, item: 4 };
   .item text { fill: var(--dim); }
   a:hover text { fill: var(--ink); text-decoration: underline; }
   a:hover circle { stroke: var(--accent); }
+  :global(#live .visitor) { fill: var(--ok); stroke: none; }
+  :global(#live .visitor.self) { fill: var(--accent); }
 </style>
