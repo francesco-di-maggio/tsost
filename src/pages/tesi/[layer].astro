@@ -1,0 +1,22 @@
+---
+import Base from "../../layouts/Base.astro";
+import List from "../../components/List.astro";
+import { LAYERS, type Layer } from "../../items";
+import { part, partsOf } from "../../tesi";
+import { url } from "../../url";
+
+export async function getStaticPaths() {
+  return (Object.keys(LAYERS) as Layer[]).map((layer) => ({ params: { layer: LAYERS[layer].slug }, props: { layer } }));
+}
+
+const { layer } = Astro.props as { layer: Layer };
+const { title, caption } = LAYERS[layer];
+const parts = await partsOf(layer);
+---
+<Base title={`TESI · ${title}`} description={caption}>
+  <a class="label crumb" href={url("tesi/")}>TESI</a>
+  <h1 class="thesis">{title}<span>{caption.replace(/\.$/, "")}</span></h1>
+  <div class="panel lists">
+    <List items={parts} aside={(p) => part(p).status} on={(p) => part(p).status === "current"} />
+  </div>
+</Base>

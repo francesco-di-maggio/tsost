@@ -35,9 +35,9 @@ const asset = (path: string) => (/^https?:/.test(path) ? path : `${import.meta.e
 
 // TESI components, as defined in the TEI '26 paper.
 export const LAYERS = {
-  thing: { title: "Hardware", caption: "A device integrating multiple sensors." },
-  smart: { title: "Middleware", caption: "Network communication." },
-  sound: { title: "Software", caption: "Real-time sensor-to-sound mapping." },
+  thing: { slug: "hardware", title: "Hardware", caption: "A device integrating multiple sensors." },
+  smart: { slug: "middleware", title: "Middleware", caption: "Network communication." },
+  sound: { slug: "software", title: "Software", caption: "Real-time sensor-to-sound mapping." },
 } as const;
 export type Layer = keyof typeof LAYERS;
 
