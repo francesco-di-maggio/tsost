@@ -9,14 +9,16 @@ const sections = await Promise.all((await types()).map(async (t) => ({ t, count:
 ---
 <Base>
   <h1>The Sound of Smart Things</h1>
-  <p class="lead">A research project at the intersection of Tangible and Embodied Interaction, Sound Design and the Internet of Things.</p>
+  <p class="lead">Making the invisible audible.</p>
 
+  <h2 class="label">Abstract</h2>
   <div class="prose">
     <p>TSOST studies sound as an interaction material in distributed systems of networked smart things. In everyday environments, the state and activity of such systems are mostly not visible. Sound can convey them without visual attention: it can stay in the periphery or move into focus, be continuous or discrete, and be directional.</p>
     <p>The project designs autonomous, sensing, networked, sound-producing devices and uses that design work as the method of inquiry. The central artefact is TESI (Tangible and Embodied Sound Interaction), a modular toolkit: a sensor node, network middleware and software for real-time sensor-to-sound mapping.</p>
   </div>
 
-  <ul class="keywords" aria-label="Keywords">
+  <h2 class="label">Keywords</h2>
+  <ul class="keywords">
     {keywords.map((k) => <li class="label">{k}</li>)}
   </ul>
 
