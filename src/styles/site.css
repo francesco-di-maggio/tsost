@@ -27,7 +27,6 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 #node-status span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #node-status::before { content: ""; flex: none; width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid var(--dim); box-sizing: border-box; }
 #node-status:hover { border-color: var(--dim); }
-#node-status.ok { text-transform: none; letter-spacing: 0; font-size: 12px; }
 #node-status.ok::before { background: var(--ok); border-color: var(--ok); }
 #node-status.busy { color: var(--dim); }
 #node-status.busy::before { background: var(--accent); border-color: var(--accent); animation: blink 0.8s steps(2) infinite; }
@@ -47,11 +46,11 @@ body { position: relative; }
 #node-live { display: grid; gap: 10px; }
 #node-live:not([hidden]) { margin-top: -10px; }
 .field { display: flex; flex-direction: column; gap: 6px; }
-.field input { width: 100%; height: 44px; padding: 0 12px; font: 16px var(--mono); color: var(--ink);
+.field input { text-transform: uppercase; width: 100%; height: 44px; padding: 0 12px; font: 16px var(--mono); color: var(--ink);
                background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius-control); outline: none; }
 .field input:focus { border-color: var(--ink); }
 .field input:disabled { color: var(--dim); -webkit-text-fill-color: var(--dim); opacity: 1; }
-.device { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px;
+.device { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; text-transform: uppercase;
           border-bottom: 1px solid var(--line); font: 500 13px var(--mono); font-variant-numeric: tabular-nums; }
 .control { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 44px; padding: 0 14px;
            border-radius: var(--radius-control); border: 1px solid var(--line); background: var(--bg); color: var(--ink);
