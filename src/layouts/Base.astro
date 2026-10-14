@@ -14,7 +14,6 @@ const { title, description = "The Sound of Smart Things. A PhD research project 
 const pageTitle = title ? `${title} · TSOST` : "TSOST · The Sound of Smart Things";
 const path = Astro.url.pathname;
 const nav = [
-  { path: "", title: "Project" },
   ...(await Promise.all((await types()).map(async (t) => ({ path: `${t}/`, title: TYPES[t].title, count: (await itemsOf(t)).length })))),
   { path: "timeline/", title: "Timeline" },
   { path: "graph/", title: "Graph" },

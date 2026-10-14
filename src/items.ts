@@ -2,7 +2,7 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import { url } from "./url";
 
 export const TYPES = {
-  tesi: { one: "TESI", title: "TESI", caption: "Tangible and Embodied Sound Interaction. Thing, smart, sound." },
+  tesi: { one: "TESI", title: "Toolkit", caption: "Tangible and Embodied Sound Interaction. Thing, smart, sound." },
   publications: { one: "Publication", title: "Publications", caption: "Papers, workshops and book chapters, with BibTeX and DOI." },
   courses: { one: "Course", title: "Courses", caption: "Teaching." },
 } as const;
