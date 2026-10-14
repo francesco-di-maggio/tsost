@@ -2,7 +2,7 @@
 import "../styles/tokens.css";
 import "../styles/site.css";
 import { url } from "../url";
-import { TYPES, types } from "../items";
+import { TYPES, types, itemsOf } from "../items";
 import { ClientRouter } from "astro:transitions";
 
 interface Props {
@@ -15,7 +15,7 @@ const pageTitle = title ? `${title} · TSOST` : "TSOST · The Sound of Smart Thi
 const path = Astro.url.pathname;
 const nav = [
   { path: "", title: "Project" },
-  ...(await types()).map((t) => ({ path: `${t}/`, title: TYPES[t].title })),
+  ...(await Promise.all((await types()).map(async (t) => ({ path: `${t}/`, title: TYPES[t].title, count: (await itemsOf(t)).length })))),
   { path: "timeline/", title: "Timeline" },
   { path: "graph/", title: "Graph" },
 ];
@@ -65,7 +65,9 @@ const current = (p: string) => (p ? path.startsWith(url(p)) : path === url());
   <button id="node-connect" class="control" type="button">Connect</button>
 </div>
 <nav class="label">
-  {nav.map((s) => <a href={url(s.path)} aria-current={current(s.path) ? "page" : undefined}>{s.title}</a>)}
+  {nav.map((s) => (
+    <a href={url(s.path)} aria-current={current(s.path) ? "page" : undefined}>{s.title}{"count" in s && <sup>{s.count}</sup>}</a>
+  ))}
 </nav>
 <main>
   <slot />
@@ -94,6 +96,7 @@ const current = (p: string) => (p ? path.startsWith(url(p)) : path === url());
     }
     button.dataset.state = theme;
     button.setAttribute("aria-label", "Theme: " + theme);
+    button.title = "Theme: " + theme;
   }
 
   applyTheme(storedTheme());

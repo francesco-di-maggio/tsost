@@ -1,11 +1,8 @@
 ---
 import Base from "../layouts/Base.astro";
 import Facts from "../components/Facts.astro";
-import { url } from "../url";
-import { TYPES, types, itemsOf } from "../items";
 
 const keywords = ["Tangible", "Embodied", "Distributed", "Networked", "Sound", "Interaction"];
-const sections = await Promise.all((await types()).map(async (t) => ({ t, count: (await itemsOf(t)).length })));
 ---
 <Base>
   <h1>The Sound of Smart Things</h1>
@@ -30,21 +27,4 @@ const sections = await Promise.all((await types()).map(async (t) => ({ t, count:
     ["Co-supervisor", "Rebecca Fiebrink, University of the Arts London"],
   ]} />
 
-  <h2 class="label">Contents</h2>
-  <ul class="rows">
-    {sections.map(({ t, count }) => (
-      <li><a class="panel" href={url(`${t}/`)}>
-        <span><span class="label">{TYPES[t].title} · {count}</span><span class="caption">{TYPES[t].caption}</span></span>
-        <span class="arrow">→</span>
-      </a></li>
-    ))}
-    <li><a class="panel" href={url("timeline/")}>
-      <span><span class="label">Timeline</span><span class="caption">June 2024 to now, and planned events.</span></span>
-      <span class="arrow">→</span>
-    </a></li>
-    <li><a class="panel" href={url("graph/")}>
-      <span><span class="label">Graph</span><span class="caption">Sections, items and the references between them.</span></span>
-      <span class="arrow">→</span>
-    </a></li>
-  </ul>
 </Base>

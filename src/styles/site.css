@@ -61,15 +61,16 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 #node-here { margin: min(24px, 3vh) 0 0; }
 #node-here span { color: var(--ink); margin-left: 8px; }
 
-nav { display: flex; gap: 18px; overflow-x: auto; scrollbar-width: none; margin-bottom: min(32px, 4vh);
+nav { display: flex; gap: 18px; overflow-x: auto; scrollbar-width: none; margin-bottom: min(24px, 3vh);
       padding-bottom: 10px; border-bottom: 1px solid var(--line); }
 nav::-webkit-scrollbar { display: none; }
 nav a { flex: none; text-decoration: none; }
 nav a:hover, nav a[aria-current] { color: var(--ink); }
+nav sup { margin-left: 2px; font-size: 8px; line-height: 0; vertical-align: 5px; color: var(--dim); }
 
 h1 { margin: 0 0 4px; font-size: clamp(28px, 7vw, 36px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
 .lead { margin: 0 0 min(20px, 3vh); color: var(--dim); }
-h2.label { margin: min(24px, 3vh) 0 0; }
+h2.label { margin: min(16px, 2vh) 0 0; }
 .prose > :first-child { margin-top: 0; }
 .prose > :last-child { margin-bottom: 0; }
 .prose p { margin: 0 0 1em; text-align: justify; text-align-last: left; hyphens: auto; -webkit-hyphens: auto;
