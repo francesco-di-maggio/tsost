@@ -33,12 +33,18 @@ const strip = (u: string) => u.replace(/^https:\/\//, "").replace(/\/$/, "");
 // A file in public/, or a full URL.
 const asset = (path: string) => (/^https?:/.test(path) ? path : `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${path}`);
 
-export const LAYERS = { thing: "Thing", smart: "Smart", sound: "Sound" } as const;
+// TESI layers: function first, the project's word second.
+export const LAYERS = {
+  thing: { slug: "hardware", title: "Hardware", word: "Thing", caption: "The node: sensors, processor and network." },
+  smart: { slug: "middleware", title: "Middleware", word: "Smart", caption: "Messages between nodes and software." },
+  sound: { slug: "software", title: "Software", word: "Sound", caption: "Mapping sensor data to sound, in the designer's own environment." },
+} as const;
+export type Layer = keyof typeof LAYERS;
 
 function kind(entry: Entry) {
   switch (entry.collection) {
     case "publications": return entry.data.kind;
-    case "tesi": return [LAYERS[entry.data.layer], entry.data.iteration && `v${entry.data.iteration}`, entry.data.status].filter(Boolean).join(" · ");
+    case "tesi": return [LAYERS[entry.data.layer].title, entry.data.iteration && `v${entry.data.iteration}`, entry.data.status].filter(Boolean).join(" · ");
     case "courses": return entry.data.code;
   }
 }
@@ -131,7 +137,7 @@ export function facts(entry: Entry): [string, string, string?][] {
       const d = entry.data;
       const period = d.start && `${month(d.start)} – ${d.end ? month(d.end) : d.status === "current" ? "now" : ""}`;
       return [
-        ["Layer", LAYERS[d.layer]],
+        ["Layer", `${LAYERS[d.layer].title} · ${LAYERS[d.layer].word}`],
         ...(d.iteration ? [["Iteration", String(d.iteration)] as [string, string]] : []),
         ["Status", d.status[0].toUpperCase() + d.status.slice(1)],
         ...(period ? [["Period", period] as [string, string]] : []),

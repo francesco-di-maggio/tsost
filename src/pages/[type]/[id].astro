@@ -3,7 +3,9 @@ import { render } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import Facts from "../../components/Facts.astro";
 import ItemRow from "../../components/ItemRow.astro";
-import { TYPES, facts, items, related, type Item } from "../../items";
+import { LAYERS, TYPES, facts, items, related, type Item } from "../../items";
+import { part, partLabel } from "../../tesi";
+import { url } from "../../url";
 import { bibtex } from "../../bibtex";
 
 export async function getStaticPaths() {
@@ -15,7 +17,11 @@ const { Content } = await render(item.entry);
 const links = await related(item);
 ---
 <Base title={item.title} description={item.summary}>
-  <span class="label">{TYPES[item.type].title} · {item.label}</span>
+  {item.type === "tesi" ? (
+    <span class="label"><a class="crumb" href={url(`tesi/${LAYERS[part(item).layer].slug}/`)}>TESI · {LAYERS[part(item).layer].title}</a> · {partLabel(item)}</span>
+  ) : (
+    <span class="label">{TYPES[item.type].title} · {item.label}</span>
+  )}
   <h1>{item.title}</h1>
   <p class="lead">{item.summary}</p>
 

@@ -1,29 +1,20 @@
 ---
 import Base from "../../layouts/Base.astro";
-import ItemRow from "../../components/ItemRow.astro";
-import { LAYERS, TYPES, itemsOf, type Item } from "../../items";
+import { LAYERS, TYPES, type Layer } from "../../items";
+import { partsOf } from "../../tesi";
+import { url } from "../../url";
 
-const parts = await itemsOf("tesi");
-const data = (i: Item) => i.entry.data as { layer: keyof typeof LAYERS; status: string; iteration?: number };
-// Current, then exploring, then earlier; later iterations first.
-const RANK: Record<string, number> = { current: 0, exploring: 1, earlier: 2 };
-const order = (a: Item, b: Item) =>
-  RANK[data(a).status] - RANK[data(b).status] || (data(b).iteration ?? 0) - (data(a).iteration ?? 0);
-const layers = (Object.keys(LAYERS) as (keyof typeof LAYERS)[]).map((layer) => ({
-  layer,
-  parts: parts.filter((p) => data(p).layer === layer).sort(order),
-}));
-const CAPTION = { thing: "Hardware: the sensor node.", smart: "Network: the middleware between nodes and software.", sound: "Software: mapping sensor data to sound." };
+const layers = await Promise.all((Object.keys(LAYERS) as Layer[]).map(async (l) => ({ ...LAYERS[l], count: (await partsOf(l)).length })));
 ---
 <Base title="TESI" description={TYPES.tesi.caption}>
   <h1>TESI</h1>
-  <p class="lead">Tangible and Embodied Sound Interaction. Three layers: thing, smart, sound.</p>
-  {layers.map(({ layer, parts }) => (
-    <Fragment>
-      <h2 class="label">{LAYERS[layer]} · {CAPTION[layer]}</h2>
-      <ul class="rows">
-        {parts.map((p) => <ItemRow item={p} on={data(p).status === "current"} label={[data(p).iteration && `v${data(p).iteration}`, data(p).status].filter(Boolean).join(" · ")} />)}
-      </ul>
-    </Fragment>
-  ))}
+  <p class="lead">Tangible and Embodied Sound Interaction: a modular toolkit in three layers.</p>
+  <ul class="rows">
+    {layers.map((l) => (
+      <li><a class="panel" href={url(`tesi/${l.slug}/`)}>
+        <span><span class="label">{l.title} · {l.word} · {l.count}</span><span class="caption">{l.caption}</span></span>
+        <span class="arrow">→</span>
+      </a></li>
+    ))}
+  </ul>
 </Base>

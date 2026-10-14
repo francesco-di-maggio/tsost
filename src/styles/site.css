@@ -116,6 +116,8 @@ a.panel .title + .caption { margin-top: 0; }
 .caption { display: block; font-size: 15px; line-height: 20px; color: var(--dim); }
 .arrow { font: 400 18px/20px var(--mono); color: var(--dim); }
 .empty { color: var(--dim); font-size: 15px; }
+.crumb { text-decoration: none; }
+.crumb:hover { color: var(--ink); }
 
 .meta { display: grid; grid-template-columns: 112px 1fr; gap: 6px 12px; margin: 0; font-size: 15px; line-height: 20px; }
 .meta dt { margin: 0; }
