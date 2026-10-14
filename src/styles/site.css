@@ -137,6 +137,9 @@ a.panel .title + .caption { margin-top: 0; }
 .list .label { flex: none; display: flex; align-items: center; gap: 6px; }
 .list .on .label { color: var(--ink); }
 .list .on .label::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+/* Stacked: full title, label underneath. */
+.list.stacked a { flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; padding: 10px 0; }
+.list.stacked b { white-space: normal; text-wrap: balance; }
 .panel.lists { padding: 0 14px; }
 .empty { color: var(--dim); font-size: 15px; }
 .crumb { text-decoration: none; }

@@ -23,7 +23,7 @@ const span = byYear && years.length ? ` ${Math.min(...years)}–${Math.max(...ye
   {groups.map((g) => (
     <Fragment>
       {g && <h2 class="label">{g}</h2>}
-      <div class="panel lists"><List items={g ? list.filter((i) => group(i) === g) : list} label={(i) => i.kind} /></div>
+      <div class="panel lists"><List items={g ? list.filter((i) => group(i) === g) : list} label={(i) => i.kind} stacked={byYear} /></div>
     </Fragment>
   ))}
 </Base>

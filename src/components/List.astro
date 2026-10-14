@@ -1,11 +1,11 @@
 ---
 import type { Item } from "../items";
 
-interface Props { items: Item[]; label: (i: Item) => string; on?: (i: Item) => boolean }
+interface Props { items: Item[]; label: (i: Item) => string; on?: (i: Item) => boolean; stacked?: boolean }
 
-const { items, label, on = () => false } = Astro.props;
+const { items, label, on = () => false, stacked = false } = Astro.props;
 ---
-<ul class="list">
+<ul class:list={["list", { stacked }]}>
   {items.map((i) => (
     <li><a class:list={{ on: on(i) }} href={i.href}><b>{i.title}</b><span class="label">{label(i)}</span></a></li>
   ))}
