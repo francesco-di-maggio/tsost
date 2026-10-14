@@ -198,6 +198,7 @@ function render() {
   if (connected && client?.connected) setStatus(`${id()} · ${list.length}`, "ok");
   else if (!connected) setStatus("Connect", "off");
   $("node-live").hidden = !connected;
+  $("header-ping").hidden = !connected;
   $("node-list").replaceChildren(...list.map(([n, d]) => row(n === id() ? `${n} (you)` : n, [d.path, d.rtt !== undefined && `${d.rtt} ms`].filter(Boolean).join(" · "))));
   const button = $("node-connect");
   button.removeAttribute("disabled");
@@ -226,6 +227,7 @@ export function start() {
   document.addEventListener("astro:before-preparation", () => showPanel(false));
   $("node-connect").addEventListener("click", () => (client ? disconnect() : connect()));
   $("node-ping").addEventListener("click", ping);
+  $("header-ping").addEventListener("click", ping);
   $("node-name").addEventListener("change", (e) => {
     const input = e.target as HTMLInputElement;
     input.value = toId(input.value) || id();

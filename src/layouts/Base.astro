@@ -48,6 +48,7 @@ const current = (p: string) => (p ? path.startsWith(url(p)) : path === url());
 <header transition:persist="header">
   <a class="mark" href={url()}>TSOST</a>
   <div class="end">
+    <button id="header-ping" type="button" hidden>Ping</button>
     <button id="node-status" class="off" type="button" aria-expanded="false" aria-controls="node-panel" title="This browser as a node"><span id="node-status-text">Connect</span></button>
     <button id="theme" type="button" data-state="auto" aria-label="Theme: auto">
       <svg class="auto" width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg>
