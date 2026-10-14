@@ -140,12 +140,9 @@ function setStatus(text: string, state: string) {
 
 async function connect() {
   if (client) return;
-  const name = toId(($("node-name") as HTMLInputElement).value) || defaultId();
-  write("tsost-node-id", name);
   write("tsost-node-on", "1");
   unlock();
   setStatus("connecting", "busy");
-  $("node-connect").setAttribute("disabled", "");
   try {
     const { default: mqtt } = await import("mqtt");
     client = mqtt.connect(BROKER, {
@@ -157,7 +154,6 @@ async function connect() {
   } catch (err) {
     write("tsost-node-on", null);
     setStatus((err as Error).message, "err");
-    $("node-connect").removeAttribute("disabled");
     return;
   }
   // MQTT.js reconnects by itself; every connection announces the device again.
@@ -184,7 +180,19 @@ async function disconnect() {
   closing.removeAllListeners();
   await closing.endAsync();
   devices.clear();
+  showPanel(false);
   render();
+}
+
+// A new ID while connected: leave the network as the old device, join again as the new one.
+async function rename(value: string) {
+  const name = toId(value) || defaultId();
+  if (name === id()) return;
+  const wasConnected = Boolean(client);
+  await disconnect();
+  write("tsost-node-id", name === defaultId() ? null : name);
+  if (wasConnected) connect();
+  else render();
 }
 
 // Online: devices under the prefix whose $state is ready.
@@ -210,16 +218,10 @@ function render() {
   const name = $("node-name") as HTMLInputElement;
   name.placeholder = defaultId();
   if (document.activeElement !== name) name.value = id();
-  name.disabled = connected;
   if (connected && client?.connected) setStatus(`${id()} · ${list.length}`, "ok");
   else if (!connected) setStatus("Connect", "off");
-  $("node-live").hidden = !connected;
   $("header-ping").hidden = !connected;
   $("node-list").replaceChildren(...list.map(([n, d]) => row(n === id() ? `${n} (you)` : n, [d.path, d.rtt !== undefined && `${d.rtt} ms`].filter(Boolean).join(" · "))));
-  const button = $("node-connect");
-  button.removeAttribute("disabled");
-  button.textContent = connected ? "Disconnect" : "Connect";
-  button.classList.toggle("on", connected);
   (window as unknown as { tsostDevices: unknown }).tsostDevices = { self: id(), list, connected };
   window.dispatchEvent(new CustomEvent("tsost:devices"));
 }
@@ -237,17 +239,17 @@ function closeOnOutside(e: Event) {
 }
 
 export function start() {
-  $("node-status").addEventListener("click", () => showPanel(Boolean($("node-panel").hidden)));
+  // Offline, the header button connects at once with the generated ID; online, it opens the panel.
+  $("node-status").addEventListener("click", () => (client ? showPanel(Boolean($("node-panel").hidden)) : connect()));
   document.addEventListener("pointerdown", closeOnOutside);
   document.addEventListener("keydown", (e) => e.key === "Escape" && showPanel(false));
   document.addEventListener("astro:before-preparation", () => showPanel(false));
-  $("node-connect").addEventListener("click", () => (client ? disconnect() : connect()));
-  $("node-ping").addEventListener("click", ping);
+  $("node-connect").addEventListener("click", disconnect);
   $("header-ping").addEventListener("click", ping);
   $("node-name").addEventListener("change", (e) => {
     const input = e.target as HTMLInputElement;
-    input.value = toId(input.value) || defaultId();
-    write("tsost-node-id", input.value === defaultId() ? null : input.value);
+    rename(input.value);
+    input.value = id();
   });
   document.addEventListener("astro:page-load", () => {
     if (client?.connected && ready) client.publishAsync(`${deviceTopic()}/page/path`, page(), RETAINED);
