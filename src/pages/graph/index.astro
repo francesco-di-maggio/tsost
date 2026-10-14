@@ -9,7 +9,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 <Base title="Graph" description="The site as a network: sections, items and the references between them.">
   <h1>Graph</h1>
-  <p class="lead">Sections, items and the references between them. Pinch or scroll to zoom, drag to move.</p>
+  <p class="lead">Sections, items and the references between them.</p>
   <div class="panel graph">
     <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-label="Graph of the site">
       {edges.map((e) => {
@@ -81,76 +81,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     ring.addEventListener("animationend", () => ring.remove());
   }
 
-  // Zoom and pan inside the graph: pinch or wheel to zoom, drag to pan, double-click to reset. The page itself does not zoom.
-  function zoomable() {
-    const svg = document.querySelector<SVGSVGElement>(".graph svg");
-    if (!svg || svg.dataset.zoom) return;
-    svg.dataset.zoom = "1";
-    const [x0, y0, w0, h0] = svg.getAttribute("viewBox")!.split(" ").map(Number);
-    // On narrow screens the graph opens zoomed in, as if it were 560 px wide; zoom out or drag to see the rest.
-    const rect = svg.getBoundingClientRect();
-    const k0 = Math.min(1, rect.width / 560), w1 = w0 * k0, h1 = w1 * (rect.height / rect.width);
-    // Centred on the TSOST node.
-    const centre = svg.querySelector<SVGAElement>("a.project");
-    const cx = centre ? Number(centre.dataset.x) : x0 + w0 / 2, cy = centre ? Number(centre.dataset.y) : y0 + h0 / 2;
-    const start = k0 < 1 ? { x: cx - w1 / 2, y: cy - h1 / 2, w: w1, h: h1 } : { x: x0, y: y0, w: w0, h: h0 };
-    let box = { ...start };
-    const set = () => svg.setAttribute("viewBox", `${box.x} ${box.y} ${box.w} ${box.h}`);
-    set();
-    const toSvg = (cx: number, cy: number) => {
-      const r = svg.getBoundingClientRect();
-      return { x: box.x + ((cx - r.left) / r.width) * box.w, y: box.y + ((cy - r.top) / r.height) * box.h };
-    };
-    const zoom = (factor: number, cx: number, cy: number) => {
-      const w = Math.min(Math.max(box.w * factor, w0 / 6), w0 * 1.5);
-      const k = w / box.w, p = toSvg(cx, cy);
-      box = { x: p.x - (p.x - box.x) * k, y: p.y - (p.y - box.y) * k, w, h: box.h * k };
-      set();
-    };
-    svg.addEventListener("wheel", (e) => { e.preventDefault(); zoom(Math.exp(e.deltaY * 0.002), e.clientX, e.clientY); }, { passive: false });
-    const pointers = new Map<number, { x: number; y: number }>();
-    let moved = 0, pinch = 0;
-    svg.addEventListener("pointerdown", (e) => { pointers.set(e.pointerId, { x: e.clientX, y: e.clientY }); moved = 0; });
-    svg.addEventListener("pointermove", (e) => {
-      const prev = pointers.get(e.pointerId);
-      if (!prev) return;
-      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-      if (pointers.size === 2) {
-        const [a, b] = [...pointers.values()];
-        const d = Math.hypot(a.x - b.x, a.y - b.y);
-        if (pinch) zoom(pinch / d, (a.x + b.x) / 2, (a.y + b.y) / 2);
-        pinch = d;
-        moved = 99;
-        return;
-      }
-      const r = svg.getBoundingClientRect();
-      const dx = e.clientX - prev.x, dy = e.clientY - prev.y;
-      moved += Math.abs(dx) + Math.abs(dy);
-      if (moved < 4) return;
-      svg.setPointerCapture(e.pointerId);
-      box.x -= (dx / r.width) * box.w;
-      box.y -= (dy / r.height) * box.h;
-      set();
-    });
-    const up = (e: PointerEvent) => { pointers.delete(e.pointerId); if (pointers.size < 2) pinch = 0; };
-    svg.addEventListener("pointerup", up);
-    svg.addEventListener("pointercancel", up);
-    // A drag is not a click on a node.
-    svg.addEventListener("click", (e) => { if (moved >= 4) e.preventDefault(); }, true);
-    svg.addEventListener("dblclick", () => { box = { ...start }; set(); });
-  }
-  document.addEventListener("astro:page-load", zoomable);
-
   window.addEventListener("tsost:devices", draw);
   window.addEventListener("tsost:signal", ripple);
   document.addEventListener("astro:page-load", draw);
 </script>
 
 <style>
-  .graph { position: relative; overflow: hidden; padding: 8px; }
-  svg { display: block; width: 100%; height: auto; touch-action: none; cursor: grab; user-select: none; }
-  @media (max-width: 560px) { svg { aspect-ratio: 1; } }
-  svg:active { cursor: grabbing; }
+  .graph { position: relative; overflow-x: auto; padding: 8px; }
+  svg { display: block; width: 100%; min-width: 560px; height: auto; }
   line.tree { stroke: var(--line); stroke-width: 1; }
   line.ref { stroke: var(--ink); stroke-width: 1.25; }
   circle { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; }
