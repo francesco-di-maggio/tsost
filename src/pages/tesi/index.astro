@@ -22,7 +22,7 @@ const CAPTION = { thing: "Hardware: the sensor node.", smart: "Network: the midd
     <Fragment>
       <h2 class="label">{LAYERS[layer]} · {CAPTION[layer]}</h2>
       <ul class="rows">
-        {parts.map((p) => <ItemRow item={p} label={[data(p).iteration && `v${data(p).iteration}`, data(p).status].filter(Boolean).join(" · ")} />)}
+        {parts.map((p) => <ItemRow item={p} on={data(p).status === "current"} label={[data(p).iteration && `v${data(p).iteration}`, data(p).status].filter(Boolean).join(" · ")} />)}
       </ul>
     </Fragment>
   ))}

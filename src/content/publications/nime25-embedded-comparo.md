@@ -1,6 +1,6 @@
 ---
 title: "Embedded Comparo: Small DSP Systems Side-by-Side"
-summary: "Comparison of four embedded platforms for real-time audio (Bela, Daisy, OWL, Raspberry Pi), deploying the same Pure Data patches on each."
+summary: "Four embedded audio platforms compared with the same patches."
 authors: ["Francesco Di Maggio", "Bart Hengeveld", "Atau Tanaka"]
 venue: "NIME '25: International Conference on New Interfaces for Musical Expression, Canberra, Australia"
 kind: Paper

@@ -1,6 +1,6 @@
 ---
 title: "Making Sense of Decentralized TUIs: A Modular Sound-Centric Approach"
-summary: "Tangible and embodied interaction beyond standalone interfaces, in interconnected ecologies of smart objects, with sound as a primary design element."
+summary: "Sound in interconnected ecologies of smart objects."
 authors: ["Francesco Di Maggio", "Bart Hengeveld", "Mathias Funk"]
 venue: "TEI '25: 19th International Conference on Tangible, Embedded, and Embodied Interaction"
 kind: Workshop

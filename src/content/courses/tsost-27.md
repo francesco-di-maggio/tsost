@@ -1,5 +1,5 @@
 ---
-title: "The Sound of Smart Things"
+title: "The Sound of Smart Things 2027"
 summary: "Next run of the elective."
 code: DCM180
 institution: "Industrial Design, Eindhoven University of Technology"

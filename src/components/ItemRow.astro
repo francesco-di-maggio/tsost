@@ -1,11 +1,11 @@
 ---
 import type { Item } from "../items";
 
-interface Props { item: Item; label?: string }
+interface Props { item: Item; label?: string; on?: boolean }
 
-const { item, label = item.label } = Astro.props;
+const { item, label = item.label, on = false } = Astro.props;
 ---
-<li><a class="panel" href={item.href}>
+<li><a class:list={["panel", { on }]} href={item.href}>
   <span><span class="label">{label}</span><span class="title">{item.title}</span><span class="caption">{item.summary}</span></span>
   <span class="arrow">→</span>
 </a></li>

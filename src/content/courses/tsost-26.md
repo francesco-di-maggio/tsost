@@ -1,5 +1,5 @@
 ---
-title: "The Sound of Smart Things"
+title: "The Sound of Smart Things 2026"
 summary: "Elective, TU/e Industrial Design. Listening, sound design and a distributed sound installation of smart objects."
 code: DCM180
 institution: "Industrial Design, Eindhoven University of Technology"

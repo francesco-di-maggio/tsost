@@ -1,6 +1,6 @@
 ---
 title: "What Makes it Fun? Mapping Playful Interaction in Music-Making with AI"
-summary: "Workshop on playfulness in digital musical instruments and human–AI music interaction."
+summary: "Playfulness in music-making with AI."
 authors: ["Jingjing Sun", "Francesco Di Maggio", "Rebecca Fiebrink", "Corey Ford", "Bart Hengeveld", "Sebastian Deterding"]
 venue: "NIME '26: International Conference on New Interfaces for Musical Expression, London, UK"
 kind: Workshop

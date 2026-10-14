@@ -4,7 +4,7 @@ import { TYPES, items } from "../../items";
 import { START, END } from "../../project";
 
 const MONTH = 36;
-const LANE = 58;
+const LANE = 72;
 const CARD = 190;
 const AXIS = 60;
 
@@ -55,7 +55,7 @@ const now = x(new Date());
           <div class="stem" style={`left:${left}px;bottom:${AXIS}px;height:${(lane + 1) * LANE - 18}px`}></div>
           <a class="event" href={item.href} style={`left:${left}px;bottom:${AXIS + (lane + 1) * LANE - 18}px;width:${CARD - 14}px`}>
             <span class="label">{item.date!.toISOString().slice(0, 7)} · {TYPES[item.type].one}</span>
-            <span class="t">{item.title.split(":")[0]}</span>
+            <span class="t">{item.title}</span>
           </a>
           <i class:list={["dot", { planned: item.date! > new Date() }]} style={`left:${left}px;bottom:${AXIS}px`}></i>
         </Fragment>
@@ -80,8 +80,8 @@ const now = x(new Date());
   .year, .start { position: absolute; }
   .month { position: absolute; padding-left: 3px; border-left: 1px solid var(--line); font: 10px/14px var(--mono); color: var(--dim); }
   .month.jan { border-left-color: var(--dim); color: var(--ink); }
-  .now { position: absolute; width: 0; border-left: 1px dashed var(--ink); }
-  .now .label { position: absolute; top: -2px; left: 6px; color: var(--ink); }
+  .now { position: absolute; width: 0; border-left: 1px dashed var(--accent); }
+  .now .label { position: absolute; top: -2px; left: 6px; color: var(--accent); }
   .span { position: absolute; height: 5px; border-radius: 3px; background: var(--ink); opacity: 0.35; }
   .stem { position: absolute; width: 1px; background: var(--line); }
   .dot { position: absolute; width: 9px; height: 9px; margin: 0 0 -4px -4px; border-radius: 50%; background: var(--ink); }
@@ -89,7 +89,7 @@ const now = x(new Date());
   .event { position: absolute; z-index: 1; display: block; padding: 0 6px 0 8px; border-left: 1px solid var(--ink);
            background: var(--surface); text-decoration: none; }
   .event .label { display: block; white-space: nowrap; }
-  .event .t { display: block; font-size: 14px; line-height: 18px; font-weight: 600;
-              white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .event .t { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+              font-size: 14px; line-height: 18px; font-weight: 600; }
   .event:hover .t { text-decoration: underline; text-decoration-color: var(--dim); }
 </style>
