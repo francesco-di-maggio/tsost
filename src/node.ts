@@ -169,9 +169,9 @@ export function online(): [string, Device][] {
   return [...devices].filter(([, d]) => d.state === "ready").sort(([a], [b]) => a.localeCompare(b));
 }
 
-function row(name: string, note: string, className = "") {
+function row(name: string, note: string) {
   const el = document.createElement("div");
-  el.className = ("device " + className).trim();
+  el.className = "device";
   const label = document.createElement("span");
   label.textContent = name;
   const value = document.createElement("span");
@@ -189,10 +189,8 @@ function render() {
   name.disabled = connected;
   if (connected && client?.connected) setStatus(`${id()} · ${list.length}`, "ok");
   else if (!connected) setStatus("Connect", "off");
-  const rows = list.map(([n, d]) => row(n === id() ? `${n} (you)` : n, [d.path, d.rtt !== undefined && `${d.rtt} ms`].filter(Boolean).join(" · ")));
-  if (!rows.length) rows.push(row(connected ? "No devices" : "Not connected", "", "empty"));
-  $("node-list").replaceChildren(...rows);
-  $("node-ping").toggleAttribute("disabled", !connected);
+  $("node-live").hidden = !connected;
+  $("node-list").replaceChildren(...list.map(([n, d]) => row(n === id() ? `${n} (you)` : n, [d.path, d.rtt !== undefined && `${d.rtt} ms`].filter(Boolean).join(" · "))));
   const button = $("node-connect");
   button.removeAttribute("disabled");
   button.textContent = connected ? "Disconnect" : "Connect";
