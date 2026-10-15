@@ -255,6 +255,7 @@ function render() {
   if (document.activeElement !== name) name.value = id();
   // As in the mqtt-max Remote: the ID is locked while connected; disconnect to change it.
   name.disabled = connected;
+  $("node-locked").hidden = !connected;
   $("node-online").hidden = !connected;
   const button = $("node-connect");
   button.textContent = connected ? "Disconnect" : "Connect";
