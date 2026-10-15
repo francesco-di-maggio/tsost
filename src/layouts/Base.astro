@@ -74,7 +74,7 @@ const current = (p: string) => (p ? path.startsWith(url(p)) : path === url());
 </header>
 <div id="node-panel" class="panel" hidden transition:persist="node-panel">
   <label class="field"><span class="label">ID</span><input id="node-name" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="32" enterkeyhint="done"></label>
-  <p id="node-locked" class="hint" hidden>Disconnect to change.</p>
+  <p id="node-hint" class="hint">Tap to change.</p>
   <div id="node-online">
     <div id="node-list"></div>
     <a class="control" href={url("graph/")}>Graph<span class="arrow">→</span></a>
