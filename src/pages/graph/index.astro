@@ -9,8 +9,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 <Base title="Graph" description="The site as a network: sections, items and the references between them.">
   <h1>Graph</h1>
-  <p class="lead">Sections, items and the references between them.</p>
+  <p class="lead">Sections, items and the references between them. Pinch to zoom.</p>
   <div class="panel graph">
+    <button id="graph-reset" class="control" type="button" hidden>Reset</button>
     <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-label="Graph of the site">
       {edges.map((e) => {
         const a = at.get(e.a)!, b = at.get(e.b)!;
@@ -81,14 +82,90 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     ring.addEventListener("animationend", () => ring.remove());
   }
 
+  // Zoom and pan inside the graph, never past its edges. Pinch (or ctrl + scroll) to zoom; once zoomed, drag or scroll to move.
+  // At the start view, swipes and scrolls go to the page.
+  function zoomable() {
+    const svg = document.querySelector<SVGSVGElement>(".graph svg");
+    const reset = document.getElementById("graph-reset");
+    if (!svg || !reset || svg.dataset.zoom) return;
+    svg.dataset.zoom = "1";
+    const [x0, y0, w0, h0] = svg.getAttribute("viewBox")!.split(" ").map(Number);
+    let box = { x: x0, y: y0, w: w0, h: h0 };
+    const zoomed = () => box.w < w0;
+    const set = () => {
+      box.x = Math.min(Math.max(box.x, x0), x0 + w0 - box.w);
+      box.y = Math.min(Math.max(box.y, y0), y0 + h0 - box.h);
+      svg.setAttribute("viewBox", `${box.x} ${box.y} ${box.w} ${box.h}`);
+      svg.classList.toggle("zoomed", zoomed());
+      reset.hidden = !zoomed();
+    };
+    const toSvg = (cx: number, cy: number) => {
+      const r = svg.getBoundingClientRect();
+      return { x: box.x + ((cx - r.left) / r.width) * box.w, y: box.y + ((cy - r.top) / r.height) * box.h };
+    };
+    const zoom = (factor: number, cx: number, cy: number) => {
+      const w = Math.min(Math.max(box.w * factor, w0 / 6), w0);
+      const k = w / box.w, p = toSvg(cx, cy);
+      box = { x: p.x - (p.x - box.x) * k, y: p.y - (p.y - box.y) * k, w, h: box.h * k };
+      set();
+    };
+    const pan = (dx: number, dy: number) => {
+      const r = svg.getBoundingClientRect();
+      box.x -= (dx / r.width) * box.w;
+      box.y -= (dy / r.height) * box.h;
+      set();
+    };
+    svg.addEventListener("wheel", (e) => {
+      if (e.ctrlKey) zoom(Math.exp(e.deltaY * 0.01), e.clientX, e.clientY);
+      else if (zoomed()) pan(-e.deltaX, -e.deltaY);
+      else return;
+      e.preventDefault();
+    }, { passive: false });
+    const pointers = new Map<number, { x: number; y: number }>();
+    let moved = 0, pinch = 0;
+    svg.addEventListener("pointerdown", (e) => { pointers.set(e.pointerId, { x: e.clientX, y: e.clientY }); moved = 0; });
+    svg.addEventListener("pointermove", (e) => {
+      const prev = pointers.get(e.pointerId);
+      if (!prev) return;
+      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pointers.size === 2) {
+        const [a, b] = [...pointers.values()];
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (pinch) zoom(pinch / d, (a.x + b.x) / 2, (a.y + b.y) / 2);
+        pinch = d;
+        moved = 99;
+        return;
+      }
+      if (!zoomed()) return;
+      const dx = e.clientX - prev.x, dy = e.clientY - prev.y;
+      moved += Math.abs(dx) + Math.abs(dy);
+      if (moved < 4) return;
+      svg.setPointerCapture(e.pointerId);
+      pan(dx, dy);
+    });
+    const up = (e: PointerEvent) => { pointers.delete(e.pointerId); if (pointers.size < 2) pinch = 0; };
+    svg.addEventListener("pointerup", up);
+    svg.addEventListener("pointercancel", up);
+    // A drag is not a click on a node.
+    svg.addEventListener("click", (e) => { if (moved >= 4) e.preventDefault(); }, true);
+    const home = () => { box = { x: x0, y: y0, w: w0, h: h0 }; set(); };
+    svg.addEventListener("dblclick", home);
+    reset.addEventListener("click", home);
+  }
+  document.addEventListener("astro:page-load", zoomable);
+
   window.addEventListener("tsost:devices", draw);
   window.addEventListener("tsost:signal", ripple);
   document.addEventListener("astro:page-load", draw);
 </script>
 
 <style>
-  .graph { position: relative; overflow-x: auto; padding: 8px; }
-  svg { display: block; width: 100%; min-width: 560px; height: auto; }
+  .graph { position: relative; overflow: hidden; padding: 8px; }
+  svg { display: block; width: 100%; height: auto; touch-action: pan-y; user-select: none; }
+  svg.zoomed { touch-action: none; cursor: grab; }
+  svg.zoomed:active { cursor: grabbing; }
+  #graph-reset { position: absolute; top: 8px; right: 8px; width: auto; height: 32px; }
+  #graph-reset[hidden] { display: none; }
   line.tree { stroke: var(--line); stroke-width: 1; }
   line.ref { stroke: var(--ink); stroke-width: 1.25; }
   circle { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; }
