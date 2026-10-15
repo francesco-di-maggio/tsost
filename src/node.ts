@@ -287,7 +287,6 @@ function closeOnOutside(e: Event) {
 }
 
 export function start() {
-  ($("node-prefix") as HTMLInputElement).value = PREFIX;
   // The header button shows the state and opens the panel, where Connect and Disconnect are.
   $("node-status").addEventListener("click", () => showPanel(Boolean($("node-panel").hidden)));
   document.addEventListener("pointerdown", closeOnOutside);
