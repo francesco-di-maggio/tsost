@@ -1,15 +1,18 @@
 ---
 import type { Item } from "../items";
 
+// A line is text, or HTML for lines with markup.
+type Line = string | { html: string };
+
 // One row per item: title with short lines underneath, and one value on the right.
-interface Props { items: Item[]; meta?: (i: Item) => string | string[]; aside?: (i: Item) => string; on?: (i: Item) => boolean }
+interface Props { items: Item[]; meta?: (i: Item) => Line | Line[]; aside?: (i: Item) => string; on?: (i: Item) => boolean }
 
 const { items, meta, aside, on = () => false } = Astro.props;
 ---
 <ul class="list">
   {items.map((i) => (
     <li><a class:list={{ on: on(i) }} href={i.href}>
-      <span class="text"><b>{i.title}</b>{meta && [meta(i)].flat().map((m) => <span class="sub">{m}</span>)}</span>
+      <span class="text"><b>{i.title}</b>{meta && [meta(i)].flat().map((m) => (typeof m === "string" ? <span class="sub">{m}</span> : <span class="sub" set:html={m.html} />))}</span>
       {aside ? <span class="label">{aside(i)}</span> : <span class="arrow">→</span>}
     </a></li>
   ))}

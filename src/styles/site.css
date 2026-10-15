@@ -138,6 +138,7 @@ a.panel .title + .caption { margin-top: 0; }
 .list .text { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .list b { font-size: 15px; line-height: 20px; font-weight: 600; text-wrap: balance; }
 .list .sub { font-size: 14px; line-height: 18px; color: var(--dim); }
+.list .sub strong { font-weight: 600; color: var(--ink); }
 .list a:hover b { text-decoration: underline; text-decoration-color: var(--dim); text-underline-offset: 3px; }
 .list .label { flex: none; display: flex; align-items: center; gap: 6px; }
 .list .arrow { flex: none; }

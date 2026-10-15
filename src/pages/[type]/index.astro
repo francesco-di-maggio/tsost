@@ -12,6 +12,8 @@ const type = Astro.params.type as Type;
 const { title, caption } = TYPES[type];
 const list = await itemsOf(type);
 // Under the title: authors, then venue, place, type and status for publications; year, code and status for courses.
+const ME = "Francesco Di Maggio";
+const escape = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
 const meta = (i: (typeof list)[number]) => {
   if (i.entry.collection !== "publications") {
     const d = i.entry.data as { code?: string; status?: string };
@@ -19,7 +21,7 @@ const meta = (i: (typeof list)[number]) => {
   }
   const d = i.entry.data;
   const venue = [d.year ? `${d.short} '${String(d.year).slice(2)}` : d.short, d.place].filter(Boolean).join(", ");
-  return [authors(d), [venue, d.kind, d.status].filter(Boolean).join(" · ")];
+  return [{ html: escape(authors(d)).replace(ME, `<strong>${ME}</strong>`) }, [venue, d.kind, d.status].filter(Boolean).join(" · ")];
 };
 ---
 <Base title={title} description={caption}>
