@@ -9,7 +9,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 <Base title="Graph" description="The site as a network: sections, items and the references between them.">
   <h1>Graph</h1>
-  <p class="lead">Sections, items and the references between them. Pinch to zoom.</p>
+  <p class="lead">Sections, items and the references between them.</p>
   <div class="panel graph">
     <button id="graph-reset" class="control" type="button" hidden>Reset</button>
     <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-label="Graph of the site">
@@ -82,29 +82,47 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     ring.addEventListener("animationend", () => ring.remove());
   }
 
-  // Zoom and pan inside the graph, never past its edges. Pinch (or ctrl + scroll) to zoom; once zoomed, drag or scroll to move.
-  // At the start view, swipes and scrolls go to the page.
+  // Zoom and pan inside the graph, never past its edges. The start view shows the whole graph height;
+  // on narrow screens the sides are a swipe away. Touch: two fingers zoom and move; one finger moves,
+  // except a vertical swipe while the whole height is visible, which scrolls the page.
+  // Mouse: ctrl + scroll or trackpad pinch to zoom; drag or scroll to move once zoomed. Double-click or Reset to go back.
+  // Refit when the width changes (rotation), not when the phone's address bar shows or hides.
+  let refit = () => {}, width = 0;
+  window.addEventListener("resize", () => { if (innerWidth !== width) refit(); });
+
   function zoomable() {
     const svg = document.querySelector<SVGSVGElement>(".graph svg");
     const reset = document.getElementById("graph-reset");
     if (!svg || !reset || svg.dataset.zoom) return;
     svg.dataset.zoom = "1";
     const [x0, y0, w0, h0] = svg.getAttribute("viewBox")!.split(" ").map(Number);
-    let box = { x: x0, y: y0, w: w0, h: h0 };
-    const zoomed = () => box.w < w0;
+    let start = { x: x0, y: y0, w: w0, h: h0 };
+    let box = { ...start };
+    const zoomed = () => box.w < start.w - 0.01;
+    const tall = () => box.h >= h0 - 0.01;
     const set = () => {
       box.x = Math.min(Math.max(box.x, x0), x0 + w0 - box.w);
       box.y = Math.min(Math.max(box.y, y0), y0 + h0 - box.h);
       svg.setAttribute("viewBox", `${box.x} ${box.y} ${box.w} ${box.h}`);
-      svg.classList.toggle("zoomed", zoomed());
+      svg.classList.toggle("free", !tall());
       reset.hidden = !zoomed();
     };
+    const fit = () => {
+      width = innerWidth;
+      const r = svg.getBoundingClientRect();
+      const aspect = r.width / r.height;
+      start = aspect < w0 / h0 ? { x: x0 + (w0 - h0 * aspect) / 2, y: y0, w: h0 * aspect, h: h0 } : { x: x0, y: y0, w: w0, h: h0 };
+      box = { ...start };
+      set();
+    };
+    refit = fit;
+    fit();
     const toSvg = (cx: number, cy: number) => {
       const r = svg.getBoundingClientRect();
       return { x: box.x + ((cx - r.left) / r.width) * box.w, y: box.y + ((cy - r.top) / r.height) * box.h };
     };
     const zoom = (factor: number, cx: number, cy: number) => {
-      const w = Math.min(Math.max(box.w * factor, w0 / 6), w0);
+      const w = Math.min(Math.max(box.w * factor, start.w / 6), start.w);
       const k = w / box.w, p = toSvg(cx, cy);
       box = { x: p.x - (p.x - box.x) * k, y: p.y - (p.y - box.y) * k, w, h: box.h * k };
       set();
@@ -115,40 +133,64 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       box.y -= (dy / r.height) * box.h;
       set();
     };
+
     svg.addEventListener("wheel", (e) => {
       if (e.ctrlKey) zoom(Math.exp(e.deltaY * 0.01), e.clientX, e.clientY);
       else if (zoomed()) pan(-e.deltaX, -e.deltaY);
       else return;
       e.preventDefault();
     }, { passive: false });
-    const pointers = new Map<number, { x: number; y: number }>();
-    let moved = 0, pinch = 0;
-    svg.addEventListener("pointerdown", (e) => { pointers.set(e.pointerId, { x: e.clientX, y: e.clientY }); moved = 0; });
-    svg.addEventListener("pointermove", (e) => {
-      const prev = pointers.get(e.pointerId);
-      if (!prev) return;
-      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-      if (pointers.size === 2) {
-        const [a, b] = [...pointers.values()];
-        const d = Math.hypot(a.x - b.x, a.y - b.y);
-        if (pinch) zoom(pinch / d, (a.x + b.x) / 2, (a.y + b.y) / 2);
-        pinch = d;
-        moved = 99;
-        return;
+
+    // Touch: midpoint and spread of the fingers on the graph.
+    let moved = 0, mode: "graph" | "page" | null = null;
+    let last = { x: 0, y: 0, d: 0, n: 0 }, first = { x: 0, y: 0 };
+    const sum = (t: TouchList) => {
+      const a = t[0], b = t[1] ?? t[0];
+      return { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2, d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), n: Math.min(t.length, 2) };
+    };
+    svg.addEventListener("touchstart", (e) => {
+      last = sum(e.touches);
+      if (e.touches.length === 1) { moved = 0; mode = null; first = { x: last.x, y: last.y }; }
+      else { mode = "graph"; e.preventDefault(); }
+    }, { passive: false });
+    svg.addEventListener("touchmove", (e) => {
+      const s = sum(e.touches);
+      if (mode === null) {
+        const dx = s.x - first.x, dy = s.y - first.y;
+        if (Math.abs(dx) + Math.abs(dy) < 4) return;
+        mode = Math.abs(dy) > Math.abs(dx) && tall() ? "page" : "graph";
       }
-      if (!zoomed()) return;
-      const dx = e.clientX - prev.x, dy = e.clientY - prev.y;
+      if (mode === "page") return;
+      e.preventDefault();
+      moved = 99;
+      if (s.n !== last.n) { last = s; return; }
+      if (s.n === 2 && last.d && s.d) zoom(last.d / s.d, s.x, s.y);
+      pan(s.x - last.x, s.y - last.y);
+      last = s;
+    }, { passive: false });
+    svg.addEventListener("touchend", (e) => { if (e.touches.length) last = sum(e.touches); });
+
+    // Mouse: drag to move once zoomed.
+    let drag: { x: number; y: number } | null = null;
+    svg.addEventListener("pointerdown", (e) => {
+      if (e.pointerType !== "mouse") return;
+      moved = 0;
+      drag = zoomed() ? { x: e.clientX, y: e.clientY } : null;
+    });
+    svg.addEventListener("pointermove", (e) => {
+      if (!drag) return;
+      const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
       moved += Math.abs(dx) + Math.abs(dy);
       if (moved < 4) return;
       svg.setPointerCapture(e.pointerId);
+      drag = { x: e.clientX, y: e.clientY };
       pan(dx, dy);
     });
-    const up = (e: PointerEvent) => { pointers.delete(e.pointerId); if (pointers.size < 2) pinch = 0; };
-    svg.addEventListener("pointerup", up);
-    svg.addEventListener("pointercancel", up);
+    svg.addEventListener("pointerup", () => { drag = null; });
+
     // A drag is not a click on a node.
     svg.addEventListener("click", (e) => { if (moved >= 4) e.preventDefault(); }, true);
-    const home = () => { box = { x: x0, y: y0, w: w0, h: h0 }; set(); };
+    const home = () => { box = { ...start }; set(); };
     svg.addEventListener("dblclick", home);
     reset.addEventListener("click", home);
   }
@@ -162,8 +204,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 <style>
   .graph { position: relative; overflow: hidden; padding: 8px; }
   svg { display: block; width: 100%; height: auto; touch-action: pan-y; user-select: none; }
-  svg.zoomed { touch-action: none; cursor: grab; }
-  svg.zoomed:active { cursor: grabbing; }
+  @media (max-width: 600px) { svg { aspect-ratio: 4 / 5; } }
+  svg.free { touch-action: none; cursor: grab; }
+  svg.free:active { cursor: grabbing; }
   #graph-reset { position: absolute; top: 8px; right: 8px; width: auto; height: 32px; }
   #graph-reset[hidden] { display: none; }
   line.tree { stroke: var(--line); stroke-width: 1; }
