@@ -259,7 +259,8 @@ function render() {
   const button = $("node-connect");
   button.textContent = connected ? "Disconnect" : "Connect";
   button.classList.toggle("on", connected);
-  if (connected && client?.connected) setStatus(`${id()} · ${list.length}`, "ok");
+  // Online once this device's own "ready" has come back from the broker, with its rise.
+  if (connected && client?.connected && devices.get(id())?.state === "ready") setStatus(`${id()} · ${list.length}`, "ok");
   else if (!connected) setStatus("Offline", "off");
   $("header-ping").hidden = !connected;
   $("node-list").replaceChildren(...list.map(([n, d]) => row(n, n === id() ? "this device" : [d.path, d.rtt !== undefined && `${d.rtt} ms`].filter(Boolean).join(" · "))));
