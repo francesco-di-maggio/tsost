@@ -1,5 +1,6 @@
 import type { MqttClient } from "mqtt";
-import { blip, pitch, unlock } from "./sound";
+import type { IPublishPacket } from "mqtt";
+import { NOTES, blip, drop, fall, noteHz, pitch, rise, unlock } from "./sound";
 
 const BROKER = "wss://public.cloud.shiftr.io";
 const USERNAME = "public";
@@ -10,15 +11,22 @@ const RETAINED = { qos: 2, retain: true } as const;
 const DESCRIPTION = {
   homie: "5.0",
   name: "TSOST visitor",
-  nodes: { page: { name: "Page", properties: { path: { name: "Path", datatype: "string" } } } },
+  nodes: {
+    page: { name: "Page", properties: { path: { name: "Path", datatype: "string" } } },
+    sound: { name: "Sound", properties: { note: { name: "Note", datatype: "integer" } } },
+  },
 };
 const PING_GAP_MS = 300;
+// Retained states arrive this soon after subscribing; the free note is picked after them.
+const SETTLE_MS = 300;
 
-export type Device = { state: string; path?: string; rtt?: number };
+export type Device = { state: string; path?: string; rtt?: number; note?: number };
 
 const devices = new Map<string, Device>();
 let client: MqttClient | null = null;
 let ready = false;
+// This device's note: the lowest one not taken by the devices online, kept until Disconnect.
+let note: number | null = null;
 let lastPing = 0;
 const heard = new Map<string, number>();
 
@@ -69,8 +77,21 @@ async function announce(c: MqttClient) {
   await c.publishAsync(`${deviceTopic()}/$state`, "init", RETAINED);
   await c.publishAsync(`${deviceTopic()}/$description`, JSON.stringify(DESCRIPTION), RETAINED);
   await c.publishAsync(`${deviceTopic()}/page/path`, page(), RETAINED);
+  await c.publishAsync(`${deviceTopic()}/sound/note`, String(note), RETAINED);
   await c.publishAsync(`${deviceTopic()}/$state`, "ready", RETAINED);
   ready = true;
+}
+
+function freeNote() {
+  const taken = new Set(online().filter(([n]) => n !== id()).map(([, d]) => d.note));
+  for (let n = 0; n < NOTES; n++) if (!taken.has(n)) return n;
+  return online().length % NOTES;
+}
+
+function tone(device: string) {
+  if (device === id() && note !== null) return noteHz(note);
+  const n = devices.get(device)?.note;
+  return n === undefined ? pitch(device) : noteHz(n);
 }
 
 // Ping: every device plays the caller's tone and replies; the caller hears each reply as it arrives.
@@ -80,7 +101,7 @@ export function ping() {
   const now = performance.now();
   if (now - lastPing < PING_GAP_MS) return;
   lastPing = now;
-  blip(pitch(id()));
+  blip(tone(id()));
   signal("ping", id());
   client.publish(`${PREFIX}/ping/${id()}`, String(Date.now()));
 }
@@ -90,7 +111,7 @@ function onPing(from: string, payload: string) {
   const now = performance.now();
   if (now - (heard.get(from) ?? 0) < PING_GAP_MS) return;
   heard.set(from, now);
-  blip(pitch(from));
+  blip(tone(from));
   signal("ping", from);
   client?.publish(`${PREFIX}/pong/${from}/${id()}`, payload);
 }
@@ -98,7 +119,7 @@ function onPing(from: string, payload: string) {
 function onPong(by: string, payload: string) {
   const sent = Number(payload);
   if (!sent) return;
-  blip(pitch(by));
+  blip(tone(by));
   signal("pong", by);
   const entry = devices.get(by);
   if (entry) entry.rtt = Date.now() - sent;
@@ -121,16 +142,26 @@ function echo() {
   mark.addEventListener("animationend", () => mark.classList.remove("heard"), { once: true });
 }
 
-function onMessage(topic: string, payload: Buffer) {
+function onMessage(topic: string, payload: Buffer, packet: IPublishPacket) {
   const [, kindOf, device, ...rest] = topic.split("/");
   if (kindOf === "ping") return onPing(device, String(payload));
   if (kindOf === "pong") return onPong(rest[0], String(payload));
   const entry = devices.get(device) ?? { state: "" };
   const key = rest.join("/");
+  const before = entry.state;
   if (key === "$state") entry.state = String(payload);
   if (key === "page/path") entry.path = String(payload);
+  if (key === "sound/note") entry.note = Number(payload);
   devices.set(device, entry);
+  // Others arriving and leaving are heard; the stored states replayed on subscribing are not.
+  if (key === "$state" && !packet.retain && device !== id()) announced(device, before, entry.state);
   render();
+}
+
+function announced(device: string, before: string, state: string) {
+  if (state === "ready" && before !== "ready") rise(tone(device));
+  else if (before === "ready" && state === "disconnected") fall(tone(device));
+  else if (before === "ready" && state === "lost") drop(tone(device));
 }
 
 function setStatus(text: string, state: string) {
@@ -157,9 +188,15 @@ async function connect() {
     return;
   }
   // MQTT.js reconnects by itself; every connection announces the device again.
-  client.on("connect", () => {
-    client!.subscribe([`${PREFIX}/5/+/$state`, `${PREFIX}/5/+/page/path`, `${PREFIX}/ping/+`, `${PREFIX}/pong/${id()}/+`]);
-    announce(client!);
+  client.on("connect", async () => {
+    const c = client!;
+    await c.subscribeAsync([`${PREFIX}/5/+/$state`, `${PREFIX}/5/+/page/path`, `${PREFIX}/5/+/sound/note`, `${PREFIX}/ping/+`, `${PREFIX}/pong/${id()}/+`]);
+    if (note === null) {
+      await new Promise((resolve) => setTimeout(resolve, SETTLE_MS));
+      note = freeNote();
+    }
+    if (c !== client) return;
+    announce(c);
     render();
   });
   client.on("reconnect", () => {
@@ -175,6 +212,7 @@ async function disconnect() {
   const closing = client;
   client = null;
   ready = false;
+  note = null;
   write("tsost-node-on", null);
   if (closing.connected) await closing.publishAsync(`${deviceTopic()}/$state`, "disconnected", RETAINED).catch(() => {});
   closing.removeAllListeners();
