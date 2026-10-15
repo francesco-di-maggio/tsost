@@ -1,4 +1,4 @@
-// Short tones for the node. The context starts on a tap (Connect or Ping), as browsers require.
+// Short tones for the node. The context starts on a tap, as browsers require.
 const SCALE = [0, 2, 4, 7, 9]; // major pentatonic
 // Notes are numbered upwards through the scale from middle C (C4): 15 notes, three octaves.
 export const NOTES = 15;
