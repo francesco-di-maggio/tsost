@@ -20,7 +20,8 @@ const meta = (i: (typeof list)[number]) => {
     return [i.year, d.code, d.status && "Planned"].filter(Boolean).join(" · ");
   }
   const d = i.entry.data;
-  const venue = [d.year ? `${d.short} '${String(d.year).slice(2)}` : d.short, d.place].filter(Boolean).join(", ");
+  // Conferences: short name, year and place. Without a place (a book), the full venue.
+  const venue = d.place ? `${d.short} '${String(d.year).slice(2)}, ${d.place}` : d.venue;
   return [{ html: escape(authors(d)).replace(ME, `<strong>${ME}</strong>`) }, [venue, d.kind, d.status].filter(Boolean).join(" · ")];
 };
 ---

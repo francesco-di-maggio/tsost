@@ -29,7 +29,7 @@ const current = (p: string) => (p ? path.startsWith(url(p)) : path === url());
 <meta name="theme-color" content="#0b0b0c" data-auto="#0b0b0c" media="(prefers-color-scheme: dark)">
 <script is:inline>
   try {
-    const theme = localStorage.getItem("tsost-theme");
+    const theme = localStorage.getItem("theme");
     if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
   } catch {}
 </script>
@@ -74,7 +74,7 @@ const current = (p: string) => (p ? path.startsWith(url(p)) : path === url());
   <slot />
 </main>
 <footer class="label">
-  <span>© {new Date().getFullYear()} Francesco Di Maggio</span>
+  <span>© {new Date().getFullYear()} <a href="https://francesco-di-maggio.github.io/">Francesco Di Maggio</a></span>
   <a href="https://github.com/francesco-di-maggio">GitHub</a>
 </footer>
 <script>
@@ -85,7 +85,7 @@ const current = (p: string) => (p ? path.startsWith(url(p)) : path === url());
   const button = document.getElementById("theme")!;
 
   function storedTheme() {
-    try { return localStorage.getItem("tsost-theme") ?? "auto"; } catch { return "auto"; }
+    try { return localStorage.getItem("theme") ?? "auto"; } catch { return "auto"; }
   }
 
   function applyTheme(theme: string) {
@@ -113,7 +113,7 @@ const current = (p: string) => (p ? path.startsWith(url(p)) : path === url());
   button.addEventListener("click", () => {
     const theme = THEMES[(THEMES.indexOf(button.dataset.state ?? "auto") + 1) % THEMES.length];
     applyTheme(theme);
-    try { localStorage.setItem("tsost-theme", theme); } catch {}
+    try { localStorage.setItem("theme", theme); } catch {}
   });
   start();
 </script>

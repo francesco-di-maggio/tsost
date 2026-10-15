@@ -140,7 +140,7 @@ export function facts(entry: Entry): [string, string, string?][] {
     }
     case "tesi": {
       const d = entry.data;
-      const period = d.start && `${month(d.start)} – ${d.end ? month(d.end) : d.status === "current" ? "now" : ""}`;
+      const period = d.start && `${month(d.start)} – ${d.end ? month(d.end) : d.status === "current" ? "present" : ""}`;
       return [
         ["Layer", LAYERS[d.layer].title],
         ...(d.iteration ? [["Iteration", String(d.iteration)] as [string, string]] : []),
