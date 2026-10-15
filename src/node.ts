@@ -98,7 +98,6 @@ function tone(device: string) {
 // Ping: every device plays the caller's tone and replies; the caller hears each reply as it arrives.
 export function ping() {
   if (!client?.connected) return;
-  unlock();
   const now = performance.now();
   if (now - lastPing < PING_GAP_MS) return;
   lastPing = now;
@@ -218,7 +217,6 @@ async function disconnect() {
   if (!client) return;
   const closing = client;
   client = null;
-  unlock();
   if (ready) fall(tone(id()));
   ready = false;
   note = null;

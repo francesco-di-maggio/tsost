@@ -121,7 +121,6 @@ const current = (p: string) => (p ? path.startsWith(url(p)) : path === url());
     const ring = document.querySelector<SVGElement>(".mark .ring");
     if (ring) ring.style.animationDelay = `-${Date.now() % 3000}ms`;
   }
-  breathe();
   document.addEventListener("astro:after-swap", breathe);
   // Navigation replaces the <html> attributes and the head: apply the theme again.
   document.addEventListener("astro:after-swap", () => applyTheme(storedTheme()));
