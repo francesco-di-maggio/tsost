@@ -1,6 +1,6 @@
 // Short tones for the node. The context starts on a tap (Connect or Ping), as browsers require.
 const SCALE = [0, 2, 4, 7, 9]; // major pentatonic
-// Notes are numbered upwards through the scale from C3: 15 notes, three octaves.
+// Notes are numbered upwards through the scale from middle C (C4): 15 notes, three octaves.
 export const NOTES = 15;
 const FIFTH = 2 ** (7 / 12);
 let context: AudioContext | null = null;
@@ -12,7 +12,7 @@ export function unlock() {
 
 export function noteHz(note: number) {
   const n = ((note % NOTES) + NOTES) % NOTES;
-  const midi = 48 + 12 * Math.floor(n / SCALE.length) + SCALE[n % SCALE.length];
+  const midi = 60 + 12 * Math.floor(n / SCALE.length) + SCALE[n % SCALE.length];
   return 440 * 2 ** ((midi - 69) / 12);
 }
 
