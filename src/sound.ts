@@ -7,7 +7,12 @@ let context: AudioContext | null = null;
 
 export function unlock() {
   context ??= new AudioContext();
-  if (context.state === "suspended") context.resume();
+  resume();
+}
+
+// Resumes audio once started; "interrupted" (iOS) counts as paused too.
+export function resume() {
+  if (context && context.state !== "running") context.resume();
 }
 
 export function noteHz(note: number) {

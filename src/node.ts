@@ -1,6 +1,6 @@
 import type { MqttClient } from "mqtt";
 import type { IPublishPacket } from "mqtt";
-import { NOTES, blip, drop, fall, noteHz, pitch, rise, unlock } from "./sound";
+import { NOTES, blip, drop, fall, noteHz, pitch, resume, rise, unlock } from "./sound";
 
 const BROKER = "wss://public.cloud.shiftr.io";
 const USERNAME = "public";
@@ -72,14 +72,15 @@ function page() {
   return path || "/";
 }
 
+// Stops when Disconnect is tapped meanwhile, so a closing connection announces nothing more.
 async function announce(c: MqttClient) {
   ready = false;
-  await c.publishAsync(`${deviceTopic()}/$state`, "init", RETAINED);
-  await c.publishAsync(`${deviceTopic()}/$description`, JSON.stringify(DESCRIPTION), RETAINED);
-  await c.publishAsync(`${deviceTopic()}/page/path`, page(), RETAINED);
-  await c.publishAsync(`${deviceTopic()}/sound/note`, String(note), RETAINED);
-  await c.publishAsync(`${deviceTopic()}/$state`, "ready", RETAINED);
-  ready = true;
+  const messages = [["$state", "init"], ["$description", JSON.stringify(DESCRIPTION)], ["page/path", page()], ["sound/note", String(note)], ["$state", "ready"]];
+  for (const [key, value] of messages) {
+    if (c !== client) return;
+    await c.publishAsync(`${deviceTopic()}/${key}`, value, RETAINED);
+  }
+  ready = c === client;
 }
 
 function freeNote() {
@@ -101,13 +102,16 @@ export function ping() {
   const now = performance.now();
   if (now - lastPing < PING_GAP_MS) return;
   lastPing = now;
-  blip(tone(id()));
-  signal("ping", id());
   client.publish(`${PREFIX}/ping/${id()}`, String(Date.now()));
 }
 
+// The caller hears its own ping when it comes back from the broker: the delay is the round trip.
 function onPing(from: string, payload: string) {
-  if (from === id()) return;
+  if (from === id()) {
+    blip(tone(from));
+    signal("ping", from);
+    return;
+  }
   const now = performance.now();
   if (now - (heard.get(from) ?? 0) < PING_GAP_MS) return;
   heard.set(from, now);
@@ -153,8 +157,11 @@ function onMessage(topic: string, payload: Buffer, packet: IPublishPacket) {
   if (key === "page/path") entry.path = String(payload);
   if (key === "sound/note") entry.note = Number(payload);
   devices.set(device, entry);
-  // Others arriving and leaving are heard, and this device when its own "ready" comes back from the broker; the stored states replayed on subscribing are not.
-  if (key === "$state" && !packet.retain && (device !== id() || entry.state === "ready")) announced(device, before, entry.state);
+  if (key !== "$state" || packet.retain) return render();
+  // A late will from this tab's previous connection (after a reload, or a tab the phone suspended): this device is still here.
+  if (device === id() && entry.state === "lost" && ready) client?.publish(`${deviceTopic()}/$state`, "ready", RETAINED);
+  // Others arriving and leaving are heard, and this device when its announced "ready" comes back from the broker; the stored states replayed on subscribing are not.
+  if (device !== id() || before === "init") announced(device, before, entry.state);
   render();
 }
 
@@ -294,19 +301,8 @@ export function start() {
     render();
   });
   render();
-  if (read("tsost-node-on")) {
-    connect();
-    unlockOnTap();
-  }
-}
-
-// After a reload the node reconnects without a tap; browsers keep audio locked until the first one.
-function unlockOnTap() {
-  const once = () => {
-    unlock();
-    removeEventListener("pointerup", once);
-    removeEventListener("keydown", once);
-  };
-  addEventListener("pointerup", once);
-  addEventListener("keydown", once);
+  // Browsers pause audio after a reload without a tap, and phones when the screen locks or the app changes: any tap resumes it.
+  addEventListener("pointerup", resume);
+  addEventListener("keydown", resume);
+  if (read("tsost-node-on")) connect();
 }
