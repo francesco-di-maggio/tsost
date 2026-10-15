@@ -153,8 +153,8 @@ function onMessage(topic: string, payload: Buffer, packet: IPublishPacket) {
   if (key === "page/path") entry.path = String(payload);
   if (key === "sound/note") entry.note = Number(payload);
   devices.set(device, entry);
-  // Others arriving and leaving are heard; the stored states replayed on subscribing are not.
-  if (key === "$state" && !packet.retain && device !== id()) announced(device, before, entry.state);
+  // Others arriving and leaving are heard, and this device when its own "ready" comes back from the broker; the stored states replayed on subscribing are not.
+  if (key === "$state" && !packet.retain && (device !== id() || entry.state === "ready")) announced(device, before, entry.state);
   render();
 }
 
@@ -211,6 +211,8 @@ async function disconnect() {
   if (!client) return;
   const closing = client;
   client = null;
+  unlock();
+  if (ready) fall(tone(id()));
   ready = false;
   note = null;
   write("tsost-node-on", null);
@@ -292,5 +294,19 @@ export function start() {
     render();
   });
   render();
-  if (read("tsost-node-on")) connect();
+  if (read("tsost-node-on")) {
+    connect();
+    unlockOnTap();
+  }
+}
+
+// After a reload the node reconnects without a tap; browsers keep audio locked until the first one.
+function unlockOnTap() {
+  const once = () => {
+    unlock();
+    removeEventListener("pointerup", once);
+    removeEventListener("keydown", once);
+  };
+  addEventListener("pointerup", once);
+  addEventListener("keydown", once);
 }
