@@ -295,6 +295,16 @@ export function start() {
   // Disconnect keeps the panel open, offline: the ID can be changed, then Connect again.
   $("node-connect").addEventListener("click", () => (client ? disconnect() : connect()));
   $("header-ping").addEventListener("click", ping);
+  // As in the mqtt-max Remote: a tap selects the whole ID; typing the default back completes it in grey.
+  const field = $("node-name") as HTMLInputElement;
+  field.addEventListener("focus", () => setTimeout(() => field.setSelectionRange(0, field.value.length)));
+  field.addEventListener("input", (e) => {
+    const typed = field.value;
+    const fallback = field.placeholder;
+    if (!(e as InputEvent).inputType?.startsWith("insert") || !typed || typed.length >= fallback.length || !fallback.startsWith(typed)) return;
+    field.value = fallback;
+    field.setSelectionRange(typed.length, fallback.length);
+  });
   $("node-name").addEventListener("change", (e) => {
     const input = e.target as HTMLInputElement;
     const name = toId(input.value) || defaultId();
