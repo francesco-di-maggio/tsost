@@ -11,7 +11,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   <h1>Graph</h1>
   <p class="lead">Sections, items and the references between them.</p>
   <div class="panel graph">
-    <button id="graph-reset" class="control" type="button" hidden>Reset</button>
     <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-label="Graph of the site">
       {edges.map((e) => {
         const a = at.get(e.a)!, b = at.get(e.b)!;
@@ -85,15 +84,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   // Zoom and pan inside the graph, never past its edges. The start view shows the whole graph height;
   // on narrow screens the sides are a swipe away. Touch: two fingers zoom and move; one finger moves,
   // except a vertical swipe while the whole height is visible, which scrolls the page.
-  // Mouse: ctrl + scroll or trackpad pinch to zoom; drag or scroll to move once zoomed. Double-click or Reset to go back.
+  // Mouse: ctrl + scroll or trackpad pinch to zoom; drag or scroll to move once zoomed. Double-click or double-tap to go back.
   // Refit when the width changes (rotation), not when the phone's address bar shows or hides.
   let refit = () => {}, width = 0;
   window.addEventListener("resize", () => { if (innerWidth !== width) refit(); });
 
   function zoomable() {
     const svg = document.querySelector<SVGSVGElement>(".graph svg");
-    const reset = document.getElementById("graph-reset");
-    if (!svg || !reset || svg.dataset.zoom) return;
+    if (!svg || svg.dataset.zoom) return;
     svg.dataset.zoom = "1";
     const [x0, y0, w0, h0] = svg.getAttribute("viewBox")!.split(" ").map(Number);
     let start = { x: x0, y: y0, w: w0, h: h0 };
@@ -105,7 +103,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       box.y = Math.min(Math.max(box.y, y0), y0 + h0 - box.h);
       svg.setAttribute("viewBox", `${box.x} ${box.y} ${box.w} ${box.h}`);
       svg.classList.toggle("free", !tall());
-      reset.hidden = !zoomed();
     };
     const fit = () => {
       width = innerWidth;
@@ -127,6 +124,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       box = { x: p.x - (p.x - box.x) * k, y: p.y - (p.y - box.y) * k, w, h: box.h * k };
       set();
     };
+    const home = () => { box = { ...start }; set(); };
     const pan = (dx: number, dy: number) => {
       const r = svg.getBoundingClientRect();
       box.x -= (dx / r.width) * box.w;
@@ -168,7 +166,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       pan(s.x - last.x, s.y - last.y);
       last = s;
     }, { passive: false });
-    svg.addEventListener("touchend", (e) => { if (e.touches.length) last = sum(e.touches); });
+    let tap = 0;
+    svg.addEventListener("touchend", (e) => {
+      if (e.touches.length) { last = sum(e.touches); return; }
+      if (mode !== null || (e.target as Element).closest("a")) { tap = 0; return; }
+      if (e.timeStamp - tap < 300) { e.preventDefault(); home(); tap = 0; }
+      else tap = e.timeStamp;
+    }, { passive: false });
 
     // Mouse: drag to move once zoomed.
     let drag: { x: number; y: number } | null = null;
@@ -190,9 +194,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
     // A drag is not a click on a node.
     svg.addEventListener("click", (e) => { if (moved >= 4) e.preventDefault(); }, true);
-    const home = () => { box = { ...start }; set(); };
     svg.addEventListener("dblclick", home);
-    reset.addEventListener("click", home);
   }
   document.addEventListener("astro:page-load", zoomable);
 
@@ -207,8 +209,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   @media (max-width: 600px) { svg { aspect-ratio: 4 / 5; } }
   svg.free { touch-action: none; cursor: grab; }
   svg.free:active { cursor: grabbing; }
-  #graph-reset { position: absolute; top: 8px; right: 8px; width: auto; height: 32px; }
-  #graph-reset[hidden] { display: none; }
   line.tree { stroke: var(--line); stroke-width: 1; }
   line.ref { stroke: var(--ink); stroke-width: 1.25; }
   circle { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; }
