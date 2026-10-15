@@ -154,9 +154,9 @@ a.panel .title + .caption { margin-top: 0; }
 .crumb { text-decoration: none; }
 .crumb:hover { color: var(--ink); }
 
-.meta { display: grid; grid-template-columns: 112px 1fr; gap: 6px 12px; margin: 0; font-size: 15px; line-height: 20px; }
+.meta { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 6px 12px; margin: 0; font-size: 15px; line-height: 20px; }
 .meta dt { margin: 0; }
-.meta dd { margin: 0; }
+.meta dd { margin: 0; overflow-wrap: anywhere; }
 
 
 footer { display: flex; justify-content: space-between; gap: 12px; margin-top: min(20px, 3vh); padding-top: 10px; border-top: 1px solid var(--line); }
