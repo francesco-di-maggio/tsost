@@ -1,0 +1,21 @@
+---
+import { venue, type Item } from "../items";
+
+interface Props { item: Item }
+
+const ME = "Francesco Di Maggio";
+const { item } = Astro.props;
+if (item.entry.collection !== "publications") throw new Error(`${item.key} is not a publication`);
+const d = item.entry.data;
+const star = (i: number) => (d.equal && i < d.equal ? "*" : "");
+---
+<li><a href={item.href}>
+  <span class="text">
+    <b>{d.title}</b>
+    <span class="sub">{d.authors.map((a, i) => (
+      <Fragment>{i > 0 && ", "}{a === ME ? <strong>{a}</strong> : a}{star(i)}</Fragment>
+    ))}</span>
+    <span class="sub">{[venue(d), d.kind, d.status].filter(Boolean).join(" · ")}</span>
+  </span>
+  <span class="arrow" aria-hidden="true">→</span>
+</a></li>

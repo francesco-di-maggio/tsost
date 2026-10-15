@@ -26,6 +26,7 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 .mark svg .core { fill: var(--accent); stroke: none; }
 .mark svg .ring { transform-box: fill-box; transform-origin: center; animation: breathe 3s ease-in-out infinite; }
 @keyframes breathe { 50% { transform: scale(1.2); opacity: 0.4; } }
+@media (prefers-reduced-motion: reduce) { .mark svg .ring { animation: none; } }
 .mark svg .wave { opacity: 0; transform-box: fill-box; transform-origin: center; stroke: var(--accent); }
 .mark svg.heard .wave { animation: heard 1s ease-out; }
 @keyframes heard { from { opacity: 0.9; transform: scale(1); } to { opacity: 0; transform: scale(3.5); } }
@@ -47,7 +48,7 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 #node-status.err { color: var(--err); }
 #node-status.err::before { background: var(--err); border-color: var(--err); }
 @keyframes blink { 50% { opacity: 0.2; } }
-#theme { flex: none; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+#theme { flex: none; width: 32px; height: 36px; margin: -4px 0; display: flex; align-items: center; justify-content: center;
          padding: 0; border: 0; background: none; color: var(--dim); cursor: pointer; }
 #theme svg { display: none; }
 #theme[data-state="auto"] .auto, #theme[data-state="light"] .light, #theme[data-state="dark"] .dark { display: block; }
@@ -77,7 +78,7 @@ body { position: relative; }
 .control:active { opacity: 0.7; }
 .control .arrow { font-size: 16px; }
 #node-connect { background: var(--ink); border-color: var(--ink); color: var(--bg); }
-#node-connect::after { content: "→"; font: 400 16px/20px var(--mono); }
+#node-connect::after { content: "→" / ""; font: 400 16px/20px var(--mono); }
 #node-connect.on { background: var(--accent); border-color: var(--accent); color: #fff; }
 #node-connect:disabled { opacity: 0.5; cursor: default; }
 
@@ -125,8 +126,7 @@ a.panel:active { opacity: 0.8; }
 a.panel .label { display: block; color: var(--ink); }
 /* Accent only for what is on: current parts. */
 a.panel.on .label::before { content: ""; display: inline-block; width: 6px; height: 6px; margin: 0 8px 1px 0; border-radius: 50%; background: var(--accent); }
-a.panel .title { display: block; margin: 2px 0; font-size: 16px; line-height: 22px; font-weight: 600; }
-a.panel .title + .caption { margin-top: 0; }
+a.panel .title { display: block; margin: 4px 0; font-size: 16px; line-height: 22px; font-weight: 600; }
 .prose.body { margin-top: 10px; }
 .keywords { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin: 4px 0 0; padding: 0; list-style: none; }
 .keywords li { padding: 2px 8px; border: 1px solid var(--line); border-radius: 999px; }
@@ -141,7 +141,7 @@ a.panel .title + .caption { margin-top: 0; }
 .list { margin: 0; padding: 0; list-style: none; }
 .list li + li { border-top: 1px solid var(--line); }
 .list a { display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 60px; padding: 12px 0; text-decoration: none; }
-.list .text { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.list .text { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .list b { font-size: 15px; line-height: 20px; font-weight: 600; text-wrap: balance; }
 .list .sub { font-size: 14px; line-height: 18px; color: var(--dim); }
 .list .sub strong { font-weight: 600; color: var(--ink); }
@@ -165,5 +165,5 @@ footer { display: flex; justify-content: space-between; gap: 12px; margin-top: m
 footer a { text-decoration: none; }
 footer a:hover { color: var(--ink); }
 footer .links { display: flex; align-items: center; gap: 14px; }
-footer .links a { display: flex; color: var(--dim); }
+footer .links a { display: flex; padding: 7px; margin: -7px; color: var(--dim); }
 footer .links svg { width: 14px; height: 14px; }

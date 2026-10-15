@@ -3,7 +3,7 @@ title: "Electromyographic & Movement Sonification: Musical Embodiment as a Tool 
 summary: "Muscle activity as real-time sound for rehabilitation."
 authors: ["José Manuel Corredera", "Francesco Di Maggio", "Atau Tanaka", "Elisa López-Dolado"]
 short: "IBERDISCAP"
-venue: "IBERDISCAP 2025, Seville, Spain. Springer, Biosystems & Biorobotics 36"
+venue: "IBERDISCAP '25, Seville, Spain · Springer, Biosystems & Biorobotics 36"
 kind: Book chapter
 year: 2026
 date: 2026-05-01

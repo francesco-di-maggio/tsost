@@ -116,6 +116,10 @@ export async function related(item: Item) {
 }
 
 // Authors, with * after those who contributed equally.
+// Conferences: short name, year and place. Without a place (a book), the full venue.
+export const venue = (d: { short: string; year?: number; place?: string; venue: string }) =>
+  d.place ? `${d.short} '${String(d.year).slice(2)}, ${d.place}` : d.venue;
+
 export const authors = (d: { authors: string[]; equal?: number }) =>
   d.authors.map((a, n) => (d.equal && n < d.equal ? `${a}*` : a)).join(", ");
 

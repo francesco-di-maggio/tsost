@@ -13,7 +13,7 @@ const { items, meta, aside, on = () => false } = Astro.props;
   {items.map((i) => (
     <li><a class:list={{ on: on(i) }} href={i.href}>
       <span class="text"><b>{i.title}</b>{meta && [meta(i)].flat().map((m) => (typeof m === "string" ? <span class="sub">{m}</span> : <span class="sub" set:html={m.html} />))}</span>
-      {aside ? <span class="label">{aside(i)}</span> : <span class="arrow">→</span>}
+      {aside ? <span class="label">{aside(i)}</span> : <span class="arrow" aria-hidden="true">→</span>}
     </a></li>
   ))}
 </ul>

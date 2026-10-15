@@ -1,7 +1,8 @@
 ---
 import Base from "../../layouts/Base.astro";
 import List from "../../components/List.astro";
-import { TYPES, authors, itemsOf, types, type Type } from "../../items";
+import Citation from "../../components/Citation.astro";
+import { TYPES, itemsOf, types, type Type } from "../../items";
 
 export async function getStaticPaths() {
   // TESI has its own page: parts by layer.
@@ -11,22 +12,26 @@ export async function getStaticPaths() {
 const type = Astro.params.type as Type;
 const { title, caption } = TYPES[type];
 const list = await itemsOf(type);
-// Under the title: authors, then venue, place, type and status for publications; year, code and status for courses.
-const ME = "Francesco Di Maggio";
-const escape = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+// Courses: code and status under the title.
 const meta = (i: (typeof list)[number]) => {
-  if (i.entry.collection !== "publications") {
-    const d = i.entry.data as { code?: string; status?: string };
-    return [i.year, d.code, d.status && "Planned"].filter(Boolean).join(" · ");
-  }
-  const d = i.entry.data;
-  // Conferences: short name, year and place. Without a place (a book), the full venue.
-  const venue = d.place ? `${d.short} '${String(d.year).slice(2)}, ${d.place}` : d.venue;
-  return [{ html: escape(authors(d)).replace(ME, `<strong>${ME}</strong>`) }, [venue, d.kind, d.status].filter(Boolean).join(" · ")];
+  const d = i.entry.data as { code?: string; status?: string };
+  return [d.code, d.status && "Planned"].filter(Boolean).join(" · ");
 };
+// Grouped by year, newest first.
+const years = [...new Set(list.map((i) => i.year))];
 ---
 <Base title={title} description={caption}>
   <h1>{title}</h1>
-  <p class="lead">{caption}{type === "publications" && " * Equal contribution."}</p>
-  <div class="panel lists"><List items={list} meta={meta} /></div>
+  <p class="lead">{caption}</p>
+  {years.map((y) => (
+    <Fragment>
+      <h2 class="label">{y}</h2>
+      <div class="panel lists">
+        {type === "publications"
+          ? <ul class="list">{list.filter((i) => i.year === y).map((i) => <Citation item={i} />)}</ul>
+          : <List items={list.filter((i) => i.year === y)} meta={meta} />}
+      </div>
+    </Fragment>
+  ))}
+  {type === "publications" && <p class="caption">* Equal contribution.</p>}
 </Base>

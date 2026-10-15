@@ -8,12 +8,13 @@ const layers = (Object.keys(LAYERS) as Layer[]).map((l) => LAYERS[l]);
 <Base title="TESI" description={TYPES.tesi.caption}>
   <h1>TESI</h1>
   <p class="lead">A modular toolkit for tangible and embodied sound interaction.</p>
+  <h2 class="label">Layers</h2>
   <div class="panel lists">
     <ul class="list">
       {layers.map((l) => (
         <li><a href={url(`tesi/${l.slug}/`)}>
           <span class="text"><b>{l.title}</b><span class="sub">{l.caption}</span></span>
-          <span class="arrow">→</span>
+          <span class="arrow" aria-hidden="true">→</span>
         </a></li>
       ))}
     </ul>

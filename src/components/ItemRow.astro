@@ -7,5 +7,5 @@ const { item, label = item.label, on = false, summary = true } = Astro.props;
 ---
 <li><a class:list={["panel", { on }]} href={item.href}>
   <span><span class="label">{label}</span><span class="title">{item.title}</span>{summary && <span class="caption">{item.summary}</span>}</span>
-  <span class="arrow">→</span>
+  <span class="arrow" aria-hidden="true">→</span>
 </a></li>

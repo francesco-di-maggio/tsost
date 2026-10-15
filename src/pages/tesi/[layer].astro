@@ -17,6 +17,7 @@ const parts = await partsOf(layer);
   <a class="label crumb" href={url("tesi/")}>TESI</a>
   <h1>{title}</h1>
   <p class="lead">{caption}</p>
+  <h2 class="label">Parts</h2>
   <div class="panel lists">
     <List items={parts} aside={(p) => part(p).status} on={(p) => part(p).status === "current"} />
   </div>
