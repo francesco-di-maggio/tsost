@@ -70,16 +70,15 @@ const year = (i: number) => dated[i].date!.getUTCFullYear();
       <Fragment>
         {(i === 0 || year(i) !== year(i - 1)) && <li class="year label">{year(i)}</li>}
         <li class:list={["ev", { planned: item.date! > new Date() }]} data-date={item.date!.toISOString()}>
-          <i class="dot"></i>
           <a href={item.href}>
-            <span class="label">{item.date!.toISOString().slice(0, 7)} · {TYPES[item.type].one}</span>
+            <span class="label"><i class="dot"></i>{item.date!.toISOString().slice(0, 7)} · {TYPES[item.type].one}</span>
             <span class="t">{item.title}</span>
           </a>
         </li>
       </Fragment>
     ))}
-    <li class="ev today-row" hidden><i class="today"></i><span class="label">Now</span></li>
-    <li class="ev start"><i class="dot"></i><span class="label">{START.toISOString().slice(0, 7)} · Start</span></li>
+    <li class="ev today-row" hidden><span class="label"><i class="today"></i>Now</span></li>
+    <li class="ev start"><span class="label"><i class="dot"></i>{START.toISOString().slice(0, 7)} · Start</span></li>
   </ol>
 
 </Base>
@@ -132,9 +131,11 @@ const year = (i: number) => dated[i].date!.getUTCFullYear();
   .tlv .year::before { content: ""; position: absolute; left: -4px; top: calc(100% - 4px - 0.5lh); width: 7px; height: 1px; background: var(--ink); }
   .tlv .ev { padding-bottom: 14px; }
   .tlv .ev:last-child { padding-bottom: 0; border-left-color: transparent; }
-  .tlv .dot { left: 0; top: 4px; margin: 0 0 0 -5px; }
+  /* Dots sit in the label's line, raised to the middle of its capitals, so they align in any font. */
+  .tlv .dot, .tlv .today { position: relative; display: inline-block; }
+  .tlv .dot { margin: 0 18px 0 -27px; vertical-align: calc(0.5cap - 4.5px); }
   .tlv .planned .dot { background: var(--surface); border: 1.5px solid var(--ink); }
-  .tlv .today { left: 0; top: 2px; margin: 0 0 0 -6px; }
+  .tlv .today { margin: 0 17px 0 -28px; vertical-align: calc(0.5cap - 5.5px); }
   .tlv .today-row .label { color: var(--accent); }
   .tlv a { display: block; text-decoration: none; }
   .tlv .label { display: block; }
