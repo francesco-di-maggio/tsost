@@ -209,6 +209,7 @@ function render() {
   if (document.activeElement !== name) name.value = id();
   // As in the mqtt-max Remote: the ID is locked while connected; disconnect to change it.
   name.disabled = connected;
+  $("node-locked").hidden = !connected;
   $("node-online").hidden = !connected;
   const button = $("node-connect");
   button.textContent = connected ? "Disconnect" : "Connect";
@@ -216,7 +217,7 @@ function render() {
   if (connected && client?.connected) setStatus(`${id()} · ${list.length}`, "ok");
   else if (!connected) setStatus("Connect", "off");
   $("header-ping").hidden = !connected;
-  $("node-list").replaceChildren(...list.map(([n, d]) => row(n === id() ? `${n} (you)` : n, [d.path, d.rtt !== undefined && `${d.rtt} ms`].filter(Boolean).join(" · "))));
+  $("node-list").replaceChildren(...list.map(([n, d]) => row(n, n === id() ? "this device" : [d.path, d.rtt !== undefined && `${d.rtt} ms`].filter(Boolean).join(" · "))));
   (window as unknown as { tsostDevices: unknown }).tsostDevices = { self: id(), list, connected };
   window.dispatchEvent(new CustomEvent("tsost:devices"));
 }
