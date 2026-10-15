@@ -222,7 +222,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   a:hover text { fill: var(--ink); text-decoration: underline; }
   a:hover circle { stroke: var(--accent); }
   :global(#live .visitor) { fill: var(--ok); stroke: none; }
-  :global(#live .visitor.self) { fill: var(--accent); }
+  :global(#live .visitor.self) { fill: var(--surface); stroke: var(--accent); stroke-width: 1.5; }
   :global(#ripples .ripple) { fill: none; stroke: var(--ink); stroke-width: 1; transform-box: fill-box; transform-origin: center;
                            animation: ripple 1.2s ease-out forwards; }
   :global(#ripples .ripple.pong) { stroke: var(--ok); }
