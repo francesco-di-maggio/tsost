@@ -11,16 +11,20 @@ export async function getStaticPaths() {
 const type = Astro.params.type as Type;
 const { title, caption } = TYPES[type];
 const list = await itemsOf(type);
-// Under the title: authors, then year, venue and type for publications; year, code and status for courses.
+// Under the title: authors, then venue, place, type and status for publications; year, code and status for courses.
 const meta = (i: (typeof list)[number]) => {
-  const d = i.entry.data as { authors?: string[]; short?: string; kind?: string; code?: string; status?: string };
-  const parts = type === "publications" ? [i.year, d.short, d.kind] : [i.year, d.code, d.status && "Planned"];
-  const line = parts.filter(Boolean).join(" · ");
-  return d.authors ? [d.authors.join(", "), line] : line;
+  if (i.entry.collection !== "publications") {
+    const d = i.entry.data as { code?: string; status?: string };
+    return [i.year, d.code, d.status && "Planned"].filter(Boolean).join(" · ");
+  }
+  const d = i.entry.data;
+  const authors = d.authors.map((a, n) => (d.equal && n < d.equal ? `${a}*` : a)).join(", ");
+  const venue = [d.year ? `${d.short} '${String(d.year).slice(2)}` : d.short, d.place].filter(Boolean).join(", ");
+  return [authors, [venue, d.kind, d.status].filter(Boolean).join(" · ")];
 };
 ---
 <Base title={title} description={caption}>
   <h1>{title}</h1>
-  <p class="lead">{caption}</p>
+  <p class="lead">{caption}{type === "publications" && " * Equal contribution."}</p>
   <div class="panel lists"><List items={list} meta={meta} /></div>
 </Base>

@@ -16,8 +16,11 @@ const publications = defineCollection({
   schema: z.object({
     ...base,
     authors: z.array(z.string()),
+    // How many of the first authors contributed equally.
+    equal: z.number().optional(),
     venue: z.string(),
     short: z.string(),
+    place: z.string().optional(),
     kind: z.string(),
     year: z.number().optional(),
     status: z.string().optional(),

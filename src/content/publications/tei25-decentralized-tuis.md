@@ -3,6 +3,7 @@ title: "Making Sense of Decentralized TUIs: A Modular Sound-Centric Approach"
 summary: "Sound in interconnected ecologies of smart objects."
 authors: ["Francesco Di Maggio", "Bart Hengeveld", "Mathias Funk"]
 short: "TEI"
+place: "Bordeaux, France"
 venue: "TEI '25: 19th International Conference on Tangible, Embedded, and Embodied Interaction"
 kind: Workshop
 year: 2025

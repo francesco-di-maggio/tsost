@@ -3,6 +3,7 @@ title: "Embedded Comparo: Small DSP Systems Side-by-Side"
 summary: "Four embedded audio platforms compared with the same patches."
 authors: ["Francesco Di Maggio", "Bart Hengeveld", "Atau Tanaka"]
 short: "NIME"
+place: "Canberra, Australia"
 venue: "NIME '25: International Conference on New Interfaces for Musical Expression, Canberra, Australia"
 kind: Paper
 year: 2025
