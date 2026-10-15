@@ -193,6 +193,7 @@ async function connect() {
     setStatus((err as Error).message, "err");
     return;
   }
+  render();
   // MQTT.js reconnects by itself; every connection announces the device again.
   client.on("connect", async () => {
     const c = client!;
@@ -254,7 +255,6 @@ function render() {
   if (document.activeElement !== name) name.value = id();
   // As in the mqtt-max Remote: the ID is locked while connected; disconnect to change it.
   name.disabled = connected;
-  $("node-hint").textContent = connected ? "Disconnect to change." : "Tap to change.";
   $("node-online").hidden = !connected;
   const button = $("node-connect");
   button.textContent = connected ? "Disconnect" : "Connect";
@@ -281,6 +281,7 @@ function closeOnOutside(e: Event) {
 }
 
 export function start() {
+  ($("node-prefix") as HTMLInputElement).value = PREFIX;
   // The header button shows the state and opens the panel, where Connect and Disconnect are.
   $("node-status").addEventListener("click", () => showPanel(Boolean($("node-panel").hidden)));
   document.addEventListener("pointerdown", closeOnOutside);
