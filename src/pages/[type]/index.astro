@@ -11,11 +11,12 @@ export async function getStaticPaths() {
 const type = Astro.params.type as Type;
 const { title, caption } = TYPES[type];
 const list = await itemsOf(type);
-// Under the title: year, then venue and type for publications, code and status for courses.
+// Under the title: authors, then year, venue and type for publications; year, code and status for courses.
 const meta = (i: (typeof list)[number]) => {
-  const d = i.entry.data as { short?: string; kind?: string; code?: string; status?: string };
+  const d = i.entry.data as { authors?: string[]; short?: string; kind?: string; code?: string; status?: string };
   const parts = type === "publications" ? [i.year, d.short, d.kind] : [i.year, d.code, d.status && "Planned"];
-  return parts.filter(Boolean).join(" · ");
+  const line = parts.filter(Boolean).join(" · ");
+  return d.authors ? [d.authors.join(", "), line] : line;
 };
 ---
 <Base title={title} description={caption}>
