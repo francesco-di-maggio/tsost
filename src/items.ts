@@ -115,12 +115,16 @@ export async function related(item: Item) {
   return all.filter((i) => i.key !== item.key && (item.related.includes(i.key) || i.related.includes(item.key)));
 }
 
+// Authors, with * after those who contributed equally.
+export const authors = (d: { authors: string[]; equal?: number }) =>
+  d.authors.map((a, n) => (d.equal && n < d.equal ? `${a}*` : a)).join(", ");
+
 export function facts(entry: Entry): [string, string, string?][] {
   switch (entry.collection) {
     case "publications": {
       const d = entry.data;
       return [
-        ["Authors", d.authors.join(", ")],
+        ["Authors", authors(d)],
         ["Venue", d.venue],
         ["Type", d.kind],
         ...(d.year ? [["Year", String(d.year)] as [string, string]] : []),
@@ -130,6 +134,7 @@ export function facts(entry: Entry): [string, string, string?][] {
         ...(d.pdf ? [["PDF", "Download", asset(d.pdf)] as [string, string, string]] : []),
         ...(d.licence ? [["Licence", d.licence] as [string, string]] : []),
         ...d.links.map((l) => ["Link", l.replace(/^https:\/\//, "").replace(/\/$/, ""), l] as [string, string, string]),
+        ...(d.equal ? [["Note", "* Equal contribution."] as [string, string]] : []),
         ...(d.note ? [["Note", d.note] as [string, string]] : []),
       ];
     }
