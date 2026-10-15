@@ -129,6 +129,7 @@ const year = (i: number) => dated[i].date!.getUTCFullYear();
   .tlv li { position: relative; padding-left: 22px; border-left: 1px solid var(--dim); }
   .tlv .year { padding-top: 8px; padding-bottom: 4px; color: var(--ink); }
   .tlv .year:first-child { padding-top: 0; }
+  .tlv .year::before { content: ""; position: absolute; left: -4px; top: calc(100% - 4px - 0.5lh); width: 7px; height: 1px; background: var(--ink); }
   .tlv .ev { padding-bottom: 14px; }
   .tlv .ev:last-child { padding-bottom: 0; border-left-color: transparent; }
   .tlv .dot { left: 0; top: 4px; margin: 0 0 0 -5px; }
