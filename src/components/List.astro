@@ -4,7 +4,7 @@ import type { Item } from "../items";
 // A line is text, or HTML for lines with markup.
 type Line = string | { html: string };
 
-// One row per item: title with short lines underneath, and one value on the right.
+// One row per item: title with short lines underneath; on the right a value, or → without one.
 interface Props { items: Item[]; meta?: (i: Item) => Line | Line[]; aside?: (i: Item) => string; on?: (i: Item) => boolean }
 
 const { items, meta, aside, on = () => false } = Astro.props;

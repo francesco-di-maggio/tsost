@@ -108,7 +108,6 @@ pre { overflow-x: auto; padding: 12px 14px; font: 13px/1.5 var(--mono); backgrou
       border: 1px solid var(--line); border-radius: var(--radius-control); -webkit-text-size-adjust: none; }
 pre code { padding: 0; border: 0; background: none; font-size: inherit; }
 
-.table { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 15px; line-height: 20px; }
 th { text-align: left; font: 500 11px/20px var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); }
 th, td { padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
@@ -134,7 +133,7 @@ a.panel .title { display: block; margin: 4px 0; font-size: 16px; line-height: 22
 .bib pre { margin: 10px 0 0; white-space: pre-wrap; word-break: break-word; }
 .caption { display: block; font-size: 15px; line-height: 20px; color: var(--dim); }
 .arrow { font: 400 18px/20px var(--mono); color: var(--dim); }
-/* Lists: one row per item inside a panel. Title and a short line on the left, one value on the right. */
+/* Lists: one row per item inside a panel. Title and short lines on the left; on the right a value, or → without one. */
 .list { margin: 0; padding: 0; list-style: none; }
 .list li + li { border-top: 1px solid var(--line); }
 .list a { display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 60px; padding: 12px 0; text-decoration: none; }
@@ -149,7 +148,6 @@ a.panel .title { display: block; margin: 4px 0; font-size: 16px; line-height: 22
 .list .on .label { color: var(--ink); }
 .list .on .label::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 .panel.lists { padding: 0 14px; }
-.empty { color: var(--dim); font-size: 15px; }
 .crumb { text-decoration: none; }
 .crumb:hover { color: var(--ink); }
 
