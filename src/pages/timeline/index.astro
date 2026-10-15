@@ -33,6 +33,7 @@ const months: Date[] = [];
 for (let d = new Date(origin); d <= END; d = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1))) months.push(d);
 const NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const now = x(new Date());
+const year = (i: number) => dated[i].date!.getUTCFullYear();
 ---
 <Base title="Timeline" description="June 2024 to now, and planned events.">
   <h1>Timeline</h1>
@@ -64,6 +65,23 @@ const now = x(new Date());
     </div>
   </div>
 
+  <ol class="panel tlv">
+    {dated.map((item, i) => (
+      <Fragment>
+        {(i === 0 || year(i) !== year(i - 1)) && <li class="year label">{year(i)}</li>}
+        <li class:list={["ev", { planned: item.date! > new Date() }]} data-date={item.date!.toISOString()}>
+          <i class="dot"></i>
+          <a href={item.href}>
+            <span class="label">{item.date!.toISOString().slice(0, 7)} · {TYPES[item.type].one}</span>
+            <span class="t">{item.title}</span>
+          </a>
+        </li>
+      </Fragment>
+    ))}
+    <li class="ev today-row" hidden><i class="today"></i><span class="label">Now</span></li>
+    <li class="ev start"><i class="dot"></i><span class="label">{START.toISOString().slice(0, 7)} · Start</span></li>
+  </ol>
+
 </Base>
 
 <script>
@@ -76,6 +94,12 @@ const now = x(new Date());
     const left = Math.round(months * Number(tl.dataset.month)) + 24;
     for (const el of tl.querySelectorAll<HTMLElement>(".now, .today")) el.style.left = `${left}px`;
     tl.scrollLeft = left - tl.clientWidth * 0.6;
+
+    // Vertical (phones): "now" goes above the newest event that has already happened.
+    const past = [...document.querySelectorAll<HTMLElement>(".tlv .ev[data-date]")].find((li) => new Date(li.dataset.date!) <= d);
+    const row = document.querySelector<HTMLElement>(".tlv .today-row")!;
+    past?.before(row);
+    row.hidden = false;
   });
 </script>
 
@@ -101,5 +125,20 @@ const now = x(new Date());
   .event .label { display: block; white-space: nowrap; }
   .event .t { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
               font-size: 14px; line-height: 18px; font-weight: 600; }
+  .tlv { display: none; margin: 0; padding: 16px 16px 16px 18px; list-style: none; }
+  .tlv li { position: relative; padding-left: 22px; border-left: 1px solid var(--dim); }
+  .tlv .year { padding-top: 8px; padding-bottom: 4px; color: var(--ink); }
+  .tlv .year:first-child { padding-top: 0; }
+  .tlv .ev { padding-bottom: 14px; }
+  .tlv .ev:last-child { padding-bottom: 0; border-left-color: transparent; }
+  .tlv .dot { left: 0; top: 4px; margin: 0 0 0 -5px; }
+  .tlv .planned .dot { background: var(--surface); border: 1.5px solid var(--ink); }
+  .tlv .today { left: 0; top: 2px; margin: 0 0 0 -6px; }
+  .tlv .today-row .label { color: var(--accent); }
+  .tlv a { display: block; text-decoration: none; }
+  .tlv .label { display: block; }
+  .tlv .t { display: block; font-size: 15px; line-height: 20px; font-weight: 600; }
+  .tlv a:hover .t { text-decoration: underline; text-decoration-color: var(--dim); }
+  @media (max-width: 480px) { .tl { display: none; } .tlv { display: block; } }
   .event:hover .t { text-decoration: underline; text-decoration-color: var(--dim); }
 </style>
