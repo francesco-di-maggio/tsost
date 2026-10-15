@@ -65,7 +65,7 @@ const current = (p: string) => (p ? path.startsWith(url(p)) : path === url());
       document.querySelector(".mark .ring").style.animationDelay = `-${Date.now() % 3000}ms`;
       const status = document.getElementById("node-status");
       try {
-        if (status.className !== "off" || !sessionStorage.getItem("tsost-node-on")) return;
+        if (status.className !== "off" || !localStorage.getItem("tsost-node-on")) return;
         status.className = "busy";
         document.getElementById("node-status-text").textContent = "connecting";
       } catch {}

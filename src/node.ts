@@ -56,14 +56,19 @@ function kind() {
   return Math.min(screen.width, screen.height) < 600 ? "phone" : "tablet";
 }
 
+// The ID is per tab (sessionStorage); being on is kept across visits (localStorage), so a returning visitor connects at once.
+function store(key: string) {
+  return key === "tsost-node-on" ? localStorage : sessionStorage;
+}
+
 function read(key: string) {
-  try { return sessionStorage.getItem(key); } catch { return null; }
+  try { return store(key).getItem(key); } catch { return null; }
 }
 
 function write(key: string, value: string | null) {
   try {
-    if (value === null) sessionStorage.removeItem(key);
-    else sessionStorage.setItem(key, value);
+    if (value === null) store(key).removeItem(key);
+    else store(key).setItem(key, value);
   } catch {}
 }
 
