@@ -81,26 +81,23 @@ const year = (i: number) => dated[i].date!.getUTCFullYear();
     <li class="ev start"><span class="label"><i class="dot"></i>{START.toISOString().slice(0, 7)} · Start</span></li>
   </ol>
 
+  <!-- Inline, so it runs before the first paint: no jump on load. Today's dot and line follow the calendar; "now" is scrolled into view; on phones, "now" goes above the newest event that has already happened. -->
+  <script is:inline data-astro-rerun>
+    (() => {
+      const tl = document.querySelector(".tl"), d = new Date(), origin = new Date(tl.dataset.origin);
+      const months = (d.getUTCFullYear() - origin.getUTCFullYear()) * 12 + d.getUTCMonth() - origin.getUTCMonth() + (d.getUTCDate() - 1) / 31;
+      const left = Math.round(months * Number(tl.dataset.month)) + 24;
+      for (const el of tl.querySelectorAll(".now, .today")) el.style.left = `${left}px`;
+      tl.scrollLeft = left - tl.clientWidth * 0.6;
+      const past = [...document.querySelectorAll(".tlv .ev[data-date]")].find((li) => new Date(li.dataset.date) <= d);
+      const row = document.querySelector(".tlv .today-row");
+      past?.before(row);
+      row.hidden = false;
+    })();
+  </script>
+
 </Base>
 
-<script>
-  // Today's dot and line are placed in the browser, so they move with the calendar; then "now" is scrolled into view.
-  document.addEventListener("astro:page-load", () => {
-    const tl = document.querySelector<HTMLElement>(".tl");
-    if (!tl) return;
-    const origin = new Date(tl.dataset.origin!), d = new Date();
-    const months = (d.getUTCFullYear() - origin.getUTCFullYear()) * 12 + d.getUTCMonth() - origin.getUTCMonth() + (d.getUTCDate() - 1) / 31;
-    const left = Math.round(months * Number(tl.dataset.month)) + 24;
-    for (const el of tl.querySelectorAll<HTMLElement>(".now, .today")) el.style.left = `${left}px`;
-    tl.scrollLeft = left - tl.clientWidth * 0.6;
-
-    // Vertical (phones): "now" goes above the newest event that has already happened.
-    const past = [...document.querySelectorAll<HTMLElement>(".tlv .ev[data-date]")].find((li) => new Date(li.dataset.date!) <= d);
-    const row = document.querySelector<HTMLElement>(".tlv .today-row")!;
-    past?.before(row);
-    row.hidden = false;
-  });
-</script>
 
 <style>
   .tl { overflow-x: auto; padding: 0; scrollbar-width: thin; }
