@@ -260,7 +260,7 @@ function render() {
   button.textContent = connected ? "Disconnect" : "Connect";
   button.classList.toggle("on", connected);
   if (connected && client?.connected) setStatus(`${id()} · ${list.length}`, "ok");
-  else if (!connected) setStatus("Connect", "off");
+  else if (!connected) setStatus("Offline", "off");
   $("header-ping").hidden = !connected;
   $("node-list").replaceChildren(...list.map(([n, d]) => row(n, n === id() ? "this device" : [d.path, d.rtt !== undefined && `${d.rtt} ms`].filter(Boolean).join(" · "))));
   (window as unknown as { tsostDevices: unknown }).tsostDevices = { self: id(), list, connected };
@@ -280,8 +280,8 @@ function closeOnOutside(e: Event) {
 }
 
 export function start() {
-  // Offline, the header button connects at once with the generated ID; online, it opens the panel.
-  $("node-status").addEventListener("click", () => (client ? showPanel(Boolean($("node-panel").hidden)) : connect()));
+  // The header button shows the state and opens the panel, where Connect and Disconnect are.
+  $("node-status").addEventListener("click", () => showPanel(Boolean($("node-panel").hidden)));
   document.addEventListener("pointerdown", closeOnOutside);
   document.addEventListener("keydown", (e) => e.key === "Escape" && showPanel(false));
   document.addEventListener("astro:before-preparation", () => showPanel(false));
