@@ -1,5 +1,5 @@
 ---
-title: "Node v3: ESP32-S3 AudioBoard"
+title: "Node V3: ESP32-S3 AudioBoard"
 summary: "Ready-made ESP32-S3 board with speaker and microphones."
 layer: node
 parent: tesi

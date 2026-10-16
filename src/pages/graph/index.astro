@@ -143,6 +143,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     };
     refit = fit;
     fit();
+    svg.dataset.ready = "1";
     const toSvg = (cx: number, cy: number) => {
       const r = svg.getBoundingClientRect();
       return { x: box.x + ((cx - r.left) / r.width) * box.w, y: box.y + ((cy - r.top) / r.height) * box.h };
@@ -171,17 +172,64 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     // Drag a dot to move it. Positions reset on reload.
     let grab: { a: SVGAElement; x: number; y: number } | null = null;
     const dot = (t: EventTarget | null) => (t as Element | null)?.closest<SVGAElement>("a[data-id]") ?? null;
-    const place = (a: SVGAElement, cx: number, cy: number) => {
-      const p = toSvg(cx, cy);
-      a.dataset.oy = String((p.y - (y0 + h0 / 2)) / (gh / h0) + y0 + h0 / 2);
-      placeAt(a, p.x, p.y);
+    // Where a dot goes when the graph is refitted: its height before spreading.
+    const keep = (a: SVGAElement) => { a.dataset.oy = String((Number(a.dataset.y) - (y0 + h0 / 2)) / (gh / h0) + y0 + h0 / 2); };
+
+    // Springs: the dragged dot pulls its neighbours along the edges, and they pull theirs.
+    // Each dot is also held lightly to where it was, so the graph settles back into shape. A dropped dot stays where it was put.
+    // With reduced motion only the dragged dot moves.
+    type Body = { a: SVGAElement; x: number; y: number; vx: number; vy: number; hx: number; hy: number };
+    let bodies = new Map<string, Body>(), springs: { a: Body; b: Body; len: number }[] = [];
+    let pinned: Body | null = null, frame = 0;
+    const still = matchMedia("(prefers-reduced-motion: reduce)");
+    const pull = (a: SVGAElement) => {
+      if (!frame) {
+        bodies = new Map([...svg.querySelectorAll<SVGAElement>("a[data-id]")].map((el) => {
+          const x = Number(el.dataset.x), y = Number(el.dataset.y);
+          return [el.dataset.id!, { a: el, x, y, vx: 0, vy: 0, hx: x, hy: y }];
+        }));
+        springs = [...svg.querySelectorAll<SVGLineElement>("line[data-a]")].map((l) => {
+          const a = bodies.get(l.dataset.a!)!, b = bodies.get(l.dataset.b!)!;
+          return { a, b, len: Math.hypot(a.x - b.x, a.y - b.y) };
+        });
+        frame = requestAnimationFrame(step);
+      }
+      pinned = bodies.get(a.dataset.id!)!;
+    };
+    const step = () => {
+      for (const s of springs) {
+        const dx = s.b.x - s.a.x, dy = s.b.y - s.a.y, d = Math.hypot(dx, dy) || 0.01, f = (0.05 * (d - s.len)) / d;
+        s.a.vx += dx * f; s.a.vy += dy * f;
+        s.b.vx -= dx * f; s.b.vy -= dy * f;
+      }
+      let motion = 0;
+      for (const b of bodies.values()) {
+        if (b === pinned || b.a.dataset.fixed) { b.vx = b.vy = 0; continue; }
+        b.vx = (b.vx + (b.hx - b.x) * 0.015) * 0.8;
+        b.vy = (b.vy + (b.hy - b.y) * 0.015) * 0.8;
+        b.x += b.vx; b.y += b.vy;
+        motion = Math.max(motion, Math.abs(b.vx) + Math.abs(b.vy));
+      }
+      for (const b of bodies.values()) placeAt(b.a, b.x, b.y);
       draw();
+      if (pinned || motion > 0.02) { frame = requestAnimationFrame(step); return; }
+      frame = 0;
+      for (const b of bodies.values()) keep(b.a);
+    };
+    const release = () => {
+      if (!pinned) return;
+      pinned.a.dataset.fixed = "1";
+      pinned = null;
     };
     // Past 4 px a press is a drag, not a click.
     const drag = (cx: number, cy: number) => {
       if (!grab) return;
       if (moved < 4) moved = Math.abs(cx - grab.x) + Math.abs(cy - grab.y);
-      if (moved >= 4) place(grab.a, cx, cy);
+      if (moved < 4) return;
+      const p = toSvg(cx, cy);
+      if (still.matches) { placeAt(grab.a, p.x, p.y); keep(grab.a); draw(); return; }
+      pull(grab.a);
+      pinned!.x = p.x; pinned!.y = p.y;
     };
 
     // Touch: midpoint and spread of the fingers on the graph.
@@ -217,6 +265,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     let tap = 0;
     svg.addEventListener("touchend", (e) => {
       if (e.touches.length) { last = sum(e.touches); return; }
+      release();
       if (mode !== null || (e.target as Element).closest("a")) { tap = 0; return; }
       if (e.timeStamp - tap < 300) { e.preventDefault(); home(); tap = 0; }
       else tap = e.timeStamp;
@@ -246,7 +295,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       held = { x: e.clientX, y: e.clientY };
       pan(dx, dy);
     });
-    svg.addEventListener("pointerup", () => { held = null; grab = null; });
+    svg.addEventListener("pointerup", () => { held = null; grab = null; release(); });
 
     // A drag is not a click on a node.
     svg.addEventListener("click", (e) => { if (moved >= 4) e.preventDefault(); }, true);
@@ -261,6 +310,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 <style>
   .graph { position: relative; flex: 1; min-height: 240px; overflow: hidden; }
+  /* Hidden until fitted to the frame, so the built layout never flashes before the fitted one. */
+  svg:not([data-ready]) { visibility: hidden; }
   svg { position: absolute; inset: 8px; width: calc(100% - 16px); height: calc(100% - 16px); display: block; touch-action: pan-y; user-select: none; }
   svg.free { touch-action: none; cursor: grab; }
   svg.free:active { cursor: grabbing; }

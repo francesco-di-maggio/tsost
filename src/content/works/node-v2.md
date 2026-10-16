@@ -1,5 +1,5 @@
 ---
-title: "Node v2: custom PCB"
+title: "Node V2: Custom PCB"
 summary: "Custom PCB around an ESP32 Feather, with six sensors, over OOCSI."
 layer: node
 parent: tesi

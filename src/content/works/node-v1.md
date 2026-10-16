@@ -1,5 +1,5 @@
 ---
-title: "Node v1: breadboard"
+title: "Node V1: Breadboard"
 summary: "First iteration of the sensor node, built on a breadboard."
 layer: node
 parent: tesi
