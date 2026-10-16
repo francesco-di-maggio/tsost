@@ -4,7 +4,7 @@ import { url } from "./url";
 export const TYPES = {
   works: { one: "Work", title: "Works", caption: "Tools and toolkits, by layer." },
   publications: { one: "Publication", title: "Publications", caption: "Papers, workshops and book chapters." },
-  courses: { one: "Course", title: "Courses", caption: "Courses at TU/e Industrial Design." },
+  courses: { one: "Course", title: "Course", caption: "The Sound of Smart Things, elective at TU/e Industrial Design." },
 } as const;
 
 export type Type = keyof typeof TYPES;
@@ -84,9 +84,10 @@ function toItem(entry: Entry): Item {
     label: label(entry),
     kind: kind(entry),
     current: entry.collection === "works" && entry.data.status === "current",
-    href: ("href" in entry.data && entry.data.href) || url(`${entry.collection}/${entry.id}/`),
+    href: ("href" in entry.data && entry.data.href) || (entry.collection === "courses" ? url("course/") : url(`${entry.collection}/${entry.id}/`)),
     related: entry.data.related,
-    away: "href" in entry.data && !!entry.data.href,
+    // Course editions open the course site; documented works open their own site.
+    away: entry.collection === "courses" || ("href" in entry.data && !!entry.data.href),
     entry,
     ...when(entry),
   };
@@ -104,6 +105,9 @@ export async function items() {
   }
   return all.sort(newest);
 }
+
+// Where a section lives: the course is its own site.
+export const sectionPath = (type: Type) => (type === "courses" ? "course/" : `${type}/`);
 
 export async function itemsOf(type: Type) {
   return (await items()).filter((i) => i.type === type);

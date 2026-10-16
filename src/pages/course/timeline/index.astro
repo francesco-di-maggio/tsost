@@ -1,0 +1,83 @@
+---
+import { getCollection } from "astro:content";
+import Course from "../../../layouts/Course.astro";
+import { moments } from "../../../course";
+
+// Runs come from the course editions in tsost.
+const runs = (await getCollection("courses")).map((c) => ({ date: c.data.start, title: c.data.title, planned: c.data.status === "planned" }));
+const list = await moments(runs);
+const year = (i: number) => list[i].date.getUTCFullYear();
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+---
+<Course title="Timeline" description="The course in time: weeks, deadlines and runs.">
+  <h1>Timeline</h1>
+  <p class="lead">Weeks, deadlines and runs, newest first.</p>
+  <ol class="panel tlv">
+    {list.map((m, i) => (
+      <Fragment>
+        {(i === 0 || year(i) !== year(i - 1)) && <li class="year label">{year(i)}</li>}
+        <li class:list={["ev", { week: m.week }]} data-date={m.date.toISOString()}>
+          <a href={m.href}>
+            <span class="label"><i class="dot"></i>{iso(m.date)} · {m.kind}</span>
+            <span class="t">{m.title}</span>
+          </a>
+        </li>
+      </Fragment>
+    ))}
+    <li class="ev today-row" hidden><span class="label"><i class="today"></i>Now</span></li>
+  </ol>
+  <p class="hint key">
+    <span><i class="k"></i>Past</span>
+    <span><i class="k planned"></i>Planned</span>
+    <span><i class="k on"></i>This week</span>
+    <span class="now-key"><i class="k today-key"></i>Now</span>
+  </p>
+
+  <!-- Inline, so it runs before the first paint. Later dates are planned; the week under way is orange; "now" goes above the newest past date. -->
+  <script is:inline data-astro-rerun>
+    (() => {
+      const d = new Date(), WEEK = 7 * 864e5;
+      const rows = [...document.querySelectorAll(".tlv .ev[data-date]")];
+      for (const li of rows) {
+        const t = new Date(li.dataset.date);
+        li.classList.toggle("planned", t > d);
+        li.classList.toggle("on", li.classList.contains("week") && t <= d && d - t < WEEK);
+      }
+      const past = rows.find((li) => new Date(li.dataset.date) <= d);
+      const row = document.querySelector(".tlv .today-row");
+      (past ?? row.parentElement.lastElementChild).before(row);
+      row.hidden = false;
+    })();
+  </script>
+</Course>
+
+<style>
+  .tlv { margin: 0; padding: 16px 16px 16px 18px; list-style: none; }
+  .tlv li { position: relative; padding-left: 22px; border-left: 1px solid var(--dim); }
+  .tlv .year { padding-top: 8px; padding-bottom: 4px; color: var(--ink); }
+  .tlv .year:first-child { padding-top: 0; }
+  .tlv .year::before { content: ""; position: absolute; left: -4px; top: calc(100% - 4px - 0.5lh); width: 7px; height: 1px; background: var(--ink); }
+  .tlv .ev { padding-bottom: 14px; }
+  .tlv .ev:last-child { padding-bottom: 0; border-left-color: transparent; }
+  /* Dots sit in the label's line, raised to the middle of its capitals. */
+  .dot { position: relative; display: inline-block; width: 9px; height: 9px; margin: 0 18px 0 -27px; border-radius: 50%;
+         background: var(--ink); vertical-align: calc(0.5cap - 4.5px); }
+  .planned .dot { background: var(--surface); border: 1.5px solid var(--ink); }
+  .on .dot { background: var(--accent); }
+  .on .label { color: var(--ink); }
+  .today { position: relative; display: inline-block; width: 11px; height: 11px; margin: 0 17px 0 -28px; border-radius: 50%;
+           background: var(--accent); vertical-align: calc(0.5cap - 5.5px); }
+  .today::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 1px solid var(--accent); animation: pulse 2s ease-out infinite; }
+  @keyframes pulse { from { transform: scale(1); opacity: 0.8; } to { transform: scale(3); opacity: 0; } }
+  .today-row .label { color: var(--accent); }
+  .tlv a { display: block; text-decoration: none; }
+  .tlv .label { display: block; }
+  .tlv .t { display: block; font-size: 15px; line-height: 20px; font-weight: 600; }
+  .tlv a:hover .t { text-decoration: underline; text-decoration-color: var(--dim); }
+  .key { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+  .key span { display: inline-flex; align-items: center; gap: 8px; }
+  .k { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--ink); }
+  .k.planned { background: none; border: 1.5px solid var(--ink); }
+  .k.on, .k.today-key { background: var(--accent); }
+  .now-key { color: var(--accent); }
+</style>

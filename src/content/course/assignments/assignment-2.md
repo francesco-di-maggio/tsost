@@ -1,12 +1,8 @@
 ---
 title: "Assignment 2"
 order: 2
+facts: [["Task", "Prototype a Smart Thing"], ["Type", "Pairs"], ["Due", "16/06/2026, 17:00h — submitted to Canvas"]]
 ---
-
-# Prototype a Smart Thing
-
-**Type:** Pairs
-**Due:** 16/06/2026, 17:00h — submitted to Canvas
 
 ## Brief
 

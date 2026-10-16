@@ -1,0 +1,21 @@
+---
+import Course from "../../../layouts/Course.astro";
+import Graph from "../../../components/Graph.astro";
+import { courseGraph, moments } from "../../../course";
+
+const { nodes, edges } = await courseGraph();
+// Week dates, so the week under way can light up.
+const weeks = (await moments([])).filter((m) => m.week).map((m) => [m.href, m.date.toISOString()]);
+---
+<Course title="Graph" description="The course as a network: sections, notes and the links between them.">
+  <h1>Graph</h1>
+  <p class="lead">Sections, notes and the links between them. Zoom in or point at a dot to read it.</p>
+  <Graph nodes={nodes} edges={edges} label="Graph of the course" quiet />
+  <script is:inline data-astro-rerun define:vars={{ weeks }}>
+    const d = new Date();
+    for (const [href, date] of weeks) {
+      const t = new Date(date);
+      document.querySelector(`.graph a[href="${href}"]`)?.classList.toggle("on", t <= d && d - t < 7 * 864e5);
+    }
+  </script>
+</Course>

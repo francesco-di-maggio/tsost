@@ -2,7 +2,7 @@
 import "../styles/tokens.css";
 import "../styles/site.css";
 import { url } from "../url";
-import { TYPES, types, itemsOf } from "../items";
+import { TYPES, types, itemsOf, sectionPath } from "../items";
 import { ClientRouter } from "astro:transitions";
 
 interface Props {
@@ -13,11 +13,9 @@ interface Props {
 const { title, description = "Making the invisible audible through tangible and embodied sound interaction. PhD research by Francesco Di Maggio, TU Eindhoven." } = Astro.props;
 const pageTitle = title ? `${title} · TSOST` : "TSOST · The Sound of Smart Things";
 const path = Astro.url.pathname;
-const nav = [
-  ...(await Promise.all((await types()).map(async (t) => ({ path: `${t}/`, title: TYPES[t].title, count: (await itemsOf(t)).filter((i) => !(i.entry.data as { parent?: string }).parent).length })))),
-  { path: "timeline/", title: "Timeline" },
-  { path: "graph/", title: "Graph" },
-];
+// The nav lists sections; views of the whole (timeline, graph) are icons in the header.
+// Course: one live course, so no count.
+const nav = await Promise.all((await types()).map(async (t) => ({ path: sectionPath(t), title: TYPES[t].title, ...(t !== "courses" && { count: (await itemsOf(t)).filter((i) => !(i.entry.data as { parent?: string }).parent).length }) })));
 const current = (p: string) => (p ? path.startsWith(url(p)) : path === url());
 ---
 <!doctype html>
@@ -54,6 +52,8 @@ const current = (p: string) => (p ? path.startsWith(url(p)) : path === url());
   <div class="end">
     <button id="header-ping" type="button" hidden>Ping</button>
     <button id="node-status" class="off" type="button" aria-expanded="false" aria-controls="node-panel" title="This browser as a node"><span id="node-status-text">Offline</span></button>
+    <a class="icon" href={url("timeline/")} aria-label="Timeline" title="Timeline" aria-current={current("timeline/") ? "page" : undefined}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 12h18"/><circle cx="6.5" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="17.5" cy="12" r="2" fill="var(--bg)"/></svg></a>
+    <a class="icon" href={url("graph/")} aria-label="Graph" title="Graph" aria-current={current("graph/") ? "page" : undefined}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="7" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M8 7.5 16 6.4M7 9l4 7M17 8l-4 8"/></svg></a>
     <button id="search-open" class="icon" type="button" aria-label="Search" title="Search (/)" aria-expanded="false" aria-controls="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></button>
     <button id="theme" type="button" data-state="auto" aria-label="Theme: auto">
       <svg class="auto" width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg>

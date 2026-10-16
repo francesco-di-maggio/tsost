@@ -1,0 +1,16 @@
+---
+import Course from "../../../layouts/Course.astro";
+import NoteList from "../../../components/NoteList.astro";
+import { SECTIONS, notesOf, type Section } from "../../../course";
+
+export function getStaticPaths() {
+  return (Object.keys(SECTIONS) as Section[]).map((section) => ({ params: { section } }));
+}
+
+const s = Astro.params.section as Section;
+const list = await notesOf(s);
+---
+<Course title={SECTIONS[s]}>
+  <h1>{SECTIONS[s]}</h1>
+  <NoteList notes={list} />
+</Course>

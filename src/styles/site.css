@@ -23,6 +23,7 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 /* The logo: the ripple from the preview image; the dot is the same living dot as on the timeline. */
 .mark svg { width: 18px; height: 18px; overflow: visible; }
 .mark svg circle { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+.mark svg rect, .mark svg path { fill: none; stroke: var(--ink); stroke-width: 1.5; stroke-linecap: round; }
 .mark svg .core { fill: var(--accent); stroke: none; }
 .mark svg .ring { transform-box: fill-box; transform-origin: center; animation: breathe 3s ease-in-out infinite; }
 @keyframes breathe { 50% { transform: scale(1.2); opacity: 0.4; } }
@@ -176,3 +177,6 @@ footer a:hover { color: var(--ink); }
 footer .links { display: flex; align-items: center; gap: 14px; }
 footer .links a { display: flex; padding: 7px; margin: -7px; color: var(--dim); }
 footer .links svg { width: 14px; height: 14px; }
+.icon[aria-current] { color: var(--ink); }
+.mark a { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+.mark .slash { color: var(--dim); font-weight: 400; }

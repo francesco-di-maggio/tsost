@@ -1,0 +1,336 @@
+---
+import { R, WIDTH, HEIGHT, type Node, type Edge } from "../graph";
+
+// The graph frame: dots, lines, drag with springs, zoom and pan. Live devices are drawn when the node is connected.
+// Quiet: for dense graphs, as in Obsidian. Thin dim lines; note labels show on hover and when zoomed in.
+interface Props { nodes: Node[]; edges: Edge[]; label: string; quiet?: boolean }
+const { nodes, edges, label, quiet = false } = Astro.props;
+const at = new Map(nodes.map((n) => [n.id, n]));
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+<div class="panel graph">
+  <svg class:list={{ quiet }} viewBox={`0 0 ${WIDTH} ${HEIGHT}`} preserveAspectRatio="xMidYMid slice" role="img" aria-label={label}>
+    {edges.map((e) => {
+      const a = at.get(e.a)!, b = at.get(e.b)!;
+      return <line class={e.kind} data-a={e.a} data-b={e.b} x1={a.x} y1={a.y} x2={b.x} y2={b.y} />;
+    })}
+    {nodes.map((n) => (
+      <a href={n.href} class:list={[n.kind, { on: n.current }]} data-id={n.id} data-path={n.href.slice(base.length) || "/"} data-x={n.x} data-y={n.y} data-oy={n.y}>
+        <circle cx={n.x} cy={n.y} r={R[n.kind]} />
+        <text x={n.x + R[n.kind] + 6} y={n.y + 4}>{n.label}</text>
+      </a>
+    ))}
+    <g id="ripples"></g>
+    <g id="live"></g>
+  </svg>
+</div>
+
+<script>
+  // Live layer: connected devices as dots around the page each one is on.
+  type State = { self: string; list: [string, { path?: string }][]; connected: boolean };
+  const NS = "http://www.w3.org/2000/svg";
+
+  function draw() {
+    const layer = document.getElementById("live");
+    const state = (window as unknown as { tsostDevices?: State }).tsostDevices;
+    if (!layer) return;
+    layer.replaceChildren();
+    if (!state?.connected) return;
+    const anchors = [...document.querySelectorAll<SVGAElement>("svg a[data-path]")];
+    const at = (path: string) => anchors.find((a) => a.dataset.path === path) ?? anchors.find((a) => a.dataset.path === "/")!;
+    const groups = new Map<SVGAElement, string[]>();
+    for (const [name, d] of state.list) {
+      const a = at(d.path ?? "/");
+      groups.set(a, [...(groups.get(a) ?? []), name]);
+    }
+    for (const [a, names] of groups) {
+      const cx = Number(a.dataset.x), cy = Number(a.dataset.y);
+      names.forEach((name, i) => {
+        // Rings of 8 around the page node.
+        const ring = Math.floor(i / 8), angle = (i % 8) * (Math.PI / 4) + ring * 0.4 - Math.PI / 2;
+        const r = 16 + ring * 9;
+        const dot = document.createElementNS(NS, "circle");
+        dot.setAttribute("cx", String(cx + Math.cos(angle) * r));
+        dot.setAttribute("cy", String(cy + Math.sin(angle) * r));
+        dot.setAttribute("r", "3.5");
+        dot.setAttribute("class", name === state.self ? "visitor self" : "visitor");
+        dot.dataset.name = name;
+        const title = document.createElementNS(NS, "title");
+        title.textContent = name;
+        dot.append(title);
+        layer.append(dot);
+      });
+    }
+  }
+
+  // A ping or a reply spreads from the device's dot like a drop in water.
+  function ripple(e: Event) {
+    const { kind, device } = (e as CustomEvent<{ kind: string; device: string }>).detail;
+    const layer = document.getElementById("ripples");
+    const dot = [...document.querySelectorAll<SVGCircleElement>("#live circle.visitor")].find((c) => c.dataset.name === device);
+    if (!layer || !dot) return;
+    const ring = document.createElementNS(NS, "circle");
+    ring.setAttribute("cx", dot.getAttribute("cx")!);
+    ring.setAttribute("cy", dot.getAttribute("cy")!);
+    ring.setAttribute("r", "4");
+    ring.setAttribute("class", `ripple ${kind}`);
+    layer.append(ring);
+    ring.addEventListener("animationend", () => ring.remove());
+  }
+
+  // The frame fills the window below the title. Zoom and pan inside the graph, never past its edges.
+  // The start view shows the whole graph, centred; on narrow screens the whole height, with the sides a swipe away. Touch: two fingers zoom and move; one finger moves,
+  // except a vertical swipe while the whole height is visible, which scrolls the page.
+  // Mouse: ctrl + scroll or trackpad pinch to zoom; drag or scroll to move once zoomed. Double-click or double-tap to go back.
+  // Refit when the width changes (rotation), not when the phone's address bar shows or hides.
+  let refit = () => {}, width = 0;
+  window.addEventListener("resize", () => { if (innerWidth !== width) refit(); });
+
+  function zoomable() {
+    const svg = document.querySelector<SVGSVGElement>(".graph svg");
+    if (!svg || svg.dataset.zoom) return;
+    svg.dataset.zoom = "1";
+    const [x0, y0, w0, h0] = svg.getAttribute("viewBox")!.split(" ").map(Number);
+    // The graph's height: taller than built when spread to fill a tall frame.
+    let gy = y0, gh = h0;
+    let start = { x: x0, y: y0, w: w0, h: h0 };
+    let box = { ...start };
+    const zoomed = () => box.w < start.w - 0.01;
+    const tall = () => box.h >= gh - 0.01;
+
+    // Move a dot to a point in the graph; its edges, label and live devices follow.
+    const placeAt = (a: SVGAElement, x: number, y: number) => {
+      const id = a.dataset.id!;
+      const c = a.querySelector("circle")!, t = a.querySelector("text")!, r = Number(c.getAttribute("r"));
+      a.dataset.x = String(x);
+      a.dataset.y = String(y);
+      c.setAttribute("cx", String(x));
+      c.setAttribute("cy", String(y));
+      t.setAttribute("x", String(x + r + 6));
+      t.setAttribute("y", String(y + 4));
+      svg.querySelectorAll(`line[data-a="${id}"]`).forEach((l) => { l.setAttribute("x1", String(x)); l.setAttribute("y1", String(y)); });
+      svg.querySelectorAll(`line[data-b="${id}"]`).forEach((l) => { l.setAttribute("x2", String(x)); l.setAttribute("y2", String(y)); });
+    };
+    // Spread the rows apart, up to 1.5 times, to use a frame taller than the graph. Text keeps its size.
+    const spread = (k: number) => {
+      const mid = y0 + h0 / 2;
+      svg.querySelectorAll<SVGAElement>("a[data-id]").forEach((a) => placeAt(a, Number(a.dataset.x), mid + (Number(a.dataset.oy) - mid) * k));
+      gy = mid - (h0 * k) / 2;
+      gh = h0 * k;
+      draw();
+    };
+    // Along an axis where the view is larger than the graph, the graph stays centred.
+    const clamp = (v: number, lo: number, size: number, view: number) =>
+      view >= size ? lo + (size - view) / 2 : Math.min(Math.max(v, lo), lo + size - view);
+    const set = () => {
+      box.x = clamp(box.x, x0, w0, box.w);
+      box.y = clamp(box.y, gy, gh, box.h);
+      svg.setAttribute("viewBox", `${box.x} ${box.y} ${box.w} ${box.h}`);
+      svg.classList.toggle("near", box.w < start.w * 0.6);
+      svg.classList.toggle("free", !tall());
+    };
+    const fit = () => {
+      width = innerWidth;
+      const r = svg.getBoundingClientRect();
+      const aspect = r.width / r.height;
+      const narrow = r.width <= 600;
+      spread(narrow ? 1 : Math.min(Math.max(w0 / aspect / h0, 1), 1.5));
+      start = aspect < w0 / gh && !narrow ? { x: x0, y: gy, w: w0, h: w0 / aspect } : { x: x0, y: gy, w: gh * aspect, h: gh };
+      box = { ...start };
+      set();
+    };
+    refit = fit;
+    fit();
+    svg.dataset.ready = "1";
+    const toSvg = (cx: number, cy: number) => {
+      const r = svg.getBoundingClientRect();
+      return { x: box.x + ((cx - r.left) / r.width) * box.w, y: box.y + ((cy - r.top) / r.height) * box.h };
+    };
+    const zoom = (factor: number, cx: number, cy: number) => {
+      const w = Math.min(Math.max(box.w * factor, start.w / 6), start.w);
+      const k = w / box.w, p = toSvg(cx, cy);
+      box = { x: p.x - (p.x - box.x) * k, y: p.y - (p.y - box.y) * k, w, h: box.h * k };
+      set();
+    };
+    const home = () => { box = { ...start }; set(); };
+    const pan = (dx: number, dy: number) => {
+      const r = svg.getBoundingClientRect();
+      box.x -= (dx / r.width) * box.w;
+      box.y -= (dy / r.height) * box.h;
+      set();
+    };
+
+    svg.addEventListener("wheel", (e) => {
+      if (e.ctrlKey) zoom(Math.exp(e.deltaY * 0.01), e.clientX, e.clientY);
+      else if (zoomed()) pan(-e.deltaX, -e.deltaY);
+      else return;
+      e.preventDefault();
+    }, { passive: false });
+
+    // Drag a dot to move it. Positions reset on reload.
+    let grab: { a: SVGAElement; x: number; y: number } | null = null;
+    const dot = (t: EventTarget | null) => (t as Element | null)?.closest<SVGAElement>("a[data-id]") ?? null;
+    // Where a dot goes when the graph is refitted: its height before spreading.
+    const keep = (a: SVGAElement) => { a.dataset.oy = String((Number(a.dataset.y) - (y0 + h0 / 2)) / (gh / h0) + y0 + h0 / 2); };
+
+    // Springs: the dragged dot pulls its neighbours along the edges, and they pull theirs.
+    // Each dot is also held lightly to where it was, so the graph settles back into shape. A dropped dot stays where it was put.
+    // With reduced motion only the dragged dot moves.
+    type Body = { a: SVGAElement; x: number; y: number; vx: number; vy: number; hx: number; hy: number };
+    let bodies = new Map<string, Body>(), springs: { a: Body; b: Body; len: number }[] = [];
+    let pinned: Body | null = null, frame = 0;
+    const still = matchMedia("(prefers-reduced-motion: reduce)");
+    const pull = (a: SVGAElement) => {
+      if (!frame) {
+        bodies = new Map([...svg.querySelectorAll<SVGAElement>("a[data-id]")].map((el) => {
+          const x = Number(el.dataset.x), y = Number(el.dataset.y);
+          return [el.dataset.id!, { a: el, x, y, vx: 0, vy: 0, hx: x, hy: y }];
+        }));
+        springs = [...svg.querySelectorAll<SVGLineElement>("line[data-a]")].map((l) => {
+          const a = bodies.get(l.dataset.a!)!, b = bodies.get(l.dataset.b!)!;
+          return { a, b, len: Math.hypot(a.x - b.x, a.y - b.y) };
+        });
+        frame = requestAnimationFrame(step);
+      }
+      pinned = bodies.get(a.dataset.id!)!;
+    };
+    const step = () => {
+      for (const s of springs) {
+        const dx = s.b.x - s.a.x, dy = s.b.y - s.a.y, d = Math.hypot(dx, dy) || 0.01, f = (0.05 * (d - s.len)) / d;
+        s.a.vx += dx * f; s.a.vy += dy * f;
+        s.b.vx -= dx * f; s.b.vy -= dy * f;
+      }
+      let motion = 0;
+      for (const b of bodies.values()) {
+        if (b === pinned || b.a.dataset.fixed) { b.vx = b.vy = 0; continue; }
+        b.vx = (b.vx + (b.hx - b.x) * 0.015) * 0.8;
+        b.vy = (b.vy + (b.hy - b.y) * 0.015) * 0.8;
+        b.x += b.vx; b.y += b.vy;
+        motion = Math.max(motion, Math.abs(b.vx) + Math.abs(b.vy));
+      }
+      for (const b of bodies.values()) placeAt(b.a, b.x, b.y);
+      draw();
+      if (pinned || motion > 0.02) { frame = requestAnimationFrame(step); return; }
+      frame = 0;
+      for (const b of bodies.values()) keep(b.a);
+    };
+    const release = () => {
+      if (!pinned) return;
+      pinned.a.dataset.fixed = "1";
+      pinned = null;
+    };
+    // Past 4 px a press is a drag, not a click.
+    const drag = (cx: number, cy: number) => {
+      if (!grab) return;
+      if (moved < 4) moved = Math.abs(cx - grab.x) + Math.abs(cy - grab.y);
+      if (moved < 4) return;
+      const p = toSvg(cx, cy);
+      if (still.matches) { placeAt(grab.a, p.x, p.y); keep(grab.a); draw(); return; }
+      pull(grab.a);
+      pinned!.x = p.x; pinned!.y = p.y;
+    };
+
+    // Touch: midpoint and spread of the fingers on the graph.
+    let moved = 0, mode: "graph" | "page" | "dot" | null = null;
+    let last = { x: 0, y: 0, d: 0, n: 0 }, first = { x: 0, y: 0 };
+    const sum = (t: TouchList) => {
+      const a = t[0], b = t[1] ?? t[0];
+      return { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2, d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), n: Math.min(t.length, 2) };
+    };
+    svg.addEventListener("touchstart", (e) => {
+      last = sum(e.touches);
+      const a = e.touches.length === 1 ? dot(e.target) : null;
+      if (a) { moved = 0; mode = "dot"; grab = { a, x: last.x, y: last.y }; }
+      else if (e.touches.length === 1) { grab = null; moved = 0; mode = null; first = { x: last.x, y: last.y }; }
+      else { mode = "graph"; e.preventDefault(); }
+    }, { passive: false });
+    svg.addEventListener("touchmove", (e) => {
+      const s = sum(e.touches);
+      if (mode === null) {
+        const dx = s.x - first.x, dy = s.y - first.y;
+        if (Math.abs(dx) + Math.abs(dy) < 4) return;
+        mode = Math.abs(dy) > Math.abs(dx) && tall() ? "page" : "graph";
+      }
+      if (mode === "page") return;
+      e.preventDefault();
+      if (mode === "dot") { if (e.touches.length === 1) drag(s.x, s.y); return; }
+      moved = 99;
+      if (s.n !== last.n) { last = s; return; }
+      if (s.n === 2 && last.d && s.d) zoom(last.d / s.d, s.x, s.y);
+      pan(s.x - last.x, s.y - last.y);
+      last = s;
+    }, { passive: false });
+    let tap = 0;
+    svg.addEventListener("touchend", (e) => {
+      if (e.touches.length) { last = sum(e.touches); return; }
+      release();
+      if (mode !== null || (e.target as Element).closest("a")) { tap = 0; return; }
+      if (e.timeStamp - tap < 300) { e.preventDefault(); home(); tap = 0; }
+      else tap = e.timeStamp;
+    }, { passive: false });
+
+    // Mouse: drag a dot, or drag the graph once zoomed.
+    let held: { x: number; y: number } | null = null;
+    svg.addEventListener("pointerdown", (e) => {
+      if (e.pointerType !== "mouse") return;
+      moved = 0;
+      const a = dot(e.target);
+      grab = a ? { a, x: e.clientX, y: e.clientY } : null;
+      held = !a && zoomed() ? { x: e.clientX, y: e.clientY } : null;
+    });
+    svg.addEventListener("pointermove", (e) => {
+      if (e.pointerType !== "mouse") return;
+      if (grab) {
+        drag(e.clientX, e.clientY);
+        if (moved >= 4) svg.setPointerCapture(e.pointerId);
+        return;
+      }
+      if (!held) return;
+      const dx = e.clientX - held.x, dy = e.clientY - held.y;
+      moved += Math.abs(dx) + Math.abs(dy);
+      if (moved < 4) return;
+      svg.setPointerCapture(e.pointerId);
+      held = { x: e.clientX, y: e.clientY };
+      pan(dx, dy);
+    });
+    svg.addEventListener("pointerup", () => { held = null; grab = null; release(); });
+
+    // A drag is not a click on a node.
+    svg.addEventListener("click", (e) => { if (moved >= 4) e.preventDefault(); }, true);
+    svg.addEventListener("dblclick", home);
+  }
+  document.addEventListener("astro:page-load", zoomable);
+
+  window.addEventListener("tsost:devices", draw);
+  window.addEventListener("tsost:signal", ripple);
+  document.addEventListener("astro:page-load", draw);
+</script>
+
+<style>
+  .graph { position: relative; flex: 1; min-height: 240px; overflow: hidden; }
+  /* Hidden until fitted to the frame, so the built layout never flashes before the fitted one. */
+  svg:not([data-ready]) { visibility: hidden; }
+  svg { position: absolute; inset: 8px; width: calc(100% - 16px); height: calc(100% - 16px); display: block; touch-action: pan-y; user-select: none; }
+  svg.free { touch-action: none; cursor: grab; }
+  svg.free:active { cursor: grabbing; }
+  line.tree { stroke: var(--line); stroke-width: 1; }
+  line.ref { stroke: var(--ink); stroke-width: 1.25; }
+  circle { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; }
+  .project circle, .type circle { fill: var(--ink); }
+  text { font: 500 11px var(--mono); fill: var(--ink); }
+  .type text, .project text { letter-spacing: 0.08em; text-transform: uppercase; }
+  .item text { fill: var(--dim); }
+  .on circle { fill: var(--accent); stroke: var(--accent); }
+  .quiet line.ref { stroke: var(--dim); stroke-width: 0.75; opacity: 0.6; }
+  .quiet .item text { opacity: 0; transition: opacity 150ms; }
+  .quiet.near .item text, .quiet a:hover text, .quiet a:focus-visible text, .quiet .on text { opacity: 1; }
+  a:hover text { fill: var(--ink); text-decoration: underline; }
+  a:hover circle { stroke: var(--accent); }
+  a[data-id] { cursor: grab; }
+  :global(#live .visitor) { fill: var(--ok); stroke: none; }
+  :global(#live .visitor.self) { fill: var(--surface); stroke: var(--accent); stroke-width: 1.5; }
+  :global(#ripples .ripple) { fill: none; stroke: var(--ink); stroke-width: 1; transform-box: fill-box; transform-origin: center;
+                           animation: ripple 1.2s ease-out forwards; }
+  :global(#ripples .ripple.pong) { stroke: var(--ok); }
+  @keyframes ripple { from { transform: scale(1); opacity: 0.9; } to { transform: scale(12); opacity: 0; } }
+</style>
