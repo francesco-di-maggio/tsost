@@ -2,9 +2,8 @@
 group: "Hardware"
 title: "Sensors"
 order: 0
+summary: "A sensor is a transducer — it converts a physical phenomenon into an electrical signal or digital data that a microcontroller can read."
 ---
-
-A sensor is a transducer — it converts a physical phenomenon into an electrical signal or digital data that a microcontroller can read.
 
 Choosing the right sensor for your object is a design decision. It shapes what your object is sensitive to, and therefore what kind of presence it has in the space.
 

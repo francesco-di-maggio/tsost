@@ -3,9 +3,10 @@ group: "Software"
 title: "Ableton Live"
 order: 0
 action: { label: "Download", title: "Ableton Live", caption: "Optional, with a 30-day free trial.", href: "https://www.ableton.com/en/trial/" }
+summary: "Ableton Live is a digital audio workstation (DAW)."
 ---
 
-Ableton Live is a digital audio workstation (DAW). It is widely used for live electronic performance, sound design, and music production. It is organised around two views: a non-linear Session View for triggering clips and a traditional linear Arrangement View.
+It is widely used for live electronic performance, sound design, and music production. It is organised around two views: a non-linear Session View for triggering clips and a traditional linear Arrangement View.
 
 ## In this course
 

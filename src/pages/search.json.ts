@@ -14,13 +14,12 @@ export async function GET() {
     };
   });
   for (const n of await notes()) {
-    const focus = n.data.facts.find(([k]) => k === "Focus" || k === "Task")?.[1];
     list.push({
       type: `Course · ${SECTIONS[section(n)]}`,
       title: n.data.title,
-      text: focus ?? "",
+      text: n.data.summary,
       href: href(n),
-      find: [n.data.title, focus, n.body].join(" "),
+      find: [n.data.title, n.data.summary, n.body].join(" "),
     });
   }
   return new Response(JSON.stringify(list), { headers: { "Content-Type": "application/json" } });

@@ -2,9 +2,8 @@
 group: "Sound"
 title: "Psychoacoustics"
 order: 0
+summary: "Psychoacoustics is the study of how humans perceive sound — the relationship between the physical properties of a sound wave and the subjective experience of hearing it."
 ---
-
-Psychoacoustics is the study of how humans perceive sound — the relationship between the physical properties of a sound wave and the subjective experience of hearing it. 
 
 ## Key phenomena
 

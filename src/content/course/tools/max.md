@@ -3,16 +3,15 @@ group: "Software"
 title: "Max"
 order: 0
 action: { label: "Download", title: "Max", caption: "From Cycling '74, with a 30-day free trial.", href: "https://cycling74.com/products/max" }
+summary: "Max is a visual programming environment for music, audio, and multimedia, developed by Cycling '74."
 ---
-
-Max is a visual programming environment for music, audio, and multimedia, developed by Cycling '74. 
 
 In Max, you build programs by connecting objects with patch cords — a dataflow approach that is well-suited to real-time audio and sensor work.
 
 ## Getting started
 
 - Download and install [Max](https://cycling74.com/products/max)
-- A free 30-day trial is available; student licenses are discounted
+- A free 30-day trial is available. Student licences are discounted
 - Alternatively, use [Plugdata](/tsost/course/tools/plugdata/) — free, open-source
 
 ## Key concepts

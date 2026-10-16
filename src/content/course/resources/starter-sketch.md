@@ -2,9 +2,10 @@
 group: "Help"
 title: "Starter Sketch"
 order: 0
+summary: "A starting sketch built around an LDR (light-dependent resistor) sensor."
 ---
 
-This is a starting point example sketch built around an LDR (Light Dependent Resistor) sensor. It contains all the patterns you need for your sensor: normalization, smoothing, change detection, and rate-limited sending over serial or OSC. 
+It contains all the patterns you need for your sensor: normalization, smoothing, change detection, and rate-limited sending over serial or OSC.
 
 To adapt it to a different sensor, use the Sensor patterns section below:
 

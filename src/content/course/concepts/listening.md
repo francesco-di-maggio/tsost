@@ -2,12 +2,11 @@
 group: "Sound"
 title: "Listening"
 order: 0
+summary: "Hearing is the passive reception of sound waves by the auditory system — it happens automatically. Listening is an active, intentional act of directed attention."
 ---
 
 > *"Hearing is a physiological phenomenon; listening is a psychological act."*
 > — Roland Barthes, *Listening*, 1985
-
-Hearing is the passive reception of sound waves by the auditory system — it happens automatically. Listening is an active, intentional act of directed attention.
 
 ## Modes of listening
 

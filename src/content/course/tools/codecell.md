@@ -2,16 +2,13 @@
 group: "Hardware"
 title: "CodeCell"
 order: 0
+summary: "CodeCell is a compact ESP32-based microcontroller module developed by Microbots."
 ---
-
-CodeCell is a compact [ESP32](/tsost/course/tools/esp32/)-based microcontroller module developed by Microbots. 
-
-- Documentation: [microbots.io/pages/learn-codecell](https://microbots.io/pages/learn-codecell#arduino-setup)
 
 ## Why CodeCell
 
 - **Small** — fits inside or under almost any object
-- **USB-C** — easy to power and program
+- **USB-C** — power and programming over one cable
 - **Battery connector** — can run untethered
 
 ## Getting started
@@ -31,7 +28,7 @@ Once your sensor is working, you will send data to your laptop using [OSC](/tsos
 
 Basic flow:
 1. Read sensor value in your Arduino loop
-2. Connect to WiFi
+2. Connect to Wi-Fi
 3. Send an OSC message with the sensor value
 4. Receive it in [Max](/tsost/course/tools/max/) or [Plugdata](/tsost/course/tools/plugdata/)
 

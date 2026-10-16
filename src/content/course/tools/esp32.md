@@ -2,13 +2,14 @@
 group: "Hardware"
 title: "ESP32"
 order: 0
+summary: "The ESP32 is the microcontroller platform for this course."
 ---
 
-The ESP32 is the microcontroller platform for this course. It is small, WiFi-capable, and powerful enough to handle sensor reading and wireless communication.
+It is small, Wi-Fi-capable, and fast enough to handle sensor reading and wireless communication.
 
 ## Characteristics
 
-- **WiFi built-in** — essential for wireless sensor communication
+- **Wi-Fi built-in** — essential for wireless sensor communication
 - **Dual-core processor** — can handle sensing and audio simultaneously
 - **Large community** — extensive libraries, tutorials, and support
 - **Arduino-compatible** — programmed with the standard [Arduino IDE](/tsost/course/tools/arduino-ide/)

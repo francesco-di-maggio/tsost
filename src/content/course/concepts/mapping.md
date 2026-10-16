@@ -2,9 +2,10 @@
 group: "Systems"
 title: "Mapping"
 order: 0
+summary: "Mapping is the design decision of how one parameter space connects to another — how an input drives an output."
 ---
 
-Mapping is the design decision of how one parameter space connects to another — how an input drives an output. The same input can produce very different results depending on how it is mapped.
+The same input can produce very different results depending on how it is mapped.
 
 ## Types of mapping
 

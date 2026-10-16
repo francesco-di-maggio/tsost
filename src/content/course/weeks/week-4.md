@@ -1,7 +1,8 @@
 ---
 title: "Week 4"
 order: 4
-facts: [["Focus", "Écouter Presentations + Furniture Music"], ["Date", "Tuesday 19/05/2026, 13:30–17:00h"], ["Location", "Neuron 0.356"]]
+facts: [["Date", "Tuesday 19/05/2026, 13:30–17:00h"], ["Location", "Neuron 0.356"]]
+summary: "Écouter Presentations + Furniture Music"
 ---
 
 ## In class
@@ -35,7 +36,7 @@ Goal: understand your object, what would make it smart, and what it would sound 
 
 Install the following on your laptop before you arrive:
 
-1. **[Max](/tsost/course/tools/max/)** or **[Plugdata](/tsost/course/tools/plugdata/)** — Max requires a license / 30-days free trial; Plugdata is free, but slightly less user-friendly
+1. **[Max](/tsost/course/tools/max/)** or **[Plugdata](/tsost/course/tools/plugdata/)** — Max needs a licence or the 30-day free trial. Plugdata is free, with fewer built-in objects
 2. **[Arduino IDE](/tsost/course/tools/arduino-ide/)** — download latest version (2.x)
 3. **[ESP32](/tsost/course/tools/esp32/)** — add **board support** in Arduino IDE: Preferences → Additional boards manager URLs → add Espressif URL, then install via Boards Manager
 

@@ -2,29 +2,28 @@
 group: "Reference"
 title: "Sound Encyclopedia"
 order: 0
+summary: "A living document built together, week by week, through listening and discussion."
 ---
-
-A living document built together, week by week, through listening and discussion.
 
 ## A
 
 **Airy** — a sound with prominent high-frequency content and a sense of space around it. Thin, open, unobstructed.
 
-**Attack** — the initial transient of a sound; how quickly it reaches its peak loudness. A piano note has a sharp attack. A bowed string has a slow one.
+**Attack** — the initial transient of a sound: how quickly it reaches its peak loudness. A piano note has a sharp attack. A bowed string has a slow one.
 
 ## B
 
-**Bright** — high in frequency content; the opposite of dark or warm. Can be harsh or clear depending on context.
+**Bright** — high in frequency content. The opposite of dark or warm. Can be harsh or clear depending on context.
 
 ## D
 
-**Dark** — low in frequency content; the opposite of bright. Often felt as heavy, enveloping, or threatening.
+**Dark** — low in frequency content. The opposite of bright. Often felt as heavy, enveloping, or threatening.
 
 **Dry** — a sound with little or no reverberation. Recorded close, in a dead room. The opposite of wet.
 
 ## G
 
-**Grainy** — a sound with perceptible texture; not smooth. Can be the result of distortion, low bit depth, or granular synthesis.
+**Grainy** — a sound with perceptible texture, not smooth. Can be the result of distortion, low bit depth, or granular synthesis.
 
 ## H
 
@@ -38,7 +37,7 @@ A living document built together, week by week, through listening and discussion
 
 ## N
 
-**Narrow** — a sound that seems to occupy little space; focused, pointed. The opposite of wide.
+**Narrow** — a sound that seems to occupy little space: focused, pointed. The opposite of wide.
 
 ## P
 
@@ -48,7 +47,7 @@ A living document built together, week by week, through listening and discussion
 
 **Resonant** — a sound that sustains and rings at particular frequencies. Often associated with hollow or hard surfaces.
 
-**Rough** — a sound with audible irregularities; not smooth. Can be pleasing (vintage warmth) or unpleasant (distortion).
+**Rough** — a sound with audible irregularities, not smooth. Can be pleasing (vintage warmth) or unpleasant (distortion).
 
 ## S
 
@@ -58,13 +57,13 @@ A living document built together, week by week, through listening and discussion
 
 ## T
 
-**Thin** — lacking low-frequency content; the opposite of full or warm.
+**Thin** — lacking low-frequency content. The opposite of full or warm.
 
-**Tinny** — a sound with prominent midrange and lacking bass; associated with small or cheap speakers.
+**Tinny** — a sound with prominent midrange and little bass. Associated with small or cheap speakers.
 
 ## W
 
-**Warm** — a sound with prominent low-to-mid frequency content; full, rounded, comfortable. The opposite of bright or cold.
+**Warm** — a sound with prominent low-to-mid frequency content: full, rounded, comfortable. The opposite of bright or cold.
 
 **Wet** — a sound with heavy reverberation or other effects applied. The opposite of dry.
 

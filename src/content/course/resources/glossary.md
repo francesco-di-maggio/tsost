@@ -2,9 +2,8 @@
 group: "Reference"
 title: "Glossary"
 order: 0
+summary: "Key technical and conceptual terms used in this course."
 ---
-
-A distilled reference of key technical and conceptual terms used in this course.
 
 ---
 
@@ -16,7 +15,7 @@ A distilled reference of key technical and conceptual terms used in this course.
 
 **Amplitude** — the magnitude of a sound wave's displacement from equilibrium. Perceived as *loudness*.
 
-**Attack** — the time it takes for a sound to reach its peak amplitude after onset. A piano has a sharp attack; a bowed string has a slow one.
+**Attack** — the time it takes for a sound to reach its peak amplitude after onset. A piano has a sharp attack, a bowed string a slow one.
 
 **Behavior** — the rule or logic that determines how a system responds to its environment.
 

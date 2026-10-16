@@ -91,11 +91,11 @@ export async function moments(runs: { date: Date; end?: Date; title: string; pla
   const list: Moment[] = [];
   for (const n of await notesOf("weeks")) {
     const date = day(fact(n, "Date"));
-    if (date) list.push({ date, kind: "Week", title: [n.data.title, fact(n, "Focus")].filter(Boolean).join(": "), href: href(n), week: true });
+    if (date) list.push({ date, kind: "Week", title: `${n.data.title}: ${n.data.summary}`, href: href(n), week: true });
   }
   for (const n of await notesOf("assignments")) {
     const date = day(fact(n, "Due"));
-    if (date) list.push({ date, kind: "Due", title: [n.data.title, fact(n, "Task")].filter(Boolean).join(": "), href: href(n) });
+    if (date) list.push({ date, kind: "Due", title: `${n.data.title}: ${n.data.summary}`, href: href(n) });
   }
   for (const r of runs) list.push({ date: r.date, end: r.end, kind: r.planned ? "Next run" : "Run", title: r.title, href: url("course/") });
   return list.sort((a, b) => b.date.valueOf() - a.date.valueOf());

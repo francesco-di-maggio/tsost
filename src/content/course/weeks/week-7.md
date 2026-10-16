@@ -1,7 +1,8 @@
 ---
 title: "Week 7"
 order: 7
-facts: [["Focus", "Feedback + Hands-on Prototyping"], ["Date", "Tuesday 09/06/2026, 13:30–17:00h"], ["Location", "Neuron 0.356"]]
+facts: [["Date", "Tuesday 09/06/2026, 13:30–17:00h"], ["Location", "Neuron 0.356"]]
+summary: "Feedback + Hands-on Prototyping"
 ---
 
 ## In class

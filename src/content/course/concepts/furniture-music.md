@@ -2,9 +2,10 @@
 group: "Systems"
 title: "Furniture Music"
 order: 0
+summary: "Musique d'ameublement (furniture music) is a term coined by French composer Erik Satie in 1917 for music composed to be actively ignored."
 ---
 
-*Musique d'ameublement* (furniture music) is a term coined by French composer Erik Satie in 1917 for music composed to be actively ignored. Heard, not [listened](/tsost/course/concepts/listening/) to.
+Heard, not [listened](/tsost/course/concepts/listening/) to.
 
 > *"Furniture Music is fundamentally industrial. [...] A form of music designed to satisfy 'utility' requirements. [...] Furniture Music creates vibration; it has no other purpose; it fills the same role as light, warmth, and comfort in all its forms."*
 > — Erik Satie, letter to Jean Cocteau, March 1920

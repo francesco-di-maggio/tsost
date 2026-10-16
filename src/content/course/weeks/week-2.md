@@ -1,7 +1,8 @@
 ---
 title: "Week 2"
 order: 2
-facts: [["Focus", "Audiocumentaries + Sound Taxonomy"], ["Date", "Tuesday 28/04/2026, 13:30–17:00h"], ["Location", "Neuron 0.356"]]
+facts: [["Date", "Tuesday 28/04/2026, 13:30–17:00h"], ["Location", "Neuron 0.356"]]
+summary: "Audiocumentaries + Sound Taxonomy"
 ---
 
 ## In class

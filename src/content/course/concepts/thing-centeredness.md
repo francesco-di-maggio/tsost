@@ -2,9 +2,8 @@
 group: "Systems"
 title: "Thing-Centeredness"
 order: 0
+summary: "Thing-centeredness is a design perspective that takes the object as the starting point for design, rather than the user or the system."
 ---
-
-Thing-centeredness is a design perspective that takes the object as the starting point for design, rather than the user or the system.
 
 Instead of asking "what does the user need?", a thing-centered approach asks: *what is the character of this thing? what are its properties, behaviors, affordances? what would be a natural extension of what it already is?*
 

@@ -2,9 +2,10 @@
 group: "Help"
 title: "Troubleshooting"
 order: 0
+summary: "Common problems and fixes."
 ---
 
-Common problems and fixes. Work through these before asking for help.
+Work through these before asking for help.
 
 ## Sensor reads 0 or a fixed value
 
@@ -21,7 +22,7 @@ Common problems and fixes. Work through these before asking for help.
 - Try unplugging and replugging the USB cable
 - If using CodeCell or a clone board, you may need to install a USB driver (CP2102 or CH340)
 
-## WiFi won't connect
+## Wi-Fi won't connect
 
 - Double-check your SSID and password in the sketch — they are case-sensitive
 - Make sure your phone hotspot is on and visible
@@ -30,7 +31,7 @@ Common problems and fixes. Work through these before asking for help.
 
 ## Max or Plugdata not receiving OSC
 
-- Confirm your laptop's IP address on the hotspot: System Settings → Network → WiFi → Details
+- Confirm your laptop's IP address on the hotspot: System Settings → Network → Wi-Fi → Details
 - Check that the IP in your sketch matches your laptop's current IP — it changes each time you reconnect
 - Check that the port number in your sketch matches the port in your Max/Plugdata patch (default: 9000)
 - Make sure your laptop and ESP32 are on the same network (the same hotspot)
@@ -45,9 +46,9 @@ Common problems and fixes. Work through these before asking for help.
 
 ## Sound stops or cuts out during the installation
 
-- If WiFi drops, fall back to USB serial — see [Serial Monitor](/tsost/course/tools/serial/)
-- Make sure your power bank has enough capacity — the ESP32 draws more current when transmitting WiFi
-- Build reconnection logic into your sketch so the ESP32 reconnects automatically if WiFi drops
+- If Wi-Fi drops, fall back to USB serial — see [Serial Monitor](/tsost/course/tools/serial/)
+- Make sure your power bank has enough capacity — the ESP32 draws more current when transmitting Wi-Fi
+- Build reconnection logic into your sketch so the ESP32 reconnects automatically if Wi-Fi drops
 
 ## Related
 

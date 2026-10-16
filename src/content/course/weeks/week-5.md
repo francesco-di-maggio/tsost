@@ -1,7 +1,8 @@
 ---
 title: "Week 5"
 order: 5
-facts: [["Focus", "Object Pitches + Technical Setup"], ["Date", "Tuesday 26/05/2026, 13:30–17:00h"], ["Location", "Neuron 0.356"]]
+facts: [["Date", "Tuesday 26/05/2026, 13:30–17:00h"], ["Location", "Neuron 0.356"]]
+summary: "Object Pitches + Technical Setup"
 ---
 
 ## In class
@@ -13,7 +14,7 @@ facts: [["Focus", "Object Pitches + Technical Setup"], ["Date", "Tuesday 26/05/2
 
 - Technical setup – two steps:
 	1. **Upload code**: view, edit, and upload the [Starter Sketch](/tsost/course/resources/starter-sketch/) (or your own code), open the [Serial Monitor](/tsost/course/tools/serial/), confirm values are moving and stable
-	2. **Stream data**: confirm data arrives in Max or Plugdata via serial communication, then **go wireless** (connect to WiFi, send [OSC](/tsost/course/tools/osc/) to your laptop)
+	2. **Stream data**: confirm data arrives in Max or Plugdata via serial communication, then **go wireless** (connect to Wi-Fi, send [OSC](/tsost/course/tools/osc/) to your laptop)
 
 Troubleshoot together — bring your hardware.
 
@@ -23,7 +24,7 @@ Your [ESP32](/tsost/course/tools/esp32/) reads a sensor and sends data to your l
 
 ```
 ESP32 + sensor → Serial Monitor   (verify, fallback)
-ESP32 + sensor → WiFi → OSC → Max / Plugdata → sound
+ESP32 + sensor → Wi-Fi → OSC → Max / Plugdata → sound
 ```
 
 ## Key tools
@@ -36,7 +37,7 @@ ESP32 + sensor → WiFi → OSC → Max / Plugdata → sound
 - [Arduino IDE](/tsost/course/tools/arduino-ide/) — programming your microcontroller
 - [Starter Sketch](/tsost/course/resources/starter-sketch/) — starting point for your sensor sketch
 - [Serial Monitor](/tsost/course/tools/serial/) — verify sensor data before going wireless
-- [Wireless](/tsost/course/tools/wireless/) — WiFi setup and practical tips
+- [Wireless](/tsost/course/tools/wireless/) — Wi-Fi setup and practical tips
 - [Troubleshooting](/tsost/course/resources/troubleshooting/) — common problems and fixes
 
 ## Homework — Pairs

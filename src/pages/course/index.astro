@@ -8,7 +8,7 @@ const { Content } = await render(home);
 ---
 <Base title="Course" description="The Sound of Smart Things: an elective at TU/e Industrial Design on listening, sound design and distributed sound installations." course>
   <h1>{home.data.title}</h1>
-  <p class="lead">An elective on listening, sound design and distributed sound installations.</p>
+  <p class="lead">{home.data.summary}</p>
   {home.data.facts.length > 0 && <Facts rows={home.data.facts} />}
   <div class="prose body"><Content /></div>
 </Base>

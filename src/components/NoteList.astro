@@ -3,8 +3,6 @@ import { href, type Note } from "../course";
 
 interface Props { notes: Note[] }
 const { notes } = Astro.props;
-// One fact under the title when a note has one: the focus of a week, the task of an assignment.
-const sub = (n: Note) => n.data.facts.find(([k]) => k === "Focus" || k === "Task")?.[1];
 // On the right, the day a week meets or an assignment is due: "21 Apr".
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const when = (n: Note) => {
@@ -16,7 +14,7 @@ const when = (n: Note) => {
   <ul class="list">
     {notes.map((n) => (
       <li><a href={href(n)}>
-        <span class="text"><b>{n.data.title}</b>{sub(n) && <span class="sub">{sub(n)}</span>}</span>
+        <span class="text"><b>{n.data.title}</b><span class="sub">{n.data.summary}</span></span>
         {when(n) ? <span class="label">{when(n)}</span> : <span class="arrow" aria-hidden="true">→</span>}
       </a></li>
     ))}

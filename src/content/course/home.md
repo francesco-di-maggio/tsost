@@ -1,7 +1,8 @@
 ---
 title: "The Sound of Smart Things"
 order: 0
-facts: [["Course", "DCM180 — The Sound of Smart Things"], ["Department", "Industrial Design, Eindhoven University of Technology (TU/e)"], ["Academic year", "2025–2026, Semester B, Q4"], ["When", "Tuesdays, 13:30–17:00h"], ["Where", "Neuron 0.356 (see MyTimetable for exact planning)"], ["Teachers", "Bart Hengeveld, Berry Eggen, Francesco Di Maggio"], ["Contact", "b.j.hengeveld@tue.nl"]]
+facts: [["Code", "DCM180"], ["Department", "Industrial Design, Eindhoven University of Technology (TU/e)"], ["Academic year", "2025–2026, Semester B, Q4"], ["When", "Tuesdays, 13:30–17:00h"], ["Where", "Neuron 0.356 (see MyTimetable for exact planning)"], ["Teachers", "Bart Hengeveld, Berry Eggen, Francesco Di Maggio"], ["Contact", "b.j.hengeveld@tue.nl"]]
+summary: "An elective on listening, sound design and distributed sound installations."
 ---
 
 ## Learning Goals

@@ -1,7 +1,8 @@
 ---
 title: "Week 8"
 order: 8
-facts: [["Focus", "Furniture Music at the Lucid.Bar"], ["Date", "Tuesday 16/06/2026, 13:30–17:00h"], ["Location", "Lucid.Bar"]]
+facts: [["Date", "Tuesday 16/06/2026, 13:30–17:00h"], ["Location", "Lucid.Bar"]]
+summary: "Furniture Music at the Lucid.Bar"
 ---
 
 ## The event
@@ -19,7 +20,7 @@ Each pair sets up independently:
 - Your object in its place at the Lucid.Bar
 - Your laptop and a small speaker positioned nearby
 - Your Smart Thing and laptop connected to the **same network**
-- Serial USB as fallback if WiFi drops
+- Serial USB as fallback if Wi-Fi drops
 
 There is no central system. No coordination. Each object runs on its own.
 

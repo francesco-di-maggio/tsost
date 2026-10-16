@@ -2,9 +2,8 @@
 group: "Help"
 title: "Lucid.Bar Whitelist"
 order: 0
+summary: "Approved objects and sensors for Assignment 2."
 ---
-
-Approved objects and sensors for [Assignment 2](/tsost/course/assignments/assignment-2/).
 
 Your object must come from the Lucid.Bar. Your sensor must be chosen from the list below. Both choices require motivation — see [Thing-Centeredness](/tsost/course/concepts/thing-centeredness/) for how to think about this.
 

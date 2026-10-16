@@ -74,6 +74,8 @@ const course = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/course" }),
   schema: z.object({
     title: z.string(),
+    // One line: the lead under the title and the line under it in lists. Weeks: their focus. Assignments: their task.
+    summary: z.string(),
     order: z.number().default(0),
     // The label a note is listed under in its section (Sound, Hardware, …).
     group: z.string().optional(),

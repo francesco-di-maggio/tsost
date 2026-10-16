@@ -2,6 +2,7 @@
 group: "Reference"
 title: "Links"
 order: 0
+summary: "Software, tutorials and references used in the course."
 ---
 
 ## Audio Editor
@@ -20,7 +21,7 @@ order: 0
 
 - [Max Tutorials](https://docs.cycling74.com/learn/series/max-tutorials/) — official tutorial series
 - [MSP Tutorials](https://docs.cycling74.com/learn/series/msp-tutorials/) — official audio tutorials
-- [Max Basics](https://www.youtube.com/watch?v=c3gO3IghqcY&list=PLYtVXkoDJMo68hs-4oQgaP3cqSUSHbjBI) — introductory Max/MSP tutorial series
+- [Max Basics](https://www.youtube.com/watch?v=c3gO3IghqcY&list=PLYtVXkoDJMo68hs-4oQgaP3cqSUSHbjBI) — introductory Max tutorial series
 
 ## Plugdata Tutorials
 
@@ -29,5 +30,5 @@ order: 0
 
 ## Max/Plugdata and Arduino
 
-- [Arduino To Max/MSP (Tutorial)](https://www.youtube.com/watch?v=ftDtsSHU2UM&t=500s) — Arduino → Max (`serial` object)
+- [Arduino To Max (Tutorial)](https://www.youtube.com/watch?v=ftDtsSHU2UM&t=500s) — Arduino → Max (`serial` object)
 - [Arduino To Pure Data (Tutorial)](https://www.youtube.com/watch?v=eVW0FD9g_Sk) — Arduino → Plugdata (`comport` object)

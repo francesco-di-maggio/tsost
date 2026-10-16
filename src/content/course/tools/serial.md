@@ -2,9 +2,10 @@
 group: "Middleware"
 title: "Serial"
 order: 0
+summary: "The Serial Monitor is built into the Arduino IDE."
 ---
 
-The Serial Monitor is built into the [Arduino IDE](/tsost/course/tools/arduino-ide/). It displays text sent from your microcontroller over USB. Use it to verify your sensor is working before adding wireless complexity.
+It displays text sent from your microcontroller over USB. Use it to verify your sensor is working before adding wireless complexity.
 
 ## How to use it
 
@@ -45,11 +46,11 @@ Answer these before moving on to wireless. A noisy or flat signal is usually a h
 
 **In Plugdata:**
 
-Use the `comport` external for connecting Arduino to PlugData. You can find it by installing the library via Deken (Help > Find externals) within the software. Search for `comport` and install it.
+Use the `comport` external for connecting Arduino to Plugdata. You can find it by installing the library via Deken (Help > Find externals) within the software. Search for `comport` and install it.
 
 - Use `comport` with deviceID and baudrate set to 115200
  
-Tutorial: [Max/MSP to Arduino | Pure Data to Arduino](https://www.youtube.com/watch?v=VYWQaqf6yL0)
+Tutorial: [Max to Arduino | Pure Data to Arduino](https://www.youtube.com/watch?v=VYWQaqf6yL0)
 
 ## One reader at a time
 
@@ -57,7 +58,7 @@ The serial port can only be open in one place at a time. If the Arduino Serial M
 
 ## Serial as a fallback
 
-If WiFi drops during the event, USB serial is a reliable fallback. Max and Plugdata can both receive serial data.
+If Wi-Fi drops during the event, USB serial is a reliable fallback. Max and Plugdata can both receive serial data.
 
 ## Related
 

@@ -1,7 +1,8 @@
 ---
 title: "Week 3"
 order: 3
-facts: [["Focus", "Sound Encyclopedia + Decentralized Systems"], ["Date", "Tuesday 12/05/2026, 13:30–17:00h"], ["Location", "Neuron 0.356"]]
+facts: [["Date", "Tuesday 12/05/2026, 13:30–17:00h"], ["Location", "Neuron 0.356"]]
+summary: "Sound Encyclopedia + Decentralized Systems"
 ---
 
 ## In class

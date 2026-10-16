@@ -2,9 +2,10 @@
 group: "Middleware"
 title: "OSC"
 order: 0
+summary: "OSC (Open Sound Control) is a communication protocol for sending data between devices over a network."
 ---
 
-OSC (Open Sound Control) is a communication protocol for sending data between devices over a network. It was designed for real-time musical and multimedia applications and has become the standard for connecting sensors, computers, and sound software.
+It was designed for real-time musical and multimedia applications and has become the standard for connecting sensors, computers, and sound software.
 
 ## How it works
 
@@ -17,13 +18,13 @@ Example message:
 
 This says: the value at address `/sensor/proximity` is `0.73`.
 
-Your microcontroller sends these messages over WiFi. Your laptop receives them in Max or Plugdata.
+Your microcontroller sends these messages over Wi-Fi. Your laptop receives them in Max or Plugdata.
 
 ## Setup in this course
 
 **On the microcontroller (Arduino):**
 
-- Connect to WiFi
+- Connect to Wi-Fi
 - Send OSC messages to your laptop's IP address on a chosen port (e.g. 9000)
 
 **In Max:**
@@ -38,7 +39,7 @@ Your microcontroller sends these messages over WiFi. Your laptop receives them i
 ## Tips
 
 - Use a phone hotspot — connect both your laptop and ESP32 to it. Do not use eduroam.
-- Find your laptop's IP address: System Settings → Network → WiFi → Details
+- Find your laptop's IP address: System Settings → Network → Wi-Fi → Details
 - Use any port number consistently across your sketch and patch — 9000 is a common default
 
 ## Related

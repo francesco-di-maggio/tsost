@@ -3,9 +3,10 @@ group: "Middleware"
 title: "MQTT-MAX Remote"
 order: 0
 action: { label: "Open", title: "Remote", caption: "Send touch, motion and mic level from any browser.", href: "https://francescodimaggio.nl/mqtt-max/remote/" }
+summary: "A web page that turns a phone, tablet or computer into an MQTT device."
 ---
 
-A web page that turns a phone, tablet or computer into an MQTT device. It sends a touch pad, slider, button, motion and microphone level as Homie values. In Max, [mqtt-max](https://francescodimaggio.nl/mqtt-max/) receives them.
+It sends a touch pad, slider, button, motion and microphone level as Homie values. In Max, [mqtt-max](https://francescodimaggio.nl/mqtt-max/) receives them.
 
 Use it to:
 - send live data from your phone to Max, without wiring

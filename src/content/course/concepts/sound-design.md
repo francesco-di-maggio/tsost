@@ -2,9 +2,8 @@
 group: "Sound"
 title: "Sound Design"
 order: 0
+summary: "Sound design is the practice of creating and shaping sound purposefully for a given context."
 ---
-
-Sound design is the practice of creating and shaping sound purposefully for a given context.
 
 ## Symbolic vs expressive
 

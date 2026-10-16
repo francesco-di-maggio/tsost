@@ -18,7 +18,7 @@ const years = [...new Set(rows.map((r) => r.year))];
       <ul class="list schedule">
         {rows.filter((r) => r.year === y).map((r) => (
           <li data-date={r.iso}><a href={href(r.n)}>
-            <span class="text"><b>{r.n.data.title}</b><span class="sub">{[r.day, fact(r.n, "Focus")].filter(Boolean).join(" · ")}</span></span>
+            <span class="text"><b>{r.n.data.title}</b><span class="sub">{[r.day, r.n.data.summary].filter(Boolean).join(" · ")}</span></span>
             <span class="arrow" aria-hidden="true">→</span>
           </a></li>
         ))}

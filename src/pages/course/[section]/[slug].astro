@@ -22,9 +22,10 @@ const i = siblings.findIndex((x) => x.id === n.id);
 const prev = siblings[i - 1], next = siblings[i + 1];
 const linked = await backlinks(n);
 ---
-<Base title={n.data.title} description={`${SECTIONS[s]} · The Sound of Smart Things`} course>
+<Base title={n.data.title} description={n.data.summary} course>
   <span class="label"><a class="crumb" href={url(`course/${s}/`)}>{SECTIONS[s]}</a></span>
   <h1>{n.data.title}</h1>
+  <p class="lead">{n.data.summary}</p>
   {n.data.facts.length > 0 && <Facts rows={n.data.facts} />}
   {n.data.action && (
     <a class="panel primary" href={n.data.action.href}>
@@ -40,11 +41,9 @@ const linked = await backlinks(n);
     </Fragment>
   )}
   {(prev || next) && (
-    <div class="panel lists pager">
-      <ul class="list">
-        {prev && <li><a href={href(prev)}><span class="text"><span class="sub">Previous</span><b>{prev.data.title}</b></span><span class="arrow" aria-hidden="true">←</span></a></li>}
-        {next && <li><a href={href(next)}><span class="text"><span class="sub">Next</span><b>{next.data.title}</b></span><span class="arrow" aria-hidden="true">→</span></a></li>}
-      </ul>
+    <div class="pager">
+      {prev && <a href={href(prev)}><span class="label"><span aria-hidden="true">←</span> Previous</span><b>{prev.data.title}</b></a>}
+      {next && <a href={href(next)}><span class="label">Next <span aria-hidden="true">→</span></span><b>{next.data.title}</b></a>}
     </div>
   )}
 </Base>

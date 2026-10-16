@@ -2,9 +2,10 @@
 group: "Systems"
 title: "Decentralized Systems"
 order: 0
+summary: "A decentralized system has no central controller."
 ---
 
-A decentralized system has no central controller. Each node operates according to local rules, responding to its immediate environment and neighbors. Global behavior emerges from these local interactions — not from any top-down instruction.
+Each node operates according to local rules, responding to its immediate environment and neighbors. Global behavior emerges from these local interactions — not from any top-down instruction.
 
 ## Examples
 
