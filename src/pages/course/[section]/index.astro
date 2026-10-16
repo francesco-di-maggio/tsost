@@ -10,9 +10,19 @@ export function getStaticPaths() {
 
 const s = Astro.params.section as Section;
 const list = await notesOf(s);
+// Every list has a label above it: assignments by the year they are due.
+const due = (n: (typeof list)[number]) => n.data.facts.find(([k]) => k === "Due")?.[1].match(/\d{4}/)?.[0] ?? "";
+const groups = s === "assignments"
+  ? [...new Set(list.map(due))].map((y) => ({ label: y, notes: list.filter((n) => due(n) === y) }))
+  : [{ label: "", notes: list }];
 ---
 <Base title={SECTIONS[s]} description={LEADS[s]} course>
   <h1>{SECTIONS[s]}</h1>
   <p class="lead">{LEADS[s]}</p>
-  {s === "weeks" ? <Schedule /> : <NoteList notes={list} />}
+  {s === "weeks" ? <Schedule /> : groups.map((g) => (
+    <Fragment>
+      {g.label && <h2 class="label">{g.label}</h2>}
+      <NoteList notes={g.notes} />
+    </Fragment>
+  ))}
 </Base>

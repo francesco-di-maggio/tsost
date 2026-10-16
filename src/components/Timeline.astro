@@ -99,8 +99,10 @@ const weeks = moments.some((m) => m.week);
   (() => {
     const tl = document.querySelector(".tl"), d = new Date(), origin = new Date(tl.dataset.origin);
     const left = Math.round(((d - origin) / 864e5) * Number(tl.dataset.px)) + 24;
-    for (const el of tl.querySelectorAll(".now, .today")) el.style.left = `${left}px`;
-    tl.scrollLeft = left - tl.clientWidth * 0.6;
+    // Outside the axis (the course between runs) there is no Now on it: the view starts at the beginning.
+    const inside = left >= 24 && left <= tl.querySelector(".axis").offsetWidth + 24;
+    for (const el of tl.querySelectorAll(".now, .today")) { el.style.left = `${left}px`; el.hidden = !inside; }
+    tl.scrollLeft = inside ? left - tl.clientWidth * 0.6 : 0;
     for (const el of document.querySelectorAll(".tl [data-date], .tlv [data-date]")) {
       const t = new Date(el.dataset.date);
       el.classList.toggle("planned", t > d);

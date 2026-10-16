@@ -4,16 +4,16 @@ import Base from "../../../layouts/Base.astro";
 import Timeline from "../../../components/Timeline.astro";
 import { moments } from "../../../course";
 
-// Runs come from the course editions in tsost; weeks and deadlines from the notes.
-const runs = (await getCollection("courses")).map((c) => ({ date: c.data.start, end: c.data.end, title: c.data.title, planned: c.data.status === "planned" }));
-const list = await moments(runs);
+// The run in the notes: its weeks and deadlines. The history of runs is on the tsost timeline.
+const list = await moments([]);
 const WEEK = 7 * 864e5;
-// From a week before the first moment to ten weeks after the last one, so the next run has room.
 const start = new Date(Math.min(...list.map((m) => m.date.valueOf())) - WEEK);
-const end = new Date(Math.max(...list.map((m) => m.date.valueOf()), Date.now()) + 10 * WEEK);
+const end = new Date(Math.max(...list.map((m) => m.date.valueOf())) + WEEK);
+const next = (await getCollection("courses")).find((c) => c.data.status === "planned" && c.data.start > end);
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 ---
-<Base title="Course timeline" description="The course in time: weeks, deadlines and runs." course>
+<Base title="Course timeline" description="Weeks and deadlines of the course." course>
   <h1>Timeline</h1>
-  <p class="lead">Weeks, deadlines and runs.</p>
+  <p class="lead">Weeks and deadlines.{next && ` Next run: ${MONTHS[next.data.start.getUTCMonth()]} ${next.data.start.getUTCFullYear()}.`}</p>
   <Timeline moments={list} start={start} end={end} scale="week" />
 </Base>
