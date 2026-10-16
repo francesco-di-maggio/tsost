@@ -49,6 +49,8 @@ const works = defineCollection({
     specs: z.array(z.tuple([z.string(), z.string()])).default([]),
     repository: z.url().optional(),
     site: z.url().optional(),
+    // Documented elsewhere: the item links there and has no page here.
+    href: z.url().optional(),
   }),
 });
 

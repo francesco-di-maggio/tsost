@@ -23,6 +23,8 @@ export type Item = {
   date?: Date;
   year?: number;
   href: string;
+  // True when the item links to another site instead of a page here.
+  away: boolean;
   related: string[];
   entry: Entry;
 };
@@ -82,8 +84,9 @@ function toItem(entry: Entry): Item {
     label: label(entry),
     kind: kind(entry),
     current: entry.collection === "works" && entry.data.status === "current",
-    href: url(`${entry.collection}/${entry.id}/`),
+    href: ("href" in entry.data && entry.data.href) || url(`${entry.collection}/${entry.id}/`),
     related: entry.data.related,
+    away: "href" in entry.data && !!entry.data.href,
     entry,
     ...when(entry),
   };
@@ -149,7 +152,7 @@ export function facts(entry: Entry): [string, string, string?][] {
       const to = d.end ? month(d.end) : d.status === "current" ? "present" : undefined;
       const period = d.start && (to ? `${month(d.start)} – ${to}` : month(d.start));
       return [
-        ["Layer", LAYERS[d.layer].title],
+        ...(d.layer !== "toolkit" ? [["Layer", LAYERS[d.layer].title] as [string, string]] : []),
         ...(d.iteration ? [["Iteration", String(d.iteration)] as [string, string]] : []),
         ...(d.status ? [["Status", d.status[0].toUpperCase() + d.status.slice(1)] as [string, string]] : []),
         ...(period ? [["Period", period] as [string, string]] : []),

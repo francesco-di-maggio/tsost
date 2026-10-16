@@ -10,7 +10,7 @@ import { url } from "../../url";
 import { bibtex } from "../../bibtex";
 
 export async function getStaticPaths() {
-  return (await items()).map((item) => ({ params: { type: item.type, id: item.id }, props: { item } }));
+  return (await items()).filter((item) => !item.away).map((item) => ({ params: { type: item.type, id: item.id }, props: { item } }));
 }
 
 const { item } = Astro.props as { item: Item };
