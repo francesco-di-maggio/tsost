@@ -9,10 +9,8 @@ export const WIDTH = 640;
 export const HEIGHT = 480;
 const PAD = { left: 40, right: 210, y: 40 };
 
-const short = (title: string) => {
-  const head = title.split(":")[0];
-  return head.length > 32 ? head.slice(0, 31) + "…" : head;
-};
+const cut = (text: string) => (text.length > 32 ? text.slice(0, 31) + "…" : text);
+const short = (title: string) => cut(title.split(":")[0]);
 
 // The site as a network: project → sections → items, plus the references between items.
 export async function graph() {
@@ -30,6 +28,12 @@ export async function graph() {
     for (const key of item.related) {
       if (!edges.some((e) => e.kind === "ref" && e.a === key && e.b === item.key)) edges.push({ a: item.key, b: key, kind: "ref" });
     }
+  }
+  // Two items with the same short label (the TESI toolkit and the TESI paper): the one titled longer shows more of its title.
+  const leaves = nodes.filter((n) => n.kind === "item");
+  for (const n of leaves) {
+    const title = all.find((i) => i.key === n.id)!.title;
+    if (title !== n.label && leaves.some((m) => m !== n && m.label === n.label)) n.label = cut(title);
   }
   layout(nodes, edges);
   separate(nodes);
