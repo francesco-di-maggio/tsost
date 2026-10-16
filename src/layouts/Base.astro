@@ -56,7 +56,7 @@ const current = (p: string) => (p ? path.startsWith(url(p)) : path === url());
 <body>
 <header>
   {course ? (
-    <span class="mark"><a href={url()} aria-label="TSOST"><svg viewBox="-9 -9 18 18" aria-hidden="true"><circle class="wave" r="7" /><circle class="ring" r="7" /><circle class="core" r="3" /></svg><span class="wide">TSOST</span></a><span class="slash wide" aria-hidden="true">/</span><a href={url("course/")}>COURSE</a></span>
+    <span class="mark"><a href={url()} aria-label="TSOST"><svg viewBox="-9 -9 18 18" aria-hidden="true"><circle class="wave" r="7" /><circle class="ring" r="7" /><circle class="core" r="3" /></svg><span class="wide">TSOST</span></a><span class="slash wide" aria-hidden="true">/</span><a href={url("course/")}>Course</a></span>
   ) : (
     <a class="mark" href={url()}><svg viewBox="-9 -9 18 18" aria-hidden="true"><circle class="wave" r="7" /><circle class="ring" r="7" /><circle class="core" r="3" /></svg>TSOST</a>
   )}
