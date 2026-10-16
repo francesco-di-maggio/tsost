@@ -1,4 +1,5 @@
 ---
+group: "Sound"
 title: "Field Recording"
 order: 0
 ---

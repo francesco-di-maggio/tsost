@@ -12,6 +12,13 @@ export const SECTIONS = {
   resources: "Resources",
 } as const;
 
+// The groups in each section, in order. Weeks and assignments are grouped by year instead.
+export const GROUPS: Partial<Record<keyof typeof SECTIONS, string[]>> = {
+  concepts: ["Sound", "Systems"],
+  tools: ["Hardware", "Software", "Middleware"],
+  resources: ["Reference", "Help"],
+};
+
 // The line under each section's title.
 export const LEADS: Record<keyof typeof SECTIONS, string> = {
   weeks: "Weeks, dates and focus.",

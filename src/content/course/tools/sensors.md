@@ -1,4 +1,5 @@
 ---
+group: "Hardware"
 title: "Sensors"
 order: 0
 ---

@@ -1,4 +1,5 @@
 ---
+group: "Hardware"
 title: "CodeCell"
 order: 0
 ---

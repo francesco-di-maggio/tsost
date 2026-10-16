@@ -1,4 +1,5 @@
 ---
+group: "Hardware"
 title: "TESI"
 order: 0
 ---

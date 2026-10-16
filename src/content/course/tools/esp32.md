@@ -1,4 +1,5 @@
 ---
+group: "Hardware"
 title: "ESP32"
 order: 0
 ---

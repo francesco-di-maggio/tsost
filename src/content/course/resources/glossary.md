@@ -1,4 +1,5 @@
 ---
+group: "Reference"
 title: "Glossary"
 order: 0
 ---

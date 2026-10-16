@@ -1,4 +1,5 @@
 ---
+group: "Middleware"
 title: "mqtt-max Remote"
 order: 0
 ---
