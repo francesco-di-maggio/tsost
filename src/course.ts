@@ -55,10 +55,8 @@ export async function backlinks(n: Note) {
 }
 
 // The course as a network: course → sections → notes, plus the links between notes.
-// Tools and resources are reference material with dense cross-links: they appear as their section dot only.
-const REFERENCE: Section[] = ["tools", "resources"];
 export async function courseGraph() {
-  const all = (await notes()).filter((n) => !REFERENCE.includes(section(n)));
+  const all = await notes();
   const nodes: Node[] = [{ id: "course", label: "Course", kind: "project", href: url("course/"), x: 0, y: 0 }];
   const edges: Edge[] = [];
   for (const s of Object.keys(SECTIONS) as Section[]) {

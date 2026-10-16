@@ -2,9 +2,10 @@
 import { R, WIDTH, HEIGHT, type Node, type Edge } from "../graph";
 
 // The graph frame: dots, lines, drag with springs, zoom and pan. Live devices are drawn when the node is connected.
-// Dense: many links (the course). Links between items are drawn thin and dim, so the labels stay readable.
-interface Props { nodes: Node[]; edges: Edge[]; label: string; dense?: boolean }
-const { nodes, edges, label, dense = false } = Astro.props;
+interface Props { nodes: Node[]; edges: Edge[]; label: string }
+const { nodes, edges, label } = Astro.props;
+// Where items link to each other more than once on average, those links are drawn fine, so the labels stay readable.
+const dense = edges.filter((e) => e.kind === "ref").length > nodes.filter((n) => n.kind === "item").length;
 const at = new Map(nodes.map((n) => [n.id, n]));
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---

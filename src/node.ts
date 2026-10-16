@@ -227,11 +227,17 @@ async function disconnect() {
   ready = false;
   note = null;
   write("tsost-node-on", null);
-  if (closing.connected) await closing.publishAsync(`${deviceTopic()}/$state`, "disconnected", RETAINED).catch(() => {});
   closing.removeAllListeners();
-  await closing.endAsync();
   devices.clear();
   render();
+  // The goodbye goes out in the background: the panel goes offline at once, not after the broker answers.
+  // A slow broker gets 3 s, then the connection is closed anyway.
+  const topic = `${deviceTopic()}/$state`;
+  (async () => {
+    if (closing.connected) await closing.publishAsync(topic, "disconnected", RETAINED).catch(() => {});
+    await closing.endAsync().catch(() => {});
+  })();
+  setTimeout(() => closing.end(true), 3000);
 }
 
 

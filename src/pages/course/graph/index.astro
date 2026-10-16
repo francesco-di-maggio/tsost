@@ -10,7 +10,7 @@ const weeks = (await moments([])).filter((m) => m.week).map((m) => [m.href, m.da
 <Base title="Graph" description="The course as a network: sections, notes and the links between them." course>
   <h1>Graph</h1>
   <p class="lead">Sections, notes and the links between them.</p>
-  <Graph nodes={nodes} edges={edges} label="Graph of the course" dense />
+  <Graph nodes={nodes} edges={edges} label="Graph of the course" />
   <script is:inline data-astro-rerun define:vars={{ weeks }}>
     const d = new Date();
     for (const [href, date] of weeks) {

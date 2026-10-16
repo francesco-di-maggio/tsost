@@ -42,6 +42,9 @@ export async function graph() {
 }
 
 // Force-directed layout (Fruchterman–Reingold), deterministic: same input, same picture.
+const GRAVITY = 0.6;
+const ASPECT = (WIDTH - PAD.left - PAD.right) / (HEIGHT - 2 * PAD.y) + 0.6;
+
 export function layout(nodes: Node[], edges: Edge[]) {
   const k = Math.sqrt((WIDTH * HEIGHT) / nodes.length) * 0.9;
   nodes.forEach((n, i) => {
@@ -66,12 +69,12 @@ export function layout(nodes: Node[], edges: Edge[]) {
       dx.set(a, dx.get(a)! - (x / d) * f); dy.set(a, dy.get(a)! - (y / d) * f);
       dx.set(b, dx.get(b)! + (x / d) * f); dy.set(b, dy.get(b)! + (y / d) * f);
     }
-    // A weak pull toward the centre (the project dot), so loosely linked dots do not drift off and squeeze the rest.
+    // Centring, as in d3's forceX and forceY: every dot is pulled toward the centre (the project dot), more strongly
+    // vertically, so the graph takes the frame's wide shape and loosely linked dots do not drift off.
     const c = nodes[0];
     for (const n of nodes) {
-      const x = n.x - c.x, y = n.y - c.y, d = Math.max(Math.hypot(x, y), 0.01), f = (0.08 * d * d) / k;
-      dx.set(n, dx.get(n)! - (x / d) * f);
-      dy.set(n, dy.get(n)! - (y / d) * f);
+      dx.set(n, dx.get(n)! - (n.x - c.x) * GRAVITY);
+      dy.set(n, dy.get(n)! - (n.y - c.y) * GRAVITY * ASPECT);
     }
     for (const n of nodes) {
       if (n.kind === "project") continue;
