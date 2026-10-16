@@ -1,0 +1,20 @@
+---
+import Base from "../../layouts/Base.astro";
+import List from "../../components/List.astro";
+import { TYPES } from "../../items";
+import { byLayer } from "../../works";
+
+const groups = await byLayer();
+---
+<Base title={TYPES.works.title} description={TYPES.works.caption}>
+  <h1>{TYPES.works.title}</h1>
+  <p class="lead">{TYPES.works.caption}</p>
+  {groups.map((g) => (
+    <Fragment>
+      <h2 class="label">{g.title}</h2>
+      <div class="panel lists">
+        <List items={g.items} aside={(i) => String(i.year ?? "")} on={(i) => i.current} />
+      </div>
+    </Fragment>
+  ))}
+</Base>

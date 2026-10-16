@@ -1,6 +1,6 @@
 import { TYPES, authors, items } from "../items";
 
-// One entry per TESI part, publication and course. `find` is what the search matches; it is not shown.
+// One entry per work, publication and course. `find` is what the search matches; it is not shown.
 export async function GET() {
   const list = (await items()).map((i) => {
     const d = i.entry.data as { authors?: string[]; equal?: number; venue?: string };

@@ -35,14 +35,15 @@ const publications = defineCollection({
   }),
 });
 
-// TESI: the toolkit. Each part sits in one layer; nodes have numbered iterations.
-const tesi = defineCollection({
-  loader: load("tesi"),
+// Tools and toolkits, by layer. Parts of a work name it as `parent`; nodes have numbered iterations.
+const works = defineCollection({
+  loader: load("works"),
   schema: z.object({
     ...base,
-    layer: z.enum(["thing", "smart", "sound"]),
+    layer: z.enum(["toolkit", "node", "network", "mapping", "comparison"]),
+    parent: z.string().optional(),
     iteration: z.number().optional(),
-    status: z.enum(["current", "exploring", "earlier"]),
+    status: z.enum(["current", "exploring", "earlier"]).optional(),
     start: z.coerce.date().optional(),
     end: z.coerce.date().optional(),
     specs: z.array(z.tuple([z.string(), z.string()])).default([]),
@@ -66,4 +67,4 @@ const courses = defineCollection({
   }),
 });
 
-export const collections = { publications, tesi, courses };
+export const collections = { works, publications, courses };

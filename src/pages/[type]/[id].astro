@@ -3,8 +3,9 @@ import { render } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import Facts from "../../components/Facts.astro";
 import ItemRow from "../../components/ItemRow.astro";
-import { LAYERS, TYPES, facts, items, related, type Item } from "../../items";
-import { part, partLabel } from "../../tesi";
+import List from "../../components/List.astro";
+import { TYPES, facts, items, related, type Item } from "../../items";
+import { byLayer, work } from "../../works";
 import { url } from "../../url";
 import { bibtex } from "../../bibtex";
 
@@ -15,10 +16,12 @@ export async function getStaticPaths() {
 const { item } = Astro.props as { item: Item };
 const { Content } = await render(item.entry);
 const links = await related(item);
+const parent = item.type === "works" ? (await items()).find((i) => i.key === `works/${work(item).parent}`) : undefined;
+const parts = item.type === "works" ? await byLayer(item.id) : [];
 ---
 <Base title={item.title} description={item.summary}>
-  {item.type === "tesi" ? (
-    <span class="label"><a class="crumb" href={url("tesi/")}>TESI</a> · <a class="crumb" href={url(`tesi/${LAYERS[part(item).layer].slug}/`)}>{LAYERS[part(item).layer].title}</a> · {partLabel(item)}</span>
+  {item.type === "works" ? (
+    <span class="label"><a class="crumb" href={url("works/")}>Works</a>{parent && <Fragment> · <a class="crumb" href={parent.href}>{parent.title}</a></Fragment>} · {item.label}</span>
   ) : (
     <span class="label">{TYPES[item.type].title} · {item.label}</span>
   )}
@@ -28,6 +31,15 @@ const links = await related(item);
   <Facts rows={facts(item.entry)} />
 
   {item.entry.body?.trim() && <div class="prose body"><Content /></div>}
+
+  {parts.map((g) => (
+    <Fragment>
+      <h2 class="label">{g.title}</h2>
+      <div class="panel lists">
+        <List items={g.items} aside={(i) => work(i).status ?? ""} on={(i) => i.current} />
+      </div>
+    </Fragment>
+  ))}
 
   {item.entry.collection === "publications" && (
     <details class="panel bib">

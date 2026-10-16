@@ -2,7 +2,7 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import { url } from "./url";
 
 export const TYPES = {
-  tesi: { one: "TESI", title: "TESI", caption: "Tangible and Embodied Sound Interaction. Thing, smart, sound." },
+  works: { one: "Work", title: "Works", caption: "Tools and toolkits, by layer." },
   publications: { one: "Publication", title: "Publications", caption: "Papers, workshops and book chapters." },
   courses: { one: "Course", title: "Courses", caption: "Courses at TU/e Industrial Design." },
 } as const;
@@ -33,18 +33,20 @@ const strip = (u: string) => u.replace(/^https:\/\//, "").replace(/\/$/, "");
 // A file in public/, or a full URL.
 const asset = (path: string) => (/^https?:/.test(path) ? path : `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${path}`);
 
-// TESI components, as defined in the TEI '26 paper.
+// The toolkit, then its layers, as in the TEI '26 paper (hardware, middleware, software) and the thesis chapters.
 export const LAYERS = {
-  thing: { slug: "hardware", title: "Hardware", caption: "A device integrating multiple sensors." },
-  smart: { slug: "middleware", title: "Middleware", caption: "Network communication." },
-  sound: { slug: "software", title: "Software", caption: "Real-time sensor-to-sound mapping." },
+  toolkit: { title: "Toolkit" },
+  node: { title: "Node" },
+  network: { title: "Network" },
+  mapping: { title: "Mapping" },
+  comparison: { title: "Comparison" },
 } as const;
 export type Layer = keyof typeof LAYERS;
 
 function kind(entry: Entry) {
   switch (entry.collection) {
     case "publications": return `${entry.data.short} · ${entry.data.kind}`;
-    case "tesi": return [LAYERS[entry.data.layer].title, entry.data.status].join(" · ");
+    case "works": return [LAYERS[entry.data.layer].title, entry.data.status].filter(Boolean).join(" · ");
     case "courses": return [entry.data.start.getUTCFullYear(), entry.data.status].filter(Boolean).join(" · ");
   }
 }
@@ -52,7 +54,7 @@ function kind(entry: Entry) {
 function label(entry: Entry) {
   switch (entry.collection) {
     case "publications": return [entry.data.kind, entry.data.year, entry.data.status].filter(Boolean).join(" · ");
-    case "tesi": return kind(entry);
+    case "works": return kind(entry);
     case "courses": return [entry.data.code, entry.data.start.getUTCFullYear(), entry.data.status].filter(Boolean).join(" · ");
   }
 }
@@ -61,7 +63,7 @@ function label(entry: Entry) {
 function when(entry: Entry): { date?: Date; year?: number; end?: Date } {
   switch (entry.collection) {
     case "publications": return { date: entry.data.date, year: entry.data.year };
-    case "tesi": {
+    case "works": {
       const { start, end, status } = entry.data;
       if (!start) return {};
       return { date: start, year: start.getUTCFullYear(), end: end ?? (status === "current" ? new Date() : undefined) };
@@ -79,7 +81,7 @@ function toItem(entry: Entry): Item {
     summary: entry.data.summary,
     label: label(entry),
     kind: kind(entry),
-    current: entry.collection === "tesi" && entry.data.status === "current",
+    current: entry.collection === "works" && entry.data.status === "current",
     href: url(`${entry.collection}/${entry.id}/`),
     related: entry.data.related,
     entry,
@@ -142,13 +144,14 @@ export function facts(entry: Entry): [string, string, string?][] {
         ...(d.note ? [["Note", d.note] as [string, string]] : []),
       ];
     }
-    case "tesi": {
+    case "works": {
       const d = entry.data;
-      const period = d.start && `${month(d.start)} – ${d.end ? month(d.end) : d.status === "current" ? "present" : ""}`;
+      const to = d.end ? month(d.end) : d.status === "current" ? "present" : undefined;
+      const period = d.start && (to ? `${month(d.start)} – ${to}` : month(d.start));
       return [
         ["Layer", LAYERS[d.layer].title],
         ...(d.iteration ? [["Iteration", String(d.iteration)] as [string, string]] : []),
-        ["Status", d.status[0].toUpperCase() + d.status.slice(1)],
+        ...(d.status ? [["Status", d.status[0].toUpperCase() + d.status.slice(1)] as [string, string]] : []),
         ...(period ? [["Period", period] as [string, string]] : []),
         ...d.specs,
         ...(d.site ? [["Site", strip(d.site), d.site] as [string, string, string]] : []),

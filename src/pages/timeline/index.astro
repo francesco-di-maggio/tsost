@@ -4,7 +4,6 @@ import { TYPES, items } from "../../items";
 import { START, END } from "../../project";
 
 const MONTH = 36;
-const LANE = 72;
 const CARD = 190;
 const AXIS = 60;
 
@@ -14,7 +13,8 @@ const origin = new Date(Date.UTC(START.getUTCFullYear(), START.getUTCMonth(), 1)
 const x = (d: Date) => Math.round(monthsBetween(origin, d) * MONTH) + 24;
 const width = x(END) + CARD + 24;
 
-const dated = (await items()).filter((i) => i.date);
+// Within the research period: earlier work (modulo, 2023) stays off the axis.
+const dated = (await items()).filter((i) => i.date && i.date >= START);
 
 // Oldest first, each card in the lowest lane where it does not overlap the previous card.
 const lanes: number[] = [];
@@ -25,7 +25,8 @@ const events = [...dated].reverse().map((item) => {
   lanes[lane] = left + CARD;
   return { item, left, lane, span: item.end ? x(item.end) - left : 0 };
 });
-const height = AXIS + (lanes.length + 1) * LANE + 24;
+// Lanes are `--lane` apart (72px, down to 60px to fit the window); heights below are written for that.
+const lanesUp = (n: number, extra: number) => `calc(${n} * var(--lane) + ${extra}px)`;
 
 const years: number[] = [];
 for (let y = origin.getUTCFullYear() + 1; y <= END.getUTCFullYear(); y++) years.push(y);
@@ -40,7 +41,7 @@ const year = (i: number) => dated[i].date!.getUTCFullYear();
   <p class="lead">June 2024 to now, and planned events.</p>
 
   <div class="panel tl" data-origin={origin.toISOString()} data-month={MONTH}>
-    <div class="track" style={`width:${width}px;height:${height}px`}>
+    <div class="track" data-lanes={lanes.length + 1} style={`width:${width}px;height:${lanesUp(lanes.length + 1, AXIS + 24)}`}>
       <div class="axis" style={`bottom:${AXIS}px;width:${x(END) - 24}px`}></div>
       {months.map((m) => (
         <span class:list={["month", { jan: m.getUTCMonth() === 0 }]} style={`left:${x(m)}px;bottom:${AXIS - 22}px`}>{NAMES[m.getUTCMonth()]}</span>
@@ -49,13 +50,13 @@ const year = (i: number) => dated[i].date!.getUTCFullYear();
         <span class="year label" style={`left:${x(new Date(Date.UTC(y, 0, 1)))}px;bottom:${AXIS - 46}px`}>{y}</span>
       ))}
       <span class="start label" style={`left:24px;bottom:${AXIS - 46}px`}>Start</span>
-      <div class="now" style={`left:${now}px;bottom:${AXIS - 8}px;height:${height - AXIS - 8}px`}><span class="label">Now</span></div>
+      <div class="now" style={`left:${now}px;bottom:${AXIS - 8}px;height:${lanesUp(lanes.length + 1, 16)}`}><span class="label">Now</span></div>
       <i class="today" style={`left:${now}px;bottom:${AXIS}px`}></i>
       {events.map(({ item, left, lane, span }) => (
         <Fragment>
           {span > 0 && <div class="span" style={`left:${left}px;width:${span}px;bottom:${AXIS - 2}px`}></div>}
-          <div class="stem" style={`left:${left}px;bottom:${AXIS}px;height:${(lane + 1) * LANE - 18}px`}></div>
-          <a class="event" href={item.href} style={`left:${left}px;bottom:${AXIS + (lane + 1) * LANE - 18}px;width:${CARD - 14}px`}>
+          <div class="stem" style={`left:${left}px;bottom:${AXIS}px;height:${lanesUp(lane + 1, -18)}`}></div>
+          <a class="event" href={item.href} style={`left:${left}px;bottom:${lanesUp(lane + 1, AXIS - 18)};width:${CARD - 14}px`}>
             <span class="label">{item.date!.toISOString().slice(0, 7)} · {TYPES[item.type].one}</span>
             <span class="t">{item.title}</span>
           </a>
@@ -81,6 +82,13 @@ const year = (i: number) => dated[i].date!.getUTCFullYear();
     <li class="ev start"><span class="label"><i class="dot"></i>{START.toISOString().slice(0, 7)} · Start</span></li>
   </ol>
 
+  <p class="hint key">
+    <span><i class="k past"></i>Event</span>
+    <span><i class="k planned"></i>Planned</span>
+    <span class="period"><i class="k span-key"></i>Period</span>
+    <span class="now-key"><i class="k today-key"></i>Now</span>
+  </p>
+
   <!-- Inline, so it runs before the first paint: no jump on load. Today's dot and line follow the calendar; "now" is scrolled into view; on phones, "now" goes above the newest event that has already happened. -->
   <script is:inline data-astro-rerun>
     (() => {
@@ -89,6 +97,21 @@ const year = (i: number) => dated[i].date!.getUTCFullYear();
       const left = Math.round(months * Number(tl.dataset.month)) + 24;
       for (const el of tl.querySelectorAll(".now, .today")) el.style.left = `${left}px`;
       tl.scrollLeft = left - tl.clientWidth * 0.6;
+      // Fit the window when it is a little short: tighten the lanes, never below 60px.
+      const track = tl.querySelector(".track");
+      window.tsostFit = () => {
+        if (!track.isConnected || !tl.offsetParent) return;
+        track.style.setProperty("--lane", "72px");
+        const over = document.documentElement.scrollHeight - innerHeight;
+        if (over > 0) track.style.setProperty("--lane", `${Math.max(60, 72 - over / Number(track.dataset.lanes))}px`);
+      };
+      window.tsostFit();
+      // Again once the footer is on the page, and on resize.
+      if (!window.tsostFitting) {
+        window.tsostFitting = true;
+        addEventListener("resize", () => window.tsostFit());
+        document.addEventListener("astro:page-load", () => window.tsostFit());
+      }
       const past = [...document.querySelectorAll(".tlv .ev[data-date]")].find((li) => new Date(li.dataset.date) <= d);
       const row = document.querySelector(".tlv .today-row");
       past?.before(row);
@@ -100,8 +123,9 @@ const year = (i: number) => dated[i].date!.getUTCFullYear();
 
 
 <style>
-  .tl { overflow-x: auto; padding: 0; scrollbar-width: thin; }
-  .track { position: relative; }
+  /* Like the graph, the panel takes the free height; the track sits at its bottom, so spare room is open sky above. */
+  .tl { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; overflow-x: auto; padding: 0; scrollbar-width: thin; }
+  .track { --lane: 72px; position: relative; flex: none; }
   .axis { position: absolute; left: 24px; height: 1px; background: var(--dim); }
   .year, .start { position: absolute; }
   .month { position: absolute; padding-left: 3px; border-left: 1px solid var(--line); font: 10px/14px var(--mono); color: var(--dim); }
@@ -138,6 +162,13 @@ const year = (i: number) => dated[i].date!.getUTCFullYear();
   .tlv .label { display: block; }
   .tlv .t { display: block; font-size: 15px; line-height: 20px; font-weight: 600; }
   .tlv a:hover .t { text-decoration: underline; text-decoration-color: var(--dim); }
-  @media (max-width: 480px) { .tl { display: none; } .tlv { display: block; } }
+  .key { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+  .key span { display: inline-flex; align-items: center; gap: 8px; }
+  .k { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--ink); }
+  .k.planned { background: none; border: 1.5px solid var(--ink); }
+  .k.span-key { width: 18px; height: 5px; border-radius: 3px; opacity: 0.35; }
+  .k.today-key { background: var(--accent); }
+  .now-key { color: var(--accent); }
+  @media (max-width: 480px) { .tl { display: none; } .tlv { display: block; } .key .period { display: none; } }
   .event:hover .t { text-decoration: underline; text-decoration-color: var(--dim); }
 </style>

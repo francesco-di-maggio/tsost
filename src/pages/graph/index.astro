@@ -1,10 +1,9 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { graph, WIDTH, HEIGHT } from "../../graph";
+import { graph, R, WIDTH, HEIGHT } from "../../graph";
 
 const { nodes, edges } = await graph();
 const at = new Map(nodes.map((n) => [n.id, n]));
-const R = { project: 9, type: 6, item: 4 };
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 <Base title="Graph" description="The site as a network: sections, items and the references between them.">
@@ -14,10 +13,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} preserveAspectRatio="xMidYMid slice" role="img" aria-label="Graph of the site">
       {edges.map((e) => {
         const a = at.get(e.a)!, b = at.get(e.b)!;
-        return <line class={e.kind} x1={a.x} y1={a.y} x2={b.x} y2={b.y} />;
+        return <line class={e.kind} data-a={e.a} data-b={e.b} x1={a.x} y1={a.y} x2={b.x} y2={b.y} />;
       })}
       {nodes.map((n) => (
-        <a href={n.href} class:list={[n.kind, { on: n.current }]} data-path={n.href.slice(base.length) || "/"} data-x={n.x} data-y={n.y}>
+        <a href={n.href} class:list={[n.kind, { on: n.current }]} data-id={n.id} data-path={n.href.slice(base.length) || "/"} data-x={n.x} data-y={n.y} data-oy={n.y}>
           <circle cx={n.x} cy={n.y} r={R[n.kind]} />
           <text x={n.x + R[n.kind] + 6} y={n.y + 4}>{n.label}</text>
         </a>
@@ -82,8 +81,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     ring.addEventListener("animationend", () => ring.remove());
   }
 
-  // Zoom and pan inside the graph, never past its edges. The start view shows the whole graph height;
-  // on narrow screens the sides are a swipe away. Touch: two fingers zoom and move; one finger moves,
+  // The frame fills the window below the title. Zoom and pan inside the graph, never past its edges.
+  // The start view shows the whole graph, centred; on narrow screens the whole height, with the sides a swipe away. Touch: two fingers zoom and move; one finger moves,
   // except a vertical swipe while the whole height is visible, which scrolls the page.
   // Mouse: ctrl + scroll or trackpad pinch to zoom; drag or scroll to move once zoomed. Double-click or double-tap to go back.
   // Refit when the width changes (rotation), not when the phone's address bar shows or hides.
@@ -95,13 +94,40 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     if (!svg || svg.dataset.zoom) return;
     svg.dataset.zoom = "1";
     const [x0, y0, w0, h0] = svg.getAttribute("viewBox")!.split(" ").map(Number);
+    // The graph's height: taller than built when spread to fill a tall frame.
+    let gy = y0, gh = h0;
     let start = { x: x0, y: y0, w: w0, h: h0 };
     let box = { ...start };
     const zoomed = () => box.w < start.w - 0.01;
-    const tall = () => box.h >= h0 - 0.01;
+    const tall = () => box.h >= gh - 0.01;
+
+    // Move a dot to a point in the graph; its edges, label and live devices follow.
+    const placeAt = (a: SVGAElement, x: number, y: number) => {
+      const id = a.dataset.id!;
+      const c = a.querySelector("circle")!, t = a.querySelector("text")!, r = Number(c.getAttribute("r"));
+      a.dataset.x = String(x);
+      a.dataset.y = String(y);
+      c.setAttribute("cx", String(x));
+      c.setAttribute("cy", String(y));
+      t.setAttribute("x", String(x + r + 6));
+      t.setAttribute("y", String(y + 4));
+      svg.querySelectorAll(`line[data-a="${id}"]`).forEach((l) => { l.setAttribute("x1", String(x)); l.setAttribute("y1", String(y)); });
+      svg.querySelectorAll(`line[data-b="${id}"]`).forEach((l) => { l.setAttribute("x2", String(x)); l.setAttribute("y2", String(y)); });
+    };
+    // Spread the rows apart, up to 1.5 times, to use a frame taller than the graph. Text keeps its size.
+    const spread = (k: number) => {
+      const mid = y0 + h0 / 2;
+      svg.querySelectorAll<SVGAElement>("a[data-id]").forEach((a) => placeAt(a, Number(a.dataset.x), mid + (Number(a.dataset.oy) - mid) * k));
+      gy = mid - (h0 * k) / 2;
+      gh = h0 * k;
+      draw();
+    };
+    // Along an axis where the view is larger than the graph, the graph stays centred.
+    const clamp = (v: number, lo: number, size: number, view: number) =>
+      view >= size ? lo + (size - view) / 2 : Math.min(Math.max(v, lo), lo + size - view);
     const set = () => {
-      box.x = Math.min(Math.max(box.x, x0), x0 + w0 - box.w);
-      box.y = Math.min(Math.max(box.y, y0), y0 + h0 - box.h);
+      box.x = clamp(box.x, x0, w0, box.w);
+      box.y = clamp(box.y, gy, gh, box.h);
       svg.setAttribute("viewBox", `${box.x} ${box.y} ${box.w} ${box.h}`);
       svg.classList.toggle("free", !tall());
     };
@@ -109,7 +135,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       width = innerWidth;
       const r = svg.getBoundingClientRect();
       const aspect = r.width / r.height;
-      start = aspect < w0 / h0 ? { x: x0 + (w0 - h0 * aspect) / 2, y: y0, w: h0 * aspect, h: h0 } : { x: x0, y: y0, w: w0, h: h0 };
+      const narrow = r.width <= 600;
+      spread(narrow ? 1 : Math.min(Math.max(w0 / aspect / h0, 1), 1.5));
+      start = aspect < w0 / gh && !narrow ? { x: x0, y: gy, w: w0, h: w0 / aspect } : { x: x0, y: gy, w: gh * aspect, h: gh };
       box = { ...start };
       set();
     };
@@ -140,8 +168,24 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       e.preventDefault();
     }, { passive: false });
 
+    // Drag a dot to move it. Positions reset on reload.
+    let grab: { a: SVGAElement; x: number; y: number } | null = null;
+    const dot = (t: EventTarget | null) => (t as Element | null)?.closest<SVGAElement>("a[data-id]") ?? null;
+    const place = (a: SVGAElement, cx: number, cy: number) => {
+      const p = toSvg(cx, cy);
+      a.dataset.oy = String((p.y - (y0 + h0 / 2)) / (gh / h0) + y0 + h0 / 2);
+      placeAt(a, p.x, p.y);
+      draw();
+    };
+    // Past 4 px a press is a drag, not a click.
+    const drag = (cx: number, cy: number) => {
+      if (!grab) return;
+      if (moved < 4) moved = Math.abs(cx - grab.x) + Math.abs(cy - grab.y);
+      if (moved >= 4) place(grab.a, cx, cy);
+    };
+
     // Touch: midpoint and spread of the fingers on the graph.
-    let moved = 0, mode: "graph" | "page" | null = null;
+    let moved = 0, mode: "graph" | "page" | "dot" | null = null;
     let last = { x: 0, y: 0, d: 0, n: 0 }, first = { x: 0, y: 0 };
     const sum = (t: TouchList) => {
       const a = t[0], b = t[1] ?? t[0];
@@ -149,7 +193,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     };
     svg.addEventListener("touchstart", (e) => {
       last = sum(e.touches);
-      if (e.touches.length === 1) { moved = 0; mode = null; first = { x: last.x, y: last.y }; }
+      const a = e.touches.length === 1 ? dot(e.target) : null;
+      if (a) { moved = 0; mode = "dot"; grab = { a, x: last.x, y: last.y }; }
+      else if (e.touches.length === 1) { grab = null; moved = 0; mode = null; first = { x: last.x, y: last.y }; }
       else { mode = "graph"; e.preventDefault(); }
     }, { passive: false });
     svg.addEventListener("touchmove", (e) => {
@@ -161,6 +207,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       }
       if (mode === "page") return;
       e.preventDefault();
+      if (mode === "dot") { if (e.touches.length === 1) drag(s.x, s.y); return; }
       moved = 99;
       if (s.n !== last.n) { last = s; return; }
       if (s.n === 2 && last.d && s.d) zoom(last.d / s.d, s.x, s.y);
@@ -175,23 +222,31 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       else tap = e.timeStamp;
     }, { passive: false });
 
-    // Mouse: drag to move once zoomed.
-    let drag: { x: number; y: number } | null = null;
+    // Mouse: drag a dot, or drag the graph once zoomed.
+    let held: { x: number; y: number } | null = null;
     svg.addEventListener("pointerdown", (e) => {
       if (e.pointerType !== "mouse") return;
       moved = 0;
-      drag = zoomed() ? { x: e.clientX, y: e.clientY } : null;
+      const a = dot(e.target);
+      grab = a ? { a, x: e.clientX, y: e.clientY } : null;
+      held = !a && zoomed() ? { x: e.clientX, y: e.clientY } : null;
     });
     svg.addEventListener("pointermove", (e) => {
-      if (!drag) return;
-      const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      if (e.pointerType !== "mouse") return;
+      if (grab) {
+        drag(e.clientX, e.clientY);
+        if (moved >= 4) svg.setPointerCapture(e.pointerId);
+        return;
+      }
+      if (!held) return;
+      const dx = e.clientX - held.x, dy = e.clientY - held.y;
       moved += Math.abs(dx) + Math.abs(dy);
       if (moved < 4) return;
       svg.setPointerCapture(e.pointerId);
-      drag = { x: e.clientX, y: e.clientY };
+      held = { x: e.clientX, y: e.clientY };
       pan(dx, dy);
     });
-    svg.addEventListener("pointerup", () => { drag = null; });
+    svg.addEventListener("pointerup", () => { held = null; grab = null; });
 
     // A drag is not a click on a node.
     svg.addEventListener("click", (e) => { if (moved >= 4) e.preventDefault(); }, true);
@@ -205,9 +260,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 </script>
 
 <style>
-  .graph { position: relative; overflow: hidden; padding: 8px; }
-  svg { display: block; width: 100%; height: auto; touch-action: pan-y; user-select: none; }
-  @media (max-width: 600px) { svg { aspect-ratio: 4 / 5; } }
+  .graph { position: relative; flex: 1; min-height: 240px; overflow: hidden; }
+  svg { position: absolute; inset: 8px; width: calc(100% - 16px); height: calc(100% - 16px); display: block; touch-action: pan-y; user-select: none; }
   svg.free { touch-action: none; cursor: grab; }
   svg.free:active { cursor: grabbing; }
   line.tree { stroke: var(--line); stroke-width: 1; }
@@ -220,6 +274,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   .on circle { fill: var(--accent); stroke: var(--accent); }
   a:hover text { fill: var(--ink); text-decoration: underline; }
   a:hover circle { stroke: var(--accent); }
+  a[data-id] { cursor: grab; }
   :global(#live .visitor) { fill: var(--ok); stroke: none; }
   :global(#live .visitor.self) { fill: var(--surface); stroke: var(--accent); stroke-width: 1.5; }
   :global(#ripples .ripple) { fill: none; stroke: var(--ink); stroke-width: 1; transform-box: fill-box; transform-origin: center;

@@ -5,8 +5,8 @@ import Citation from "../../components/Citation.astro";
 import { TYPES, itemsOf, types, type Type } from "../../items";
 
 export async function getStaticPaths() {
-  // TESI has its own page: parts by layer.
-  return (await types()).filter((t) => t !== "tesi").map((type) => ({ params: { type } }));
+  // Works has its own page: by layer.
+  return (await types()).filter((t) => t !== "works").map((type) => ({ params: { type } }));
 }
 
 const type = Astro.params.type as Type;

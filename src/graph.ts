@@ -4,6 +4,7 @@ import { url } from "./url";
 export type Node = { id: string; label: string; kind: "project" | "type" | "item"; href: string; x: number; y: number; current?: boolean };
 export type Edge = { a: string; b: string; kind: "tree" | "ref" };
 
+export const R = { project: 9, type: 6, item: 4 };
 export const WIDTH = 640;
 export const HEIGHT = 480;
 const PAD = { left: 40, right: 210, y: 40 };
@@ -24,12 +25,14 @@ export async function graph() {
   }
   for (const item of all) {
     nodes.push({ id: item.key, label: short(item.title), kind: "item", href: item.href, x: 0, y: 0, current: item.current });
-    edges.push({ a: item.type, b: item.key, kind: "tree" });
+    const parent = (item.entry.data as { parent?: string }).parent;
+    edges.push({ a: parent ? `${item.type}/${parent}` : item.type, b: item.key, kind: "tree" });
     for (const key of item.related) {
       if (!edges.some((e) => e.kind === "ref" && e.a === key && e.b === item.key)) edges.push({ a: item.key, b: key, kind: "ref" });
     }
   }
   layout(nodes, edges);
+  separate(nodes);
   return { nodes, edges };
 }
 
@@ -73,5 +76,42 @@ function layout(nodes: Node[], edges: Edge[]) {
   for (const n of nodes) {
     n.x = PAD.left + (n.x - x0) * s + (w - (x1 - x0) * s) / 2;
     n.y = PAD.y + (n.y - y0) * s + (h - (y1 - y0) * s) / 2;
+  }
+}
+
+// Each node's dot and label as a box. Labels are 11px mono (0.6em a character); sections add letter spacing.
+const CHAR = { project: 7.5, type: 7.5, item: 6.6 };
+const box = (n: Node) => ({
+  x0: n.x - R[n.kind] - 3,
+  x1: n.x + R[n.kind] + 6 + n.label.length * CHAR[n.kind],
+  y0: n.y - 9,
+  y1: n.y + 9,
+});
+
+// Push overlapping boxes apart along the shorter overlap, within the frame. TSOST stays put.
+function separate(nodes: Node[]) {
+  for (let pass = 0; pass < 300; pass++) {
+    let moved = false;
+    for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) {
+      const a = nodes[i], b = nodes[j], p = box(a), q = box(b);
+      const ox = Math.min(p.x1, q.x1) - Math.max(p.x0, q.x0);
+      const oy = Math.min(p.y1, q.y1) - Math.max(p.y0, q.y0);
+      if (ox <= 0 || oy <= 0) continue;
+      moved = true;
+      const [ka, kb] = a.kind === "project" ? [0, 1] : b.kind === "project" ? [1, 0] : [0.5, 0.5];
+      if (oy < ox) {
+        const d = (a.y < b.y ? -1 : 1) * (oy + 1);
+        a.y += d * ka; b.y -= d * kb;
+      } else {
+        const d = (a.x < b.x ? -1 : 1) * (ox + 1);
+        a.x += d * ka; b.x -= d * kb;
+      }
+    }
+    for (const n of nodes) {
+      const w = box(n).x1 - n.x;
+      n.x = Math.min(Math.max(n.x, 16), WIDTH - w - 4);
+      n.y = Math.min(Math.max(n.y, 16), HEIGHT - 16);
+    }
+    if (!moved) break;
   }
 }

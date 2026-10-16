@@ -14,7 +14,7 @@ const { title, description = "Making the invisible audible through tangible and 
 const pageTitle = title ? `${title} · TSOST` : "TSOST · The Sound of Smart Things";
 const path = Astro.url.pathname;
 const nav = [
-  ...(await Promise.all((await types()).map(async (t) => ({ path: `${t}/`, title: TYPES[t].title, count: (await itemsOf(t)).length })))),
+  ...(await Promise.all((await types()).map(async (t) => ({ path: `${t}/`, title: TYPES[t].title, count: (await itemsOf(t)).filter((i) => !(i.entry.data as { parent?: string }).parent).length })))),
   { path: "timeline/", title: "Timeline" },
   { path: "graph/", title: "Graph" },
 ];
