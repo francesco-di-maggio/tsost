@@ -7,7 +7,8 @@ export type Edge = { a: string; b: string; kind: "tree" | "ref" };
 export const R = { project: 9, type: 6, item: 4 };
 export const WIDTH = 640;
 export const HEIGHT = 480;
-const PAD = { left: 40, right: 210, y: 40 };
+// Room on the right for the labels of the rightmost dots; separate() keeps every label inside the frame.
+const PAD = { left: 40, right: 120, y: 40 };
 
 const cut = (text: string) => (text.length > 32 ? text.slice(0, 31) + "…" : text);
 export const short = (title: string) => cut(title.split(":")[0]);
@@ -76,10 +77,11 @@ export function layout(nodes: Node[], edges: Edge[]) {
   const xs = nodes.map((n) => n.x), ys = nodes.map((n) => n.y);
   const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
   const w = WIDTH - PAD.left - PAD.right, h = HEIGHT - 2 * PAD.y;
-  const s = Math.min(w / (x1 - x0 || 1), h / (y1 - y0 || 1));
+  // Fill the frame in both directions: the links stay, only the proportions change.
+  const sx = w / (x1 - x0 || 1), sy = h / (y1 - y0 || 1);
   for (const n of nodes) {
-    n.x = PAD.left + (n.x - x0) * s + (w - (x1 - x0) * s) / 2;
-    n.y = PAD.y + (n.y - y0) * s + (h - (y1 - y0) * s) / 2;
+    n.x = PAD.left + (n.x - x0) * sx;
+    n.y = PAD.y + (n.y - y0) * sy;
   }
 }
 

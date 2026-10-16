@@ -2,14 +2,14 @@
 import { R, WIDTH, HEIGHT, type Node, type Edge } from "../graph";
 
 // The graph frame: dots, lines, drag with springs, zoom and pan. Live devices are drawn when the node is connected.
-// Quiet: for dense graphs, as in Obsidian. Thin dim lines; note labels show on hover and when zoomed in.
-interface Props { nodes: Node[]; edges: Edge[]; label: string; quiet?: boolean }
-const { nodes, edges, label, quiet = false } = Astro.props;
+// Dense: many links (the course). Links between items are drawn thin and dim, so the labels stay readable.
+interface Props { nodes: Node[]; edges: Edge[]; label: string; dense?: boolean }
+const { nodes, edges, label, dense = false } = Astro.props;
 const at = new Map(nodes.map((n) => [n.id, n]));
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 <div class="panel graph">
-  <svg class:list={{ quiet }} viewBox={`0 0 ${WIDTH} ${HEIGHT}`} preserveAspectRatio="xMidYMid slice" role="img" aria-label={label}>
+  <svg class:list={{ dense }} viewBox={`0 0 ${WIDTH} ${HEIGHT}`} preserveAspectRatio="xMidYMid slice" role="img" aria-label={label}>
     {edges.map((e) => {
       const a = at.get(e.a)!, b = at.get(e.b)!;
       return <line class={e.kind} data-a={e.a} data-b={e.b} x1={a.x} y1={a.y} x2={b.x} y2={b.y} />;
@@ -130,7 +130,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       box.x = clamp(box.x, x0, w0, box.w);
       box.y = clamp(box.y, gy, gh, box.h);
       svg.setAttribute("viewBox", `${box.x} ${box.y} ${box.w} ${box.h}`);
-      svg.classList.toggle("near", box.w < start.w * 0.6);
       svg.classList.toggle("free", !tall());
     };
     const fit = () => {
@@ -325,9 +324,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   .type text, .project text { letter-spacing: 0.08em; text-transform: uppercase; }
   .item text { fill: var(--dim); }
   .on circle { fill: var(--accent); stroke: var(--accent); }
-  .quiet line.ref { stroke: var(--dim); stroke-width: 0.75; opacity: 0.6; }
-  .quiet .item text { opacity: 0; transition: opacity 150ms; }
-  .quiet.near .item text, .quiet a:hover text, .quiet a:focus-visible text, .quiet .on text { opacity: 1; }
+  .dense line.ref { stroke: var(--dim); stroke-width: 0.75; opacity: 0.5; }
   a:hover text { fill: var(--ink); text-decoration: underline; }
   a:hover circle { stroke: var(--accent); }
   a[data-id] { cursor: grab; }
