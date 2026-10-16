@@ -1,14 +1,14 @@
 ---
 import { getEntry, render } from "astro:content";
-import Course from "../../layouts/Course.astro";
+import Base from "../../layouts/Base.astro";
 import Facts from "../../components/Facts.astro";
 
 const home = (await getEntry("course", "home"))!;
 const { Content } = await render(home);
 ---
-<Course>
+<Base title="Course" description="The Sound of Smart Things: an elective at TU/e Industrial Design on listening, sound design and distributed sound installations." course>
   <h1>{home.data.title}</h1>
   <p class="lead">An elective on listening, sound design and distributed sound installations.</p>
   {home.data.facts.length > 0 && <Facts rows={home.data.facts} />}
   <div class="prose body"><Content /></div>
-</Course>
+</Base>

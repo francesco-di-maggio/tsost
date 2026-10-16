@@ -37,7 +37,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     layer.replaceChildren();
     if (!state?.connected) return;
     const anchors = [...document.querySelectorAll<SVGAElement>("svg a[data-path]")];
-    const at = (path: string) => anchors.find((a) => a.dataset.path === path) ?? anchors.find((a) => a.dataset.path === "/")!;
+    // The page's own dot, else the closest section above it (a course page → Course), else the centre.
+    const at = (path: string) =>
+      anchors.find((a) => a.dataset.path === path) ??
+      anchors.filter((a) => a.dataset.path !== "/" && path.startsWith(a.dataset.path!)).sort((a, b) => b.dataset.path!.length - a.dataset.path!.length)[0] ??
+      anchors.find((a) => a.dataset.path === "/")!;
     const groups = new Map<SVGAElement, string[]>();
     for (const [name, d] of state.list) {
       const a = at(d.path ?? "/");

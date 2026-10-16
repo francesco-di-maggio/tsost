@@ -1,0 +1,183 @@
+---
+// A timeline: horizontal on wide screens, a vertical list on phones. Used for the research (months) and the course (weeks).
+export type Moment = { date: Date; end?: Date; kind: string; title: string; href: string; week?: boolean };
+
+interface Props {
+  moments: Moment[]; // newest first
+  start: Date;
+  end: Date;
+  scale: "month" | "week";
+  startLabel?: string;
+}
+const { moments, start, end, scale, startLabel } = Astro.props;
+
+const DAY = 864e5;
+// Pixels per day: a month is 36 px on the research scale, a week 60 px on the course scale.
+const PX = scale === "month" ? (12 * 36) / 365.25 : 60 / 7;
+const CARD = 190;
+const AXIS = 60;
+
+const origin = scale === "month" ? new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), 1)) : start;
+const x = (d: Date) => Math.round(((d.valueOf() - origin.valueOf()) / DAY) * PX) + 24;
+const width = x(end) + CARD + 24;
+
+// Oldest first, each card in the lowest lane where it does not overlap the previous card.
+const lanes: number[] = [];
+const events = [...moments].reverse().map((m) => {
+  const left = x(m.date);
+  let lane = lanes.findIndex((right) => right < left);
+  if (lane === -1) lane = lanes.length;
+  lanes[lane] = left + CARD;
+  return { m, left, lane, span: m.end ? x(m.end) - left : 0 };
+});
+// Lanes are `--lane` apart (72px, down to 60px to fit the window); heights below are written for that.
+const lanesUp = (n: number, extra: number) => `calc(${n} * var(--lane) + ${extra}px)`;
+
+const years: number[] = [];
+for (let y = origin.getUTCFullYear() + 1; y <= end.getUTCFullYear(); y++) years.push(y);
+const months: Date[] = [];
+for (let d = new Date(Date.UTC(origin.getUTCFullYear(), origin.getUTCMonth() + (scale === "month" ? 0 : 1), 1)); d <= end; d = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1))) months.push(d);
+const NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const when = (d: Date) => d.toISOString().slice(0, scale === "month" ? 7 : 10);
+const year = (i: number) => moments[i].date.getUTCFullYear();
+const periods = moments.some((m) => m.end);
+const weeks = moments.some((m) => m.week);
+---
+<div class="panel tl" data-origin={origin.toISOString()} data-px={PX}>
+  <div class="track" data-lanes={lanes.length + 1} style={`width:${width}px;height:${lanesUp(lanes.length + 1, AXIS + 24)}`}>
+    <div class="axis" style={`bottom:${AXIS}px;width:${x(end) - 24}px`}></div>
+    {months.map((m) => (
+      <span class:list={["month", { jan: m.getUTCMonth() === 0 }]} style={`left:${x(m)}px;bottom:${AXIS - 22}px`}>{NAMES[m.getUTCMonth()]}</span>
+    ))}
+    {years.map((y) => (
+      <span class="year label" style={`left:${x(new Date(Date.UTC(y, 0, 1)))}px;bottom:${AXIS - 46}px`}>{y}</span>
+    ))}
+    <span class="start label" style={`left:24px;bottom:${AXIS - 46}px`}>{startLabel ?? origin.getUTCFullYear()}</span>
+    <div class="now" style={`left:24px;bottom:${AXIS - 8}px;height:${lanesUp(lanes.length + 1, 16)}`}><span class="label">Now</span></div>
+    <i class="today" style={`left:24px;bottom:${AXIS}px`}></i>
+    {events.map(({ m, left, lane, span }) => (
+      <Fragment>
+        {span > 0 && <div class="span" style={`left:${left}px;width:${span}px;bottom:${AXIS - 2}px`}></div>}
+        <div class="stem" style={`left:${left}px;bottom:${AXIS}px;height:${lanesUp(lane + 1, -18)}`}></div>
+        <a class:list={["event", { week: m.week }]} data-date={m.date.toISOString()} href={m.href} style={`left:${left}px;bottom:${lanesUp(lane + 1, AXIS - 18)};width:${CARD - 14}px`}>
+          <span class="label">{when(m.date)} · {m.kind}</span>
+          <span class="t">{m.title}</span>
+        </a>
+        <i class:list={["dot", { week: m.week }]} data-date={m.date.toISOString()} style={`left:${left}px;bottom:${AXIS}px`}></i>
+      </Fragment>
+    ))}
+  </div>
+</div>
+
+<ol class="panel tlv">
+  {moments.map((m, i) => (
+    <Fragment>
+      {(i === 0 || year(i) !== year(i - 1)) && <li class="year label">{year(i)}</li>}
+      <li class:list={["ev", { week: m.week }]} data-date={m.date.toISOString()}>
+        <a href={m.href}>
+          <span class="label"><i class="dot"></i>{when(m.date)} · {m.kind}</span>
+          <span class="t">{m.title}</span>
+        </a>
+      </li>
+    </Fragment>
+  ))}
+  <li class="ev today-row" hidden><span class="label"><i class="today"></i>Now</span></li>
+  {startLabel && <li class="ev start"><span class="label"><i class="dot"></i>{when(start)} · {startLabel}</span></li>}
+</ol>
+
+<p class="hint key">
+  <span><i class="k past"></i>Event</span>
+  <span><i class="k planned"></i>Planned</span>
+  {periods && <span class="period"><i class="k span-key"></i>Period</span>}
+  {weeks && <span><i class="k on"></i>This week</span>}
+  <span class="now-key"><i class="k today-key"></i>Now</span>
+</p>
+
+<!-- Inline, so it runs before the first paint: no jump on load. Today's dot and line follow the calendar; later dates are planned;
+     the week under way is orange; "now" is scrolled into view; on phones, "now" goes above the newest event that has already happened. -->
+<script is:inline data-astro-rerun>
+  (() => {
+    const tl = document.querySelector(".tl"), d = new Date(), origin = new Date(tl.dataset.origin);
+    const left = Math.round(((d - origin) / 864e5) * Number(tl.dataset.px)) + 24;
+    for (const el of tl.querySelectorAll(".now, .today")) el.style.left = `${left}px`;
+    tl.scrollLeft = left - tl.clientWidth * 0.6;
+    for (const el of document.querySelectorAll(".tl [data-date], .tlv [data-date]")) {
+      const t = new Date(el.dataset.date);
+      el.classList.toggle("planned", t > d);
+      el.classList.toggle("on", el.classList.contains("week") && t <= d && d - t < 7 * 864e5);
+    }
+    // Fit the window when it is a little short: tighten the lanes, never below 60px.
+    const track = tl.querySelector(".track");
+    window.tsostFit = () => {
+      if (!track.isConnected || !tl.offsetParent) return;
+      track.style.setProperty("--lane", "72px");
+      const over = document.documentElement.scrollHeight - innerHeight;
+      if (over > 0) track.style.setProperty("--lane", `${Math.max(60, 72 - over / Number(track.dataset.lanes))}px`);
+    };
+    window.tsostFit();
+    // Again once the footer is on the page, and on resize.
+    if (!window.tsostFitting) {
+      window.tsostFitting = true;
+      addEventListener("resize", () => window.tsostFit());
+      document.addEventListener("astro:page-load", () => window.tsostFit());
+    }
+    const past = [...document.querySelectorAll(".tlv .ev[data-date]")].find((li) => new Date(li.dataset.date) <= d);
+    const row = document.querySelector(".tlv .today-row");
+    (past ?? row.parentElement.lastElementChild).before(row);
+    row.hidden = false;
+  })();
+</script>
+
+<style>
+  /* Like the graph, the panel takes the free height; the track sits at its bottom, so spare room is open sky above. */
+  .tl { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; overflow-x: auto; padding: 0; scrollbar-width: thin; }
+  .track { --lane: 72px; position: relative; flex: none; }
+  .axis { position: absolute; left: 24px; height: 1px; background: var(--dim); }
+  .year, .start { position: absolute; }
+  .month { position: absolute; padding-left: 3px; border-left: 1px solid var(--line); font: 10px/14px var(--mono); color: var(--dim); }
+  .month.jan { border-left-color: var(--dim); color: var(--ink); }
+  .now { position: absolute; width: 0; border-left: 1px dashed var(--accent); }
+  .now .label { position: absolute; top: -2px; left: 6px; color: var(--accent); }
+  .span { position: absolute; height: 5px; border-radius: 3px; background: var(--ink); opacity: 0.35; }
+  .stem { position: absolute; width: 1px; background: var(--line); }
+  .dot { position: absolute; width: 9px; height: 9px; margin: 0 0 -4px -4px; border-radius: 50%; background: var(--ink); }
+  /* Today: the one living dot. */
+  .today { position: absolute; z-index: 2; width: 11px; height: 11px; margin: 0 0 -5px -5px; border-radius: 50%; background: var(--accent); }
+  .today::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 1px solid var(--accent); animation: pulse 2s ease-out infinite; }
+  @keyframes pulse { from { transform: scale(1); opacity: 0.8; } to { transform: scale(3); opacity: 0; } }
+  .dot.planned, .planned .dot { background: var(--surface); border: 1.5px solid var(--ink); }
+  /* The week under way (course). */
+  .on .dot, .dot.on { background: var(--accent); border: 0; }
+  .on > a .label, .event.on .label { color: var(--ink); }
+  .event { position: absolute; z-index: 1; display: block; padding: 0 6px 0 8px; border-left: 1px solid var(--ink);
+           background: var(--surface); text-decoration: none; }
+  .event .label { display: block; white-space: nowrap; }
+  .event .t { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+              font-size: 14px; line-height: 18px; font-weight: 600; }
+  .tlv { display: none; margin: 0; padding: 16px 16px 16px 18px; list-style: none; }
+  .tlv li { position: relative; padding-left: 22px; border-left: 1px solid var(--dim); }
+  .tlv .year { padding-top: 8px; padding-bottom: 4px; color: var(--ink); }
+  .tlv .year:first-child { padding-top: 0; }
+  .tlv .year::before { content: ""; position: absolute; left: -4px; top: calc(100% - 4px - 0.5lh); width: 7px; height: 1px; background: var(--ink); }
+  .tlv .ev { padding-bottom: 14px; }
+  .tlv .ev:last-child { padding-bottom: 0; border-left-color: transparent; }
+  /* Dots sit in the label's line, raised to the middle of its capitals, so they align in any font. */
+  .tlv .dot, .tlv .today { position: relative; display: inline-block; }
+  .tlv .dot { margin: 0 18px 0 -27px; vertical-align: calc(0.5cap - 4.5px); }
+  .tlv .planned .dot { background: var(--surface); border: 1.5px solid var(--ink); }
+  .tlv .today { margin: 0 17px 0 -28px; vertical-align: calc(0.5cap - 5.5px); }
+  .tlv .today-row .label { color: var(--accent); }
+  .tlv a { display: block; text-decoration: none; }
+  .tlv .label { display: block; }
+  .tlv .t { display: block; font-size: 15px; line-height: 20px; font-weight: 600; }
+  .tlv a:hover .t { text-decoration: underline; text-decoration-color: var(--dim); }
+  .key { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+  .key span { display: inline-flex; align-items: center; gap: 8px; }
+  .k { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--ink); }
+  .k.planned { background: none; border: 1.5px solid var(--ink); }
+  .k.span-key { width: 18px; height: 5px; border-radius: 3px; opacity: 0.35; }
+  .k.on, .k.today-key { background: var(--accent); }
+  .now-key { color: var(--accent); }
+  @media (max-width: 480px) { .tl { display: none; } .tlv { display: block; } .key .period { display: none; } }
+  .event:hover .t { text-decoration: underline; text-decoration-color: var(--dim); }
+</style>

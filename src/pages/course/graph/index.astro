@@ -1,5 +1,5 @@
 ---
-import Course from "../../../layouts/Course.astro";
+import Base from "../../../layouts/Base.astro";
 import Graph from "../../../components/Graph.astro";
 import { courseGraph, moments } from "../../../course";
 
@@ -7,7 +7,7 @@ const { nodes, edges } = await courseGraph();
 // Week dates, so the week under way can light up.
 const weeks = (await moments([])).filter((m) => m.week).map((m) => [m.href, m.date.toISOString()]);
 ---
-<Course title="Graph" description="The course as a network: sections, notes and the links between them.">
+<Base title="Course graph" description="The course as a network: sections, notes and the links between them." course>
   <h1>Graph</h1>
   <p class="lead">Sections, notes and the links between them. Zoom in or point at a dot to read it.</p>
   <Graph nodes={nodes} edges={edges} label="Graph of the course" quiet />
@@ -18,4 +18,4 @@ const weeks = (await moments([])).filter((m) => m.week).map((m) => [m.href, m.da
       document.querySelector(`.graph a[href="${href}"]`)?.classList.toggle("on", t <= d && d - t < 7 * 864e5);
     }
   </script>
-</Course>
+</Base>

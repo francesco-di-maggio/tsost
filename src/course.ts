@@ -11,6 +11,16 @@ export const SECTIONS = {
   tools: "Tools",
   resources: "Resources",
 } as const;
+
+// The line under each section's title.
+export const LEADS: Record<keyof typeof SECTIONS, string> = {
+  weeks: "Weeks, dates and focus.",
+  assignments: "What to make and hand in.",
+  concepts: "Ideas the course builds on.",
+  tools: "Hardware and software used in the course.",
+  resources: "References, examples and help.",
+};
+
 export type Section = keyof typeof SECTIONS;
 
 // "concepts/listening" → section and slug. The home note has no section.
@@ -67,10 +77,10 @@ const day = (text?: string) => {
 };
 const fact = (n: Note, key: string) => n.data.facts.find(([k]) => k === key)?.[1];
 
-export type Moment = { date: Date; kind: string; title: string; href: string; week?: boolean };
+import type { Moment } from "./components/Timeline.astro";
 
 // The course in time: weeks, deadlines and runs, newest first.
-export async function moments(runs: { date: Date; title: string; planned: boolean }[]) {
+export async function moments(runs: { date: Date; end?: Date; title: string; planned: boolean }[]) {
   const list: Moment[] = [];
   for (const n of await notesOf("weeks")) {
     const date = day(fact(n, "Date"));
@@ -80,6 +90,6 @@ export async function moments(runs: { date: Date; title: string; planned: boolea
     const date = day(fact(n, "Due"));
     if (date) list.push({ date, kind: "Due", title: [n.data.title, fact(n, "Task")].filter(Boolean).join(": "), href: href(n) });
   }
-  for (const r of runs) list.push({ date: r.date, kind: r.planned ? "Next run" : "Run", title: r.title, href: url("course/") });
+  for (const r of runs) list.push({ date: r.date, end: r.end, kind: r.planned ? "Next run" : "Run", title: r.title, href: url("course/") });
   return list.sort((a, b) => b.date.valueOf() - a.date.valueOf());
 }

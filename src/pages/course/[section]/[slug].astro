@@ -1,6 +1,6 @@
 ---
 import { render } from "astro:content";
-import Course from "../../../layouts/Course.astro";
+import Base from "../../../layouts/Base.astro";
 import Facts from "../../../components/Facts.astro";
 import { SECTIONS, backlinks, href, notes, notesOf, section, type Note } from "../../../course";
 import NoteList from "../../../components/NoteList.astro";
@@ -22,7 +22,7 @@ const i = siblings.findIndex((x) => x.id === n.id);
 const prev = siblings[i - 1], next = siblings[i + 1];
 const linked = await backlinks(n);
 ---
-<Course title={n.data.title} description={`${SECTIONS[s]} · The Sound of Smart Things`}>
+<Base title={n.data.title} description={`${SECTIONS[s]} · The Sound of Smart Things`} course>
   <span class="label"><a class="crumb" href={url(`course/${s}/`)}>{SECTIONS[s]}</a></span>
   <h1>{n.data.title}</h1>
   {n.data.facts.length > 0 && <Facts rows={n.data.facts} />}
@@ -41,4 +41,4 @@ const linked = await backlinks(n);
       </ul>
     </div>
   )}
-</Course>
+</Base>

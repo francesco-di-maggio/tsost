@@ -1,0 +1,51 @@
+---
+import { href, notesOf } from "../course";
+
+// The schedule, from each week's facts: change a week and this follows. Grouped by year; the week under way is orange.
+const weeks = await notesOf("weeks");
+const fact = (n: (typeof weeks)[number], key: string) => n.data.facts.find(([k]) => k === key)?.[1] ?? "";
+const parts = (n: (typeof weeks)[number]) => fact(n, "Date").match(/(\d{2})\/(\d{2})\/(\d{4})/);
+const rows = weeks.map((n) => {
+  const m = parts(n);
+  return { n, iso: m ? `${m[3]}-${m[2]}-${m[1]}` : "", day: m ? `${m[1]}/${m[2]}` : "", year: m ? m[3] : "" };
+});
+const years = [...new Set(rows.map((r) => r.year))];
+---
+{years.map((y) => (
+  <Fragment>
+    <h2 class="label">{y}</h2>
+    <div class="panel schedule">
+      <table>
+        <thead><tr><th>Week</th><th>Date</th><th>Focus</th></tr></thead>
+        <tbody>
+          {rows.filter((r) => r.year === y).map((r) => (
+            <tr data-date={r.iso}>
+              <td class="w"><a href={href(r.n)}>{r.n.data.order}</a></td>
+              <td class="d">{r.day}</td>
+              <td><a href={href(r.n)}>{fact(r.n, "Focus")}</a></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </Fragment>
+))}
+<script is:inline data-astro-rerun>
+  (() => {
+    const d = new Date();
+    for (const tr of document.querySelectorAll(".schedule tr[data-date]")) {
+      const t = new Date(tr.dataset.date);
+      tr.classList.toggle("on", t <= d && d - t < 7 * 864e5);
+    }
+  })();
+</script>
+
+<style>
+  .schedule { padding: 4px 14px; }
+  td a { text-decoration: none; }
+  td a:hover { text-decoration: underline; text-decoration-color: var(--dim); }
+  .w, .d { width: 1%; white-space: nowrap; font: 500 13px/20px var(--mono); font-variant-numeric: tabular-nums; }
+  .w a { display: inline-flex; align-items: center; gap: 6px; }
+  .on .w a::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .on td { color: var(--ink); font-weight: 600; }
+</style>

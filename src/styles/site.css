@@ -104,6 +104,8 @@ nav a { flex: none; text-decoration: none; }
 nav a:hover, nav a[aria-current] { color: var(--ink); }
 nav sup { margin-left: 2px; font-size: 8px; line-height: 0; vertical-align: 5px; color: var(--dim); }
 @media (max-width: 480px) { nav { gap: 8px; justify-content: space-between; } }
+/* Two rows: the site nav, then the part's tabs. */
+nav.above { margin-bottom: 0; }
 
 h1 { margin: 0 0 4px; font-size: clamp(28px, 7vw, 36px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
 .lead { margin: 0 0 min(8px, 1vh); font-size: 16px; color: var(--dim); }
@@ -180,3 +182,5 @@ footer .links svg { width: 14px; height: 14px; }
 .icon[aria-current] { color: var(--ink); }
 .mark a { display: flex; align-items: center; gap: 8px; text-decoration: none; }
 .mark .slash { color: var(--dim); font-weight: 400; }
+#node-panel .other { font-size: 13px; text-decoration: none; }
+#node-panel .other:hover { color: var(--ink); }
