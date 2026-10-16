@@ -1,7 +1,7 @@
 ---
 title: "Week 6"
 order: 6
-facts: [["Date", "Tuesday 02/06/2026, 13:30–17:00h"], ["Location", "Neuron 0.356"]]
+facts: [["Date", "Tuesday 2 June 2026, 13:30–17:00"], ["Location", "Neuron 0.356"]]
 summary: "Lecture + Design Workshop"
 ---
 
@@ -27,7 +27,7 @@ Optional — Quick tour of [Ableton Live](/tsost/course/tools/ableton-live/) as 
 - [Starter Sketch](/tsost/course/resources/starter-sketch/)
 - [Troubleshooting](/tsost/course/resources/troubleshooting/)
 
-## Homework — Pairs
+## Homework — pairs
 
 Refine what you started in the workshop.
 

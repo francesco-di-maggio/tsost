@@ -77,12 +77,19 @@ export async function courseGraph() {
   return { nodes, edges };
 }
 
-// "Tuesday 21/04/2026, 13:30–17:00h" → that day.
+// "Tuesday 21 April 2026, 13:30–17:00" → that day.
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const day = (text?: string) => {
-  const m = text?.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-  return m ? new Date(Date.UTC(+m[3], +m[2] - 1, +m[1])) : undefined;
+  const m = text?.match(/(\d{1,2}) ([A-Z][a-z]+) (\d{4})/);
+  const month = m ? MONTHS.indexOf(m[2]) : -1;
+  return m && month >= 0 ? new Date(Date.UTC(+m[3], month, +m[1])) : undefined;
 };
 const fact = (n: Note, key: string) => n.data.facts.find(([k]) => k === key)?.[1];
+
+// The day a week meets or an assignment is due.
+export const dayOf = (n: Note) => day(fact(n, "Date") ?? fact(n, "Due"));
+// "21 Apr", as in lists.
+export const shortDay = (d: Date) => `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()].slice(0, 3)}`;
 
 import type { Moment } from "./components/Timeline.astro";
 
@@ -90,11 +97,11 @@ import type { Moment } from "./components/Timeline.astro";
 export async function moments(runs: { date: Date; end?: Date; title: string; planned: boolean }[]) {
   const list: Moment[] = [];
   for (const n of await notesOf("weeks")) {
-    const date = day(fact(n, "Date"));
+    const date = dayOf(n);
     if (date) list.push({ date, kind: "Week", title: `${n.data.title}: ${n.data.summary}`, href: href(n), week: true });
   }
   for (const n of await notesOf("assignments")) {
-    const date = day(fact(n, "Due"));
+    const date = dayOf(n);
     if (date) list.push({ date, kind: "Due", title: `${n.data.title}: ${n.data.summary}`, href: href(n) });
   }
   for (const r of runs) list.push({ date: r.date, end: r.end, kind: r.planned ? "Next run" : "Run", title: r.title, href: url("course/") });

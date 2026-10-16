@@ -1,7 +1,7 @@
 ---
 title: "Week 4"
 order: 4
-facts: [["Date", "Tuesday 19/05/2026, 13:30–17:00h"], ["Location", "Neuron 0.356"]]
+facts: [["Date", "Tuesday 19 May 2026, 13:30–17:00"], ["Location", "Neuron 0.356"]]
 summary: "Écouter Presentations + Furniture Music"
 ---
 
@@ -18,7 +18,7 @@ summary: "Écouter Presentations + Furniture Music"
 - [Furniture Music](/tsost/course/concepts/furniture-music/) — the conceptual frame for the final event
 - The Lucid.Bar as a site — sound in a shared social space
 
-## Homework — Pairs
+## Homework — pairs
 
 This kicks off [Assignment 2](/tsost/course/assignments/assignment-2/) — your Smart Thing.
 

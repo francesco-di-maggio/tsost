@@ -1,7 +1,7 @@
 ---
 title: "Week 5"
 order: 5
-facts: [["Date", "Tuesday 26/05/2026, 13:30–17:00h"], ["Location", "Neuron 0.356"]]
+facts: [["Date", "Tuesday 26 May 2026, 13:30–17:00"], ["Location", "Neuron 0.356"]]
 summary: "Object Pitches + Technical Setup"
 ---
 
@@ -40,7 +40,7 @@ ESP32 + sensor → Wi-Fi → OSC → Max / Plugdata → sound
 - [Wireless](/tsost/course/tools/wireless/) — Wi-Fi setup and practical tips
 - [Troubleshooting](/tsost/course/resources/troubleshooting/) — common problems and fixes
 
-## Homework — Pairs
+## Homework — pairs
 
 Your sensor should be sending data to Max or Plugdata reliably before Week 6:
 1. Test your connection at home — does it work outside the classroom?

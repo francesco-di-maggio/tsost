@@ -1,7 +1,7 @@
 ---
 title: "Assignment 3"
 order: 3
-facts: [["Type", "Report (Pairs) — Reflection (Individual)"], ["Due", "25/06/2026, 17:00h — submitted to Canvas"]]
+facts: [["Type", "Report (Pairs) — Reflection (Individual)"], ["Due", "25 June 2026, 17:00, on Canvas"]]
 summary: "Write a Report and Reflection"
 ---
 

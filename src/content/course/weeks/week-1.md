@@ -1,7 +1,7 @@
 ---
 title: "Week 1"
 order: 1
-facts: [["Date", "Tuesday 21/04/2026, 13:30–17:00h"], ["Location", "Neuron 0.356"]]
+facts: [["Date", "Tuesday 21 April 2026, 13:30–17:00"], ["Location", "Neuron 0.356"]]
 summary: "Learn to Listen to Your Environment"
 ---
 
@@ -18,7 +18,7 @@ summary: "Learn to Listen to Your Environment"
 - [Listening](/tsost/course/concepts/listening/) as an active, intentional act — different from hearing
 - [Field Recording](/tsost/course/concepts/field-recording/) as a listening practice — what does your ordinary day sound like?
 
-## Homework — Individual
+## Homework — individual
 
 Make an **audiocumentary** (audio documentary) of a typical day in your life that gives insight into your everyday soundscape. Maximum length: 5 minutes. Upload to Canvas.
 

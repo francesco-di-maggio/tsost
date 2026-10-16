@@ -1,7 +1,7 @@
 ---
 title: "Week 7"
 order: 7
-facts: [["Date", "Tuesday 09/06/2026, 13:30–17:00h"], ["Location", "Neuron 0.356"]]
+facts: [["Date", "Tuesday 9 June 2026, 13:30–17:00"], ["Location", "Neuron 0.356"]]
 summary: "Feedback + Hands-on Prototyping"
 ---
 
@@ -13,14 +13,14 @@ summary: "Feedback + Hands-on Prototyping"
 
 ## Deliverables reminder
 
-Final submission deadline: **25/06/2026, 17:00h**, submitted to Canvas.
+Final submission deadline: **25 June 2026, 17:00**, on Canvas.
 
 - A report that supports and substantiates the design of your Smart Thing
 - An individual reflection on the course
 
 See [Assignment 2](/tsost/course/assignments/assignment-2/) | [Assignment 3](/tsost/course/assignments/assignment-3/) for full briefs.
 
-## Homework — Pairs
+## Homework — pairs
 
 Finalize your prototype. It should arrive at [Week 8](/tsost/course/weeks/week-8/) working and tested.
 

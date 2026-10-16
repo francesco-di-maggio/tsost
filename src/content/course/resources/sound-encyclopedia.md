@@ -9,7 +9,7 @@ summary: "A living document built together, week by week, through listening and 
 
 **Airy** — a sound with prominent high-frequency content and a sense of space around it. Thin, open, unobstructed.
 
-**Attack** — the initial transient of a sound: how quickly it reaches its peak loudness. A piano note has a sharp attack. A bowed string has a slow one.
+**Attack** — see the [Glossary](/tsost/course/resources/glossary/).
 
 ## B
 

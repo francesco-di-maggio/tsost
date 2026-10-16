@@ -1,7 +1,7 @@
 ---
 title: "Week 2"
 order: 2
-facts: [["Date", "Tuesday 28/04/2026, 13:30–17:00h"], ["Location", "Neuron 0.356"]]
+facts: [["Date", "Tuesday 28 April 2026, 13:30–17:00"], ["Location", "Neuron 0.356"]]
 summary: "Audiocumentaries + Sound Taxonomy"
 ---
 
@@ -22,7 +22,7 @@ summary: "Audiocumentaries + Sound Taxonomy"
 - Cross-modal description — we often use visual and tactile words to describe sound
 - Build a shared vocabulary as a design tool — the [Sound Encyclopedia](/tsost/course/resources/sound-encyclopedia/)
 
-## Homework — Whole group
+## Homework — whole group
 
 Synthesize insights from class into a shared sound taxonomy and vocabulary encyclopedia.
 

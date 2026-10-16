@@ -23,7 +23,7 @@ Muzak, a brand founded in 1934, produced music designed to shape behavior in wor
 
 - [What is Muzak? (Elevator Music)](https://www.youtube.com/watch?v=47mYs1SGBq4&t=117s)
 
-## Ambient Music
+## Ambient music
 
 Brian Eno coined the term *Ambient Music* in 1978 with *Ambient 1: Music for Airports*.
 

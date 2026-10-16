@@ -1,7 +1,7 @@
 ---
 title: "Assignment 2"
 order: 2
-facts: [["Type", "Pairs"], ["Due", "16/06/2026, 17:00h — submitted to Canvas"]]
+facts: [["Type", "Pairs"], ["Due", "16 June 2026, 17:00, on Canvas"]]
 summary: "Prototype a Smart Thing"
 ---
 
