@@ -15,7 +15,8 @@ interface Props {
 }
 
 const { course = false, title, description = "Making the invisible audible through tangible and embodied sound interaction. PhD research by Francesco Di Maggio, TU Eindhoven." } = Astro.props;
-const pageTitle = title ? `${title} · TSOST` : "TSOST · The Sound of Smart Things";
+// Tabs: the page first, then where it lives; a home is just its name. Course pages mirror the header TSOST / COURSE.
+const pageTitle = !title ? "TSOST" : course && title !== "Course" ? `${title} · Course · TSOST` : `${title} · TSOST`;
 const path = Astro.url.pathname;
 // The nav lists sections; views of the whole (timeline, graph) are icons in the header.
 // Course: one live course, so no count.
