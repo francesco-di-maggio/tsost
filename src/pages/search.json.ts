@@ -1,8 +1,9 @@
 import { TYPES, authors, items } from "../items";
+import { SECTIONS, href, notes, section } from "../course";
 
-// One entry per work, publication and course. `find` is what the search matches; it is not shown.
+// One entry per work, publication, course edition and course note. `find` is what the search matches; it is not shown.
 export async function GET() {
-  const list = (await items()).map((i) => {
+  const list: { type: string; title: string; text: string; href: string; find: string }[] = (await items()).map((i) => {
     const d = i.entry.data as { authors?: string[]; equal?: number; venue?: string };
     return {
       type: TYPES[i.type].one,
@@ -12,5 +13,15 @@ export async function GET() {
       find: [i.title, i.summary, i.kind, d.authors && authors({ authors: d.authors, equal: d.equal }), d.venue, i.entry.body].join(" "),
     };
   });
+  for (const n of await notes()) {
+    const focus = n.data.facts.find(([k]) => k === "Focus" || k === "Task")?.[1];
+    list.push({
+      type: `Course · ${SECTIONS[section(n)]}`,
+      title: n.data.title,
+      text: focus ?? "",
+      href: href(n),
+      find: [n.data.title, focus, n.body].join(" "),
+    });
+  }
   return new Response(JSON.stringify(list), { headers: { "Content-Type": "application/json" } });
 }

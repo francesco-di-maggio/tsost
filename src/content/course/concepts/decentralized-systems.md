@@ -1,4 +1,5 @@
 ---
+group: "Systems"
 title: "Decentralized Systems"
 order: 0
 ---

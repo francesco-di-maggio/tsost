@@ -1,4 +1,5 @@
 ---
+group: "Help"
 title: "Lucid.Bar Whitelist"
 order: 0
 ---

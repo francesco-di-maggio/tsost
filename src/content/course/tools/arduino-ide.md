@@ -1,4 +1,5 @@
 ---
+group: "Software"
 title: "Arduino IDE"
 order: 0
 ---

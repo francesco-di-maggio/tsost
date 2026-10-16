@@ -1,12 +1,8 @@
 ---
 title: "Assignment 1"
 order: 1
+facts: [["Task", "Create an Audiocumentary"], ["Type", "Individual"], ["Due", "28/04/2026, 13:00h — submitted to Canvas"]]
 ---
-
-# Create an Audiocumentary
-
-**Type:** Individual
-**Due:** 28/04/2026, 13:00h — submitted to Canvas
 
 ## Brief
 

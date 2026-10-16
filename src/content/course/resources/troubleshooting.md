@@ -1,4 +1,5 @@
 ---
+group: "Help"
 title: "Troubleshooting"
 order: 0
 ---

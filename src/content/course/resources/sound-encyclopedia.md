@@ -1,4 +1,5 @@
 ---
+group: "Reference"
 title: "Sound Encyclopedia"
 order: 0
 ---

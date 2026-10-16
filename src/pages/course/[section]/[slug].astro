@@ -2,7 +2,8 @@
 import { render } from "astro:content";
 import Base from "../../../layouts/Base.astro";
 import Facts from "../../../components/Facts.astro";
-import { SECTIONS, href, notes, notesOf, section, type Note } from "../../../course";
+import { SECTIONS, backlinks, href, notes, notesOf, section, type Note } from "../../../course";
+import NoteList from "../../../components/NoteList.astro";
 import { url } from "../../../url";
 
 export async function getStaticPaths() {
@@ -19,12 +20,19 @@ const s = section(n);
 const siblings = await notesOf(s);
 const i = siblings.findIndex((x) => x.id === n.id);
 const prev = siblings[i - 1], next = siblings[i + 1];
+const linked = await backlinks(n);
 ---
-<Base title={n.data.title} description={`${SECTIONS[s]} · The Sound of Smart Things`}>
-  <span class="label"><a class="crumb" href={url("course/")}>Course</a> · {SECTIONS[s]}</span>
+<Base title={n.data.title} description={`${SECTIONS[s]} · The Sound of Smart Things`} course>
+  <span class="label"><a class="crumb" href={url(`course/${s}/`)}>{SECTIONS[s]}</a></span>
   <h1>{n.data.title}</h1>
   {n.data.facts.length > 0 && <Facts rows={n.data.facts} />}
   <div class="prose body"><Content /></div>
+  {linked.length > 0 && (
+    <Fragment>
+      <h2 class="label">Linked from</h2>
+      <NoteList notes={linked} />
+    </Fragment>
+  )}
   {(prev || next) && (
     <div class="panel lists pager">
       <ul class="list">

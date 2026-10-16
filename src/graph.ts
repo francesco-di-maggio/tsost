@@ -1,4 +1,4 @@
-import { TYPES, items, types } from "./items";
+import { TYPES, items, types, sectionPath } from "./items";
 import { url } from "./url";
 
 export type Node = { id: string; label: string; kind: "project" | "type" | "item"; href: string; x: number; y: number; current?: boolean };
@@ -10,7 +10,7 @@ export const HEIGHT = 480;
 const PAD = { left: 40, right: 210, y: 40 };
 
 const cut = (text: string) => (text.length > 32 ? text.slice(0, 31) + "…" : text);
-const short = (title: string) => cut(title.split(":")[0]);
+export const short = (title: string) => cut(title.split(":")[0]);
 
 // The site as a network: project → sections → items, plus the references between items.
 export async function graph() {
@@ -18,7 +18,7 @@ export async function graph() {
   const nodes: Node[] = [{ id: "project", label: "TSOST", kind: "project", href: url(), x: 0, y: 0 }];
   const edges: Edge[] = [];
   for (const type of await types()) {
-    nodes.push({ id: type, label: TYPES[type].title, kind: "type", href: url(`${type}/`), x: 0, y: 0 });
+    nodes.push({ id: type, label: TYPES[type].title, kind: "type", href: url(sectionPath(type)), x: 0, y: 0 });
     edges.push({ a: "project", b: type, kind: "tree" });
   }
   for (const item of all) {
@@ -41,7 +41,7 @@ export async function graph() {
 }
 
 // Force-directed layout (Fruchterman–Reingold), deterministic: same input, same picture.
-function layout(nodes: Node[], edges: Edge[]) {
+export function layout(nodes: Node[], edges: Edge[]) {
   const k = Math.sqrt((WIDTH * HEIGHT) / nodes.length) * 0.9;
   nodes.forEach((n, i) => {
     const a = (i / nodes.length) * Math.PI * 2;
@@ -93,7 +93,7 @@ const box = (n: Node) => ({
 });
 
 // Push overlapping boxes apart along the shorter overlap, within the frame. TSOST stays put.
-function separate(nodes: Node[]) {
+export function separate(nodes: Node[]) {
   for (let pass = 0; pass < 300; pass++) {
     let moved = false;
     for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) {

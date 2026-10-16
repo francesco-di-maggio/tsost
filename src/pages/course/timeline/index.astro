@@ -1,0 +1,19 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../../layouts/Base.astro";
+import Timeline from "../../../components/Timeline.astro";
+import { moments } from "../../../course";
+
+// The run in the notes: its weeks and deadlines. The history of runs is on the tsost timeline.
+const list = await moments([]);
+const WEEK = 7 * 864e5;
+const start = new Date(Math.min(...list.map((m) => m.date.valueOf())) - WEEK);
+const end = new Date(Math.max(...list.map((m) => m.date.valueOf())) + WEEK);
+const next = (await getCollection("courses")).find((c) => c.data.status === "planned" && c.data.start > end);
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+---
+<Base title="Course timeline" description="Weeks and deadlines of the course." course>
+  <h1>Timeline</h1>
+  <p class="lead">Weeks and deadlines.{next && ` Next run: ${MONTHS[next.data.start.getUTCMonth()]} ${next.data.start.getUTCFullYear()}.`}</p>
+  <Timeline moments={list} start={start} end={end} scale="week" />
+</Base>

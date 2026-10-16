@@ -1,4 +1,5 @@
 ---
+group: "Sound"
 title: "Foley Art"
 order: 0
 ---

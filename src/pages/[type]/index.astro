@@ -5,8 +5,8 @@ import Citation from "../../components/Citation.astro";
 import { TYPES, itemsOf, types, type Type } from "../../items";
 
 export async function getStaticPaths() {
-  // Works has its own page: by layer.
-  return (await types()).filter((t) => t !== "works").map((type) => ({ params: { type } }));
+  // Works has its own page (by layer); the course is its own site.
+  return (await types()).filter((t) => t !== "works" && t !== "courses").map((type) => ({ params: { type } }));
 }
 
 const type = Astro.params.type as Type;

@@ -1,4 +1,5 @@
 ---
+group: "Sound"
 title: "Sound Design"
 order: 0
 ---

@@ -1,4 +1,5 @@
 ---
+group: "Middleware"
 title: "Serial"
 order: 0
 ---

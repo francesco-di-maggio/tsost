@@ -1,4 +1,5 @@
 ---
+group: "Help"
 title: "Starter Sketch"
 order: 0
 ---

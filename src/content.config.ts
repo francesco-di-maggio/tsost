@@ -75,6 +75,8 @@ const course = defineCollection({
   schema: z.object({
     title: z.string(),
     order: z.number().default(0),
+    // The label a note is listed under in its section (Sound, Hardware, …).
+    group: z.string().optional(),
     // Shown as a facts panel under the title: date, location, due date, …
     facts: z.array(z.tuple([z.string(), z.string()])).default([]),
   }),

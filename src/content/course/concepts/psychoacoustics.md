@@ -1,4 +1,5 @@
 ---
+group: "Sound"
 title: "Psychoacoustics"
 order: 0
 ---

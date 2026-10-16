@@ -1,4 +1,5 @@
 ---
+group: "Software"
 title: "Plugdata"
 order: 0
 ---
