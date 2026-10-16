@@ -219,7 +219,7 @@ async function connect() {
   client.on("message", onMessage);
 }
 
-async function disconnect() {
+function disconnect() {
   if (!client) return;
   const closing = client;
   client = null;
@@ -230,14 +230,9 @@ async function disconnect() {
   closing.removeAllListeners();
   devices.clear();
   render();
-  // The goodbye goes out in the background: the panel goes offline at once, not after the broker answers.
-  // A slow broker gets 3 s, then the connection is closed anyway.
-  const topic = `${deviceTopic()}/$state`;
-  (async () => {
-    if (closing.connected) await closing.publishAsync(topic, "disconnected", RETAINED).catch(() => {});
-    await closing.endAsync().catch(() => {});
-  })();
-  setTimeout(() => closing.end(true), 3000);
+  // Not awaited, so the panel goes offline at once: end() closes once the goodbye is acknowledged.
+  if (closing.connected) closing.publish(`${deviceTopic()}/$state`, "disconnected", RETAINED);
+  closing.end();
 }
 
 
