@@ -182,5 +182,7 @@ footer .links svg { width: 14px; height: 14px; }
 .icon[aria-current] { color: var(--ink); }
 .mark a { display: flex; align-items: center; gap: 8px; text-decoration: none; }
 .mark .slash { color: var(--dim); font-weight: 400; }
+/* On phones the course header is ◉ COURSE: the ripple still leads to TSOST, and the pill and icons keep their room. */
+@media (max-width: 480px) { .mark .wide { display: none; } }
 #node-panel .other { font-size: 13px; text-decoration: none; }
 #node-panel .other:hover { color: var(--ink); }
