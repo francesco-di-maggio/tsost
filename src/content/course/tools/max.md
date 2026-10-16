@@ -2,6 +2,7 @@
 group: "Software"
 title: "Max"
 order: 0
+action: { label: "Download", title: "Max", caption: "From Cycling '74, with a 30-day free trial.", href: "https://cycling74.com/products/max" }
 ---
 
 Max is a visual programming environment for music, audio, and multimedia, developed by Cycling '74. 

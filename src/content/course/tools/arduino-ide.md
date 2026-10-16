@@ -2,11 +2,11 @@
 group: "Software"
 title: "Arduino IDE"
 order: 0
+action: { label: "Download", title: "Arduino IDE", caption: "Free, for Mac, Windows and Linux.", href: "https://www.arduino.cc/en/software" }
 ---
 
 The Arduino IDE is the programming environment used to write and upload code to your microcontroller. It is free, cross-platform, and widely supported.
 
-- Download: [arduino.cc/en/software](https://www.arduino.cc/en/software)
 - Version: use Arduino IDE 2.x (current)
 
 ## Setup for this course

@@ -2,11 +2,11 @@
 group: "Software"
 title: "Plugdata"
 order: 0
+action: { label: "Download", title: "Plugdata", caption: "Free and open source.", href: "https://plugdata.org" }
 ---
 
 Plugdata is a free, open source visual programming environment based on [Pure Data](https://puredata.info/) (Pd).
 
-- Download: [Plugdata](https://plugdata.org)
 - Free and open source
 - Cross-platform: Mac, Windows, Linux
 

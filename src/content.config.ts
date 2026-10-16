@@ -79,6 +79,8 @@ const course = defineCollection({
     group: z.string().optional(),
     // Shown as a facts panel under the title: date, location, due date, …
     facts: z.array(z.tuple([z.string(), z.string()])).default([]),
+    // The one main thing to do on the page (open, download), shown as the filled tile.
+    action: z.object({ label: z.string(), title: z.string(), caption: z.string().optional(), href: z.url() }).optional(),
   }),
 });
 

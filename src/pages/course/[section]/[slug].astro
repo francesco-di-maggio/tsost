@@ -26,6 +26,12 @@ const linked = await backlinks(n);
   <span class="label"><a class="crumb" href={url(`course/${s}/`)}>{SECTIONS[s]}</a></span>
   <h1>{n.data.title}</h1>
   {n.data.facts.length > 0 && <Facts rows={n.data.facts} />}
+  {n.data.action && (
+    <a class="panel primary" href={n.data.action.href}>
+      <span><span class="label">{n.data.action.label}</span><span class="title">{n.data.action.title}</span>{n.data.action.caption && <span class="caption">{n.data.action.caption}</span>}</span>
+      <span class="arrow" aria-hidden="true">→</span>
+    </a>
+  )}
   <div class="prose body"><Content /></div>
   {linked.length > 0 && (
     <Fragment>
