@@ -66,6 +66,13 @@ export function layout(nodes: Node[], edges: Edge[]) {
       dx.set(a, dx.get(a)! - (x / d) * f); dy.set(a, dy.get(a)! - (y / d) * f);
       dx.set(b, dx.get(b)! + (x / d) * f); dy.set(b, dy.get(b)! + (y / d) * f);
     }
+    // A weak pull toward the centre (the project dot), so loosely linked dots do not drift off and squeeze the rest.
+    const c = nodes[0];
+    for (const n of nodes) {
+      const x = n.x - c.x, y = n.y - c.y, d = Math.max(Math.hypot(x, y), 0.01), f = (0.08 * d * d) / k;
+      dx.set(n, dx.get(n)! - (x / d) * f);
+      dy.set(n, dy.get(n)! - (y / d) * f);
+    }
     for (const n of nodes) {
       if (n.kind === "project") continue;
       const x = dx.get(n)!, y = dy.get(n)!, d = Math.max(Math.hypot(x, y), 0.01);

@@ -1,6 +1,6 @@
 ---
 group: "Middleware"
-title: "mqtt-max Remote"
+title: "MQTT-MAX Remote"
 order: 0
 ---
 
