@@ -1,16 +1,19 @@
 ---
 import Base from "../layouts/Base.astro";
 import Facts from "../components/Facts.astro";
+import { START, END } from "../project";
 
 const keywords = ["Tangible", "Embodied", "Distributed", "Networked", "Sound", "Interaction"];
 ---
 <Base>
   <h1>The Sound of Smart Things</h1>
-  <p class="lead">Making the Invisible Audible through Tangible and Embodied Sound Interaction</p>
+  <p class="lead">Making the invisible audible.</p>
 
   <h2 class="label">Abstract</h2>
   <div class="prose">
-    <p>Networked smart things are part of everyday environments, yet what they do, and how they relate, mostly goes unnoticed. Sound does not need to be seen to be heard: it can stay in the background or move into focus. TSOST investigates sound as an interaction material for distributed systems of smart things, by designing and building autonomous, sensing, networked, and sound-producing devices. Its central artefact is TESI, a modular toolkit for tangible and embodied sound interaction.</p>
+    <p>Networked smart things are part of everyday environments, yet what they do, and how they relate, mostly goes unnoticed. Sound does not need to be seen to be heard: it can stay in the background or move into focus.</p>
+    <p>TSOST investigates sound as a design material for distributed systems of smart things. It asks what role sound can play in such systems, and what designing for it reveals about how the digital and the physical meet.</p>
+    <p>It designs and builds autonomous, sensing, networked, and sound-producing devices, and reflects on them as a family. They are made with <a href="https://francescodimaggio.nl/tesi/">TESI</a>, a modular toolkit developed alongside them.</p>
   </div>
 
   <h2 class="label">Keywords</h2>
@@ -20,8 +23,9 @@ const keywords = ["Tangible", "Embodied", "Distributed", "Networked", "Sound", "
 
   <h2 class="label">Project</h2>
   <Facts rows={[
-    ["PhD Candidate", "Francesco Di Maggio"],
+    ["Researcher", "Francesco Di Maggio"],
     ["Department", "Industrial Design, Eindhoven University of Technology (TU/e)"],
+    ["Period", `${START.getUTCFullYear()}–${END.getUTCFullYear()}`],
     ["Supervisors", "Bart Hengeveld, Berry Eggen"],
     ["Co-supervisor", "Rebecca Fiebrink, University of the Arts London (UAL CCI)"],
   ]} />
