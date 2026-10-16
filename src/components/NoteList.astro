@@ -1,10 +1,10 @@
 ---
-import { dayOf, href, shortDay, type Note } from "../course";
+import { dateOf, dayMonth, href, type Note } from "../course";
 
 interface Props { notes: Note[] }
 const { notes } = Astro.props;
 // On the right, the day a week meets or an assignment is due: "21 Apr".
-const when = (n: Note) => { const d = dayOf(n); return d && shortDay(d); };
+const when = (n: Note) => { const d = dateOf(n); return d && dayMonth(d); };
 ---
 <div class="panel lists">
   <ul class="list">

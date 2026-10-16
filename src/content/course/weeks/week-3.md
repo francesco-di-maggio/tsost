@@ -1,7 +1,9 @@
 ---
 title: "Week 3"
 order: 3
-facts: [["Date", "Tuesday 12 May 2026, 13:30–17:00"], ["Location", "Neuron 0.356"]]
+date: 2026-05-12
+time: "13:30–17:00"
+facts: [["Location", "Neuron 0.356"]]
 summary: "Sound Encyclopedia + Decentralized Systems"
 ---
 

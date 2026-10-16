@@ -1,7 +1,9 @@
 ---
 title: "Week 8"
 order: 8
-facts: [["Date", "Tuesday 16 June 2026, 13:30–17:00"], ["Location", "Lucid.Bar"]]
+date: 2026-06-16
+time: "13:30–17:00"
+facts: [["Location", "Lucid.Bar"]]
 summary: "Furniture Music at the Lucid.Bar"
 ---
 

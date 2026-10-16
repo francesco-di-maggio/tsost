@@ -2,7 +2,7 @@
 import "../styles/site.css";
 import { url } from "../url";
 import { TYPES, types, itemsOf, sectionPath } from "../items";
-import { SECTIONS, type Section } from "../course";
+import { SECTIONS, sections } from "../course";
 import { ClientRouter } from "astro:transitions";
 
 // The course is a part of tsost with its own structure. Inside it the header reads TSOST / Course,
@@ -20,7 +20,7 @@ const path = Astro.url.pathname;
 // The nav lists sections; views of the whole (timeline, graph) are icons in the header.
 // Course: one live course, so no count.
 const nav: { path: string; title: string; count?: number }[] = course
-  ? (Object.keys(SECTIONS) as Section[]).map((s) => ({ path: `course/${s}/`, title: SECTIONS[s] }))
+  ? sections.map((s) => ({ path: `course/${s}/`, title: SECTIONS[s].title }))
   : await Promise.all((await types()).map(async (t) => ({ path: sectionPath(t), title: TYPES[t].title, ...(t !== "courses" && { count: (await itemsOf(t)).filter((i) => !(i.entry.data as { parent?: string }).parent).length }) })));
 const root = course ? "course/" : "";
 const current = (p: string) => (p ? path.startsWith(url(p)) : path === url());

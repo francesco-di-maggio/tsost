@@ -5,7 +5,7 @@ import Timeline from "../../../components/Timeline.astro";
 import { moments } from "../../../course";
 
 // The run in the notes: its weeks and deadlines. The history of runs is on the tsost timeline.
-const list = await moments([]);
+const list = await moments();
 const WEEK = 7 * 864e5;
 const start = new Date(Math.min(...list.map((m) => m.date.valueOf())) - WEEK);
 const end = new Date(Math.max(...list.map((m) => m.date.valueOf())) + WEEK);

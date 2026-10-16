@@ -2,7 +2,7 @@
 import { render } from "astro:content";
 import Base from "../../../layouts/Base.astro";
 import Facts from "../../../components/Facts.astro";
-import { SECTIONS, backlinks, href, notes, notesOf, section, type Note } from "../../../course";
+import { SECTIONS, backlinks, dateOf, fullDate, href, notes, notesOf, section, type Note } from "../../../course";
 import NoteList from "../../../components/NoteList.astro";
 import { url } from "../../../url";
 
@@ -21,12 +21,18 @@ const siblings = await notesOf(s);
 const i = siblings.findIndex((x) => x.id === n.id);
 const prev = siblings[i - 1], next = siblings[i + 1];
 const linked = await backlinks(n);
+// The day comes first in the facts: "Tuesday 21 April 2026, 13:30–17:00".
+const date = dateOf(n);
+const facts: [string, string][] = [
+  ...(date ? [[n.data.date ? "Date" : "Due", [fullDate(date), n.data.time].filter(Boolean).join(", ")] as [string, string]] : []),
+  ...n.data.facts,
+];
 ---
 <Base title={n.data.title} description={n.data.summary} course>
-  <span class="label"><a class="crumb" href={url(`course/${s}/`)}>{SECTIONS[s]}</a></span>
+  <span class="label"><a class="crumb" href={url(`course/${s}/`)}>{SECTIONS[s].title}</a></span>
   <h1>{n.data.title}</h1>
   <p class="lead">{n.data.summary}</p>
-  {n.data.facts.length > 0 && <Facts rows={n.data.facts} />}
+  {facts.length > 0 && <Facts rows={facts} />}
   {n.data.action && (
     <a class="panel primary" href={n.data.action.href}>
       <span><span class="label">{n.data.action.label}</span><span class="title">{n.data.action.title}</span>{n.data.action.caption && <span class="caption">{n.data.action.caption}</span>}</span>

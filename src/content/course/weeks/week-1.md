@@ -1,7 +1,9 @@
 ---
 title: "Week 1"
 order: 1
-facts: [["Date", "Tuesday 21 April 2026, 13:30–17:00"], ["Location", "Neuron 0.356"]]
+date: 2026-04-21
+time: "13:30–17:00"
+facts: [["Location", "Neuron 0.356"]]
 summary: "Learn to Listen to Your Environment"
 ---
 

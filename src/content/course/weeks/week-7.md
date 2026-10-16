@@ -1,7 +1,9 @@
 ---
 title: "Week 7"
 order: 7
-facts: [["Date", "Tuesday 9 June 2026, 13:30–17:00"], ["Location", "Neuron 0.356"]]
+date: 2026-06-09
+time: "13:30–17:00"
+facts: [["Location", "Neuron 0.356"]]
 summary: "Feedback + Hands-on Prototyping"
 ---
 

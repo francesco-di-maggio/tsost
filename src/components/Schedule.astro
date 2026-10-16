@@ -1,11 +1,11 @@
 ---
-import { dayOf, href, notesOf, shortDay } from "../course";
+import { dateOf, dayMonth, href, notesOf } from "../course";
 
 // The schedule, from each week's facts: change a week and this follows. Grouped by year like Publications; the week under way is orange.
 const weeks = await notesOf("weeks");
 const rows = weeks.map((n) => {
-  const d = dayOf(n);
-  return { n, iso: d ? d.toISOString().slice(0, 10) : "", day: d ? shortDay(d) : "", year: d ? String(d.getUTCFullYear()) : "" };
+  const d = dateOf(n);
+  return { n, iso: d ? d.toISOString().slice(0, 10) : "", day: d ? dayMonth(d) : "", year: d ? String(d.getUTCFullYear()) : "" };
 });
 const years = [...new Set(rows.map((r) => r.year))];
 ---

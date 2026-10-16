@@ -2,10 +2,10 @@
 import Base from "../../../layouts/Base.astro";
 import NoteList from "../../../components/NoteList.astro";
 import Schedule from "../../../components/Schedule.astro";
-import { GROUPS, LEADS, SECTIONS, notesOf, type Section } from "../../../course";
+import { SECTIONS, notesOf, sections, type Section } from "../../../course";
 
 export function getStaticPaths() {
-  return (Object.keys(SECTIONS) as Section[]).map((section) => ({ params: { section } }));
+  return sections.map((section) => ({ params: { section } }));
 }
 
 const s = Astro.params.section as Section;
@@ -15,14 +15,14 @@ const due = (n: (typeof list)[number]) => n.data.facts.find(([k]) => k === "Due"
 const groups = s === "assignments"
   ? [...new Set(list.map(due))].map((y) => ({ label: y, notes: list.filter((n) => due(n) === y) }))
   : [
-      ...(GROUPS[s] ?? []).map((g) => ({ label: g, notes: list.filter((n) => n.data.group === g) })),
+      ...SECTIONS[s].groups.map((g) => ({ label: g, notes: list.filter((n) => n.data.group === g) })),
       // A note without a known group is still listed.
-      { label: "Other", notes: list.filter((n) => !(GROUPS[s] ?? []).includes(n.data.group ?? "")) },
+      { label: "Other", notes: list.filter((n) => !SECTIONS[s].groups.includes(n.data.group ?? "")) },
     ].filter((g) => g.notes.length);
 ---
-<Base title={SECTIONS[s]} description={LEADS[s]} course>
-  <h1>{SECTIONS[s]}</h1>
-  <p class="lead">{LEADS[s]}</p>
+<Base title={SECTIONS[s].title} description={SECTIONS[s].lead} course>
+  <h1>{SECTIONS[s].title}</h1>
+  <p class="lead">{SECTIONS[s].lead}</p>
   {s === "weeks" ? <Schedule /> : groups.map((g) => (
     <Fragment>
       {g.label && <h2 class="label">{g.label}</h2>}

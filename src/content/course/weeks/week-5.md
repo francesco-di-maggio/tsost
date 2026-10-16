@@ -1,7 +1,9 @@
 ---
 title: "Week 5"
 order: 5
-facts: [["Date", "Tuesday 26 May 2026, 13:30–17:00"], ["Location", "Neuron 0.356"]]
+date: 2026-05-26
+time: "13:30–17:00"
+facts: [["Location", "Neuron 0.356"]]
 summary: "Object Pitches + Technical Setup"
 ---
 

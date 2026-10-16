@@ -77,6 +77,10 @@ const course = defineCollection({
     // One line: the lead under the title and the line under it in lists. Weeks: their focus. Assignments: their task.
     summary: z.string(),
     order: z.number().default(0),
+    // Weeks: the day they meet. Assignments: the day they are due. With the time, they make the first row of the facts.
+    date: z.coerce.date().optional(),
+    due: z.coerce.date().optional(),
+    time: z.string().optional(),
     // The label a note is listed under in its section (Sound, Hardware, …).
     group: z.string().optional(),
     // Shown as a facts panel under the title: date, location, due date, …

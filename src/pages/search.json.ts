@@ -15,7 +15,7 @@ export async function GET() {
   });
   for (const n of await notes()) {
     list.push({
-      type: `Course · ${SECTIONS[section(n)]}`,
+      type: `Course · ${SECTIONS[section(n)].title}`,
       title: n.data.title,
       text: n.data.summary,
       href: href(n),

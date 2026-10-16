@@ -1,7 +1,9 @@
 ---
 title: "Week 4"
 order: 4
-facts: [["Date", "Tuesday 19 May 2026, 13:30–17:00"], ["Location", "Neuron 0.356"]]
+date: 2026-05-19
+time: "13:30–17:00"
+facts: [["Location", "Neuron 0.356"]]
 summary: "Écouter Presentations + Furniture Music"
 ---
 
