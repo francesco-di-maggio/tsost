@@ -7,7 +7,7 @@ period: "2025–2026, semester B, Q4"
 teachers: ["Bart Hengeveld", "Berry Eggen", "Francesco Di Maggio"]
 start: 2026-04-21
 end: 2026-06-16
-site: "https://notes.francescodimaggio.nl/TSOST-26/Home"
+site: "https://francescodimaggio.nl/tsost/course/"
 ---
 
 ## Learning goals

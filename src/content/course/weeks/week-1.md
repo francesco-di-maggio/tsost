@@ -1,0 +1,28 @@
+---
+title: "Week 1"
+order: 1
+facts: [["Focus", "Learn to Listen to Your Environment"], ["Date", "Tuesday 21/04/2026, 13:30–17:00h"], ["Location", "Neuron 0.356"]]
+---
+
+## In class
+
+- Course kickoff (Bart Hengeveld)
+- Lecture: "Listening to the Everyday World" (Berry Eggen)
+- Basics in [Field Recording](/tsost/course/concepts/field-recording/) (Francesco Di Maggio)
+- Discussing sound and exchanging thoughts
+
+## Key ideas
+
+- [Sound](/tsost/course/concepts/sound/) as a physical phenomenon — vibration, propagation, perception
+- [Listening](/tsost/course/concepts/listening/) as an active, intentional act — different from hearing
+- [Field Recording](/tsost/course/concepts/field-recording/) as a listening practice — what does your ordinary day sound like?
+
+## Homework — Individual
+
+Make an **audiocumentary** (audio documentary) of a typical day in your life that gives insight into your everyday soundscape. Maximum length: 5 minutes. Upload to Canvas.
+
+See [Assignment 1](/tsost/course/assignments/assignment-1/) for full brief.
+
+## Reading
+
+Roland Barthes — *Listening* (1985) — PDF on Canvas

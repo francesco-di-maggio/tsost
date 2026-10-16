@@ -7,4 +7,5 @@ period: "2026–2027, semester B, Q4"
 status: planned
 start: 2027-04-01
 related: ["courses/tsost-26"]
+site: "https://francescodimaggio.nl/tsost/course/"
 ---

@@ -69,4 +69,15 @@ const courses = defineCollection({
   }),
 });
 
-export const collections = { works, publications, courses };
+// The course: one live version, edited for each run. Sections are folders; weeks and assignments are numbered.
+const course = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/course" }),
+  schema: z.object({
+    title: z.string(),
+    order: z.number().default(0),
+    // Shown as a facts panel under the title: date, location, due date, …
+    facts: z.array(z.tuple([z.string(), z.string()])).default([]),
+  }),
+});
+
+export const collections = { works, publications, courses, course };

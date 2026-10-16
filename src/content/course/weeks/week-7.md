@@ -1,0 +1,29 @@
+---
+title: "Week 7"
+order: 7
+facts: [["Focus", "Feedback + Hands-on Prototyping"], ["Date", "Tuesday 09/06/2026, 13:30–17:00h"], ["Location", "Neuron 0.356"]]
+---
+
+## In class
+
+- Feedback session — present your working prototype
+- Hands-on iteration and troubleshooting
+- Details on final deliverables and submission
+
+## Deliverables reminder
+
+Final submission deadline: **25/06/2026, 17:00h**, submitted to Canvas.
+
+- A report that supports and substantiates the design of your Smart Thing
+- An individual reflection on the course
+
+See [Assignment 2](/tsost/course/assignments/assignment-2/) | [Assignment 3](/tsost/course/assignments/assignment-3/) for full briefs.
+
+## Homework — Pairs
+
+Finalize your prototype. It should arrive at [Week 8](/tsost/course/weeks/week-8/) working and tested.
+
+1. Finalize your patch — setup, mapping, and sound behavior
+2. Test with your object in context — does it behave as intended?
+3. Prepare your setup for the event: your Smart Thing, laptop, small speaker
+4. Document your rule set and design decisions for [Assignment 3](/tsost/course/assignments/assignment-3/)

@@ -1,0 +1,36 @@
+---
+import { render } from "astro:content";
+import Base from "../../../layouts/Base.astro";
+import Facts from "../../../components/Facts.astro";
+import { SECTIONS, href, notes, notesOf, section, type Note } from "../../../course";
+import { url } from "../../../url";
+
+export async function getStaticPaths() {
+  return (await notes()).map((n) => {
+    const [s, slug] = n.id.split("/");
+    return { params: { section: s, slug }, props: { n } };
+  });
+}
+
+const { n } = Astro.props as { n: Note };
+const { Content } = await render(n);
+const s = section(n);
+// Previous and next within the section: weeks follow each other.
+const siblings = await notesOf(s);
+const i = siblings.findIndex((x) => x.id === n.id);
+const prev = siblings[i - 1], next = siblings[i + 1];
+---
+<Base title={n.data.title} description={`${SECTIONS[s]} · The Sound of Smart Things`}>
+  <span class="label"><a class="crumb" href={url("course/")}>Course</a> · {SECTIONS[s]}</span>
+  <h1>{n.data.title}</h1>
+  {n.data.facts.length > 0 && <Facts rows={n.data.facts} />}
+  <div class="prose body"><Content /></div>
+  {(prev || next) && (
+    <div class="panel lists pager">
+      <ul class="list">
+        {prev && <li><a href={href(prev)}><span class="text"><span class="sub">Previous</span><b>{prev.data.title}</b></span><span class="arrow" aria-hidden="true">←</span></a></li>}
+        {next && <li><a href={href(next)}><span class="text"><span class="sub">Next</span><b>{next.data.title}</b></span><span class="arrow" aria-hidden="true">→</span></a></li>}
+      </ul>
+    </div>
+  )}
+</Base>
