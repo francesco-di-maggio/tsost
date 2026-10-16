@@ -15,11 +15,11 @@ It is small, Wi-Fi-capable, and fast enough to handle sensor reading and wireles
 - **Arduino-compatible** — programmed with the standard [Arduino IDE](/tsost/course/tools/arduino-ide/)
 - **Low cost** — widely available as bare modules or ready-made boards
 
-## Hardware options
+## Hardware Options
 
 You do not need to use a specific board — any ESP32 module works (e.g., [CodeCell](/tsost/course/tools/codecell/)).
 
-## Getting started
+## Getting Started
 
 1. Install [Arduino IDE](/tsost/course/tools/arduino-ide/)
 2. Add ESP32 board support via Boards Manager: search `esp32` by Espressif

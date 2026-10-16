@@ -7,7 +7,7 @@ summary: "OSC (Open Sound Control) is a communication protocol for sending data 
 
 It was designed for real-time musical and multimedia applications and has become the standard for connecting sensors, computers, and sound software.
 
-## How it works
+## How It Works
 
 OSC sends messages over UDP (a lightweight network protocol). Each message has an **address** (like a URL) and one or more **values**.
 
@@ -20,7 +20,7 @@ This says: the value at address `/sensor/proximity` is `0.73`.
 
 Your microcontroller sends these messages over Wi-Fi. Your laptop receives them in Max or Plugdata.
 
-## Setup in this course
+## Setup in This Course
 
 **On the microcontroller (Arduino):**
 

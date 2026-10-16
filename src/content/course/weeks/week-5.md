@@ -7,7 +7,7 @@ facts: [["Location", "Neuron 0.356"]]
 summary: "Object Pitches + Technical Setup"
 ---
 
-## In class
+## In Class
 
 - Group presentations of object-centered ethnographies: 
 	- Pairs pitch their chosen object and sensor — what did you pick and why?
@@ -20,7 +20,7 @@ summary: "Object Pitches + Technical Setup"
 
 Troubleshoot together — bring your hardware.
 
-## The setup
+## The Setup
 
 Your [ESP32](/tsost/course/tools/esp32/) reads a sensor and sends data to your laptop through [Serial](/tsost/course/tools/serial/) or [Wireless](/tsost/course/tools/wireless/) communication. Sound is generated and designed in [Max](/tsost/course/tools/max/) or [Plugdata](/tsost/course/tools/plugdata/). [Ableton Live](/tsost/course/tools/ableton-live/) is an optional sound-design partner, driven by MIDI or OSC from your patch.
 
@@ -29,7 +29,7 @@ ESP32 + sensor → Serial Monitor   (verify, fallback)
 ESP32 + sensor → Wi-Fi → OSC → Max / Plugdata → sound
 ```
 
-## Key tools
+## Key Tools
 
 - [ESP32](/tsost/course/tools/esp32/) — the microcontroller platform for this course
 - [Max](/tsost/course/tools/max/) — visual programming environment for sound and interaction
@@ -42,7 +42,7 @@ ESP32 + sensor → Wi-Fi → OSC → Max / Plugdata → sound
 - [Wireless](/tsost/course/tools/wireless/) — Wi-Fi setup and practical tips
 - [Troubleshooting](/tsost/course/resources/troubleshooting/) — common problems and fixes
 
-## Homework — pairs
+## Homework — Pairs
 
 Your sensor should be sending data to Max or Plugdata reliably before Week 6:
 1. Test your connection at home — does it work outside the classroom?

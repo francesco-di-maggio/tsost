@@ -8,13 +8,13 @@ summary: "Max is a visual programming environment for music, audio, and multimed
 
 In Max, you build programs by connecting objects with patch cords — a dataflow approach that is well-suited to real-time audio and sensor work.
 
-## Getting started
+## Getting Started
 
 - Download and install [Max](https://cycling74.com/products/max)
 - A free 30-day trial is available. Student licences are discounted
 - Alternatively, use [Plugdata](/tsost/course/tools/plugdata/) — free, open-source
 
-## Key concepts
+## Key Concepts
 
 **Objects** — the building blocks of a Max patch. Each object does one thing: receive a number, generate a tone, scale a value, send an OSC message.
 
@@ -24,7 +24,7 @@ In Max, you build programs by connecting objects with patch cords — a dataflow
 
 **Audio vs control rate** — Max distinguishes between audio-rate signals (continuous, 44100 samples/sec) and control-rate messages (discrete events). Both are used in this course.
 
-## Relevant to this course
+## Relevant to This Course
 
 - Receiving [OSC](/tsost/course/tools/osc/) data from your sensor
 - Scaling and mapping sensor values

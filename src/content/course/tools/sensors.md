@@ -7,9 +7,9 @@ summary: "A sensor is a transducer — it converts a physical phenomenon into an
 
 Choosing the right sensor for your object is a design decision. It shapes what your object is sensitive to, and therefore what kind of presence it has in the space.
 
-## Sensor types relevant to this course
+## Sensor Types Relevant to This Course
 
-### Motion & presence
+### Motion & Presence
 
 **PIR (Passive Infrared)** — detects body heat moving through its field of view. Good for detecting whether someone is in a space. Binary: presence or absence.
 
@@ -17,7 +17,7 @@ Choosing the right sensor for your object is a design decision. It shapes what y
 
 **Time-of-Flight** (e.g. VL53L0X) — more accurate distance sensing using laser. Compact, precise. Range: 5cm-4m.
 
-### Touch & pressure
+### Touch & Pressure
 
 **Capacitive touch** — detects the proximity of a hand or finger without physical contact. Good for surfaces.
 
@@ -35,11 +35,11 @@ Choosing the right sensor for your object is a design decision. It shapes what y
 
 **Humidity** (e.g. DHT22) — often paired with temperature.
 
-### Orientation & movement
+### Orientation & Movement
 
 **IMU / Orientation** (e.g. BNO085) — measures acceleration, rotation, heading, pitch, and roll. Good for detecting tilt, shake, or movement. The BNO085 gives stable orientation as quaternions.
 
-## Choosing a sensor for your object
+## Choosing a Sensor for Your Object
 
 Ask:
 - What does this object *do* in its normal life? (A door opens. A cup is lifted. A chair is sat on.)

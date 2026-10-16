@@ -14,7 +14,7 @@ To adapt it to a different sensor, use the Sensor patterns section below:
 - For **digital sensors**: add `pinMode(SENSOR_PIN, INPUT_PULLUP)` to `setup()`
 - For **I2C sensors**: also add the listed includes, global variable, and `begin()` call to `setup()`
 
-## The sketch
+## The Sketch
 
 ```cpp
 // ============================================================
@@ -175,7 +175,7 @@ void loop() {
 }
 ```
 
-## Sensor patterns
+## Sensor Patterns
 
 Swap the body of `read()` with the relevant snippet. All patterns normalize to `0.0–1.0` before smoothing is applied.
 
@@ -198,7 +198,7 @@ float raw = (digitalRead(SENSOR_PIN) == LOW) ? 1.0f : 0.0f;
 
 Digital sensors give a binary value (0 or 1). Smoothing has no meaningful effect — you may want to remove it, or repurpose the EMA as a debounce filter.
 
-### I2C — BNO055 (orientation / motion)
+### I2C — BNO055 (Orientation / Motion)
 
 ```cpp
 // Libraries: Adafruit_Sensor, Adafruit_BNO055
@@ -212,7 +212,7 @@ float raw = constrain((event.orientation.z + 90.0f) / 180.0f, 0.0f, 1.0f);
 // Swap .z (pitch) for .y (roll) or .x (heading 0–360°) as needed
 ```
 
-### I2C — MPR121 (capacitive touch / proximity)
+### I2C — MPR121 (Capacitive Touch / Proximity)
 
 ```cpp
 // Library: Adafruit_MPR121
@@ -225,7 +225,7 @@ float raw = constrain(1.0f - (mpr.filteredData(0) / 600.0f), 0.0f, 1.0f);
 // Long wire tip: attach a wire to channel 0 electrode — it becomes a proximity antenna (~20–30cm range)
 ```
 
-### HC-SR04 (ultrasonic distance)
+### HC-SR04 (Ultrasonic Distance)
 
 ```cpp
 // Wiring: Trig → pin 5, Echo → pin 18, VCC → 5V, GND → GND
@@ -240,7 +240,7 @@ float cm = duration * 0.034f / 2.0f;
 float raw = constrain(1.0f - (cm / 80.0f), 0.0f, 1.0f); // invert: closer = 1.0, max range 80cm
 ```
 
-### I2C — VL53L0X (time-of-flight distance)
+### I2C — VL53L0X (Time-of-Flight Distance)
 
 ```cpp
 // Library: Adafruit_VL53L0X
@@ -253,7 +253,7 @@ float cm = (measure.RangeStatus != 4) ? measure.RangeMilliMeter / 10.0f : 200.0f
 float raw = constrain(1.0f - (cm / 200.0f), 0.0f, 1.0f); // invert: closer = 1.0, max range 200cm
 ```
 
-### I2C — MPU-6050 (orientation / motion)
+### I2C — MPU-6050 (Orientation / Motion)
 
 ```cpp
 // Library: Adafruit MPU6050
@@ -267,7 +267,7 @@ float pitch = atan2(a.acceleration.y, a.acceleration.z) * 180.0f / PI;
 float raw = constrain((pitch + 90.0f) / 180.0f, 0.0f, 1.0f); // -90°–+90° → 0.0–1.0
 ```
 
-### DHT22 (temperature / humidity)
+### DHT22 (Temperature / Humidity)
 
 ```cpp
 // Library: DHT sensor library (Adafruit)

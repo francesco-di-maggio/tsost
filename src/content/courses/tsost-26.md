@@ -10,7 +10,7 @@ end: 2026-06-16
 site: "https://francescodimaggio.nl/tsost/course/"
 ---
 
-## Learning goals
+## Learning Goals
 
 - Develop a shared vocabulary for listening to and describing sound
 - Create an audiocumentary of your everyday soundscape

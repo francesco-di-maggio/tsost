@@ -7,7 +7,7 @@ summary: "Approved objects and sensors for Assignment 2."
 
 Your object must come from the Lucid.Bar. Your sensor must be chosen from the list below. Both choices require motivation — see [Thing-Centeredness](/tsost/course/concepts/thing-centeredness/) for how to think about this.
 
-## Approved objects
+## Approved Objects
 
 Objects must have dynamic properties — something that changes, moves, or is regularly used or touched.
 
@@ -20,7 +20,7 @@ Objects must have dynamic properties — something that changes, moves, or is re
 7. Table football
 8. Door
 
-## Approved sensors
+## Approved Sensors
 
 All sensors interface with the [ESP32](/tsost/course/tools/esp32/) via the [Arduino IDE](/tsost/course/tools/arduino-ide/) environment.
 

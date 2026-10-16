@@ -5,7 +5,7 @@ order: 0
 summary: "Psychoacoustics is the study of how humans perceive sound — the relationship between the physical properties of a sound wave and the subjective experience of hearing it."
 ---
 
-## Key phenomena
+## Key Phenomena
 
 **Loudness** — perceived volume does not scale linearly with amplitude. Small changes at low volumes are far more noticeable than the same changes at high volumes.
 

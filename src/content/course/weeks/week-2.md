@@ -7,7 +7,7 @@ facts: [["Location", "Neuron 0.356"]]
 summary: "Audiocumentaries + Sound Taxonomy"
 ---
 
-## In class
+## In Class
 
 - Listening to audiocumentaries in pairs — how is your soundscape different from mine?
 - Individual: write down characteristics on Post-Its
@@ -17,14 +17,14 @@ summary: "Audiocumentaries + Sound Taxonomy"
 1. Two columns: *what do I hear* + *what do I feel* (physical + psychoacoustic)
 2. Develop words and adjectives to use throughout the course
 
-## Key ideas
+## Key Ideas
 
 - [Listening](/tsost/course/concepts/listening/) as a shared practice
 - [Psychoacoustics](/tsost/course/concepts/psychoacoustics/) — perceptual dimensions of sound
 - Cross-modal description — we often use visual and tactile words to describe sound
 - Build a shared vocabulary as a design tool — the [Sound Encyclopedia](/tsost/course/resources/sound-encyclopedia/)
 
-## Homework — whole group
+## Homework — Whole Group
 
 Synthesize insights from class into a shared sound taxonomy and vocabulary encyclopedia.
 

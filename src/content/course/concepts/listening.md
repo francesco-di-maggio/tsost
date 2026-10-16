@@ -8,7 +8,7 @@ summary: "Hearing is the passive reception of sound waves by the auditory system
 > *"Hearing is a physiological phenomenon; listening is a psychological act."*
 > — Roland Barthes, *Listening*, 1985
 
-## Modes of listening
+## Modes of Listening
 
 Three modes, drawn from Pierre Schaeffer[^1] and Michel Chion[^2]:
 

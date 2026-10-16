@@ -10,7 +10,7 @@ It is free, cross-platform, and widely supported.
 
 - Version: use Arduino IDE 2.x (current)
 
-## Setup for this course
+## Setup for This Course
 
 1. Download and install Arduino IDE 2.x
 2. Add the ESP32 board package
@@ -22,7 +22,7 @@ It is free, cross-platform, and widely supported.
    - `OSC` — for sending sensor data to Max/Plugdata
    - `CodeCell` — by Microbots (if using [CodeCell](/tsost/course/tools/codecell/))
 
-## Basic workflow
+## Basic Workflow
 
 1. Write your sketch in the IDE
 2. Select your board: Tools → Board → ESP32 → your specific board

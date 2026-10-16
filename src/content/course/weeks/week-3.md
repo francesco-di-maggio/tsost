@@ -7,17 +7,17 @@ facts: [["Location", "Neuron 0.356"]]
 summary: "Sound Encyclopedia + Decentralized Systems"
 ---
 
-## In class
+## In Class
 
 - 10-minute student presentation of the sound encyclopedia built last week
 - Introduction to decentralized systems (Berry Eggen & Bart Hengeveld) including exercises
 
-## Key ideas
+## Key Ideas
 
 - [Sound Encyclopedia](/tsost/course/resources/sound-encyclopedia/) — presenting the shared vocabulary
 - [Decentralized Systems](/tsost/course/concepts/decentralized-systems/) — no center, no controller
 
-## Homework — groups of five
+## Homework — Groups of Five
 
 1. Do an Écouter Exercise (see Files on Canvas)
 2. Upload your documentation to Canvas

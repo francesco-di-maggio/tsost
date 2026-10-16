@@ -7,7 +7,7 @@ facts: [["Location", "Neuron 0.356"]]
 summary: "Lecture + Design Workshop"
 ---
 
-## In class
+## In Class
 
 - Lecture "Composition & Improvisation" (Bart)
 - Design Workshop:
@@ -18,18 +18,18 @@ summary: "Lecture + Design Workshop"
 
 Optional — Quick tour of [Ableton Live](/tsost/course/tools/ableton-live/) as a sound-design partner.
 
-## Key ideas
+## Key Ideas
 
 - [Thing-Centeredness](/tsost/course/concepts/thing-centeredness/) — what does your object's character suggest about its sound?
 - [Mapping](/tsost/course/concepts/mapping/) — how does sensor behavior connect to sound?
 - [Sound Design](/tsost/course/concepts/sound-design/) — what does the object sound like, and why?
 
-## Key tools
+## Key Tools
 
 - [Starter Sketch](/tsost/course/resources/starter-sketch/)
 - [Troubleshooting](/tsost/course/resources/troubleshooting/)
 
-## Homework — pairs
+## Homework — Pairs
 
 Refine what you started in the workshop.
 

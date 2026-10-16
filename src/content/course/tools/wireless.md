@@ -19,14 +19,14 @@ Your microcontroller connects to the local Wi-Fi network and sends UDP packets d
 
 See [OSC](/tsost/course/tools/osc/) for setup details.
 
-## Practical tips
+## Practical Tips
 
 - Use a **phone hotspot** — turn on your phone's personal hotspot and connect both your laptop and ESP32 to it
 - Do not use eduroam — it blocks device-to-device communication
 - Keep your sketch's Wi-Fi credentials in a separate header file — never share them publicly
 - If the connection drops, the ESP32 will need to reconnect — build reconnection logic into your sketch
 
-## Power for the installation
+## Power for the Installation
 
 For [Assignment 2](/tsost/course/assignments/assignment-2/), your prototype must run untethered. Options:
 

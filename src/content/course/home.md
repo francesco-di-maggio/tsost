@@ -5,7 +5,7 @@ facts: [["Code", "DCM180"], ["Department", "Industrial Design, Eindhoven Univers
 summary: "An elective on listening, sound design and distributed sound installations."
 ---
 
-## Learning goals
+## Learning Goals
 
 - Develop a shared vocabulary for [listening](/tsost/course/concepts/listening/) to and describing [sound](/tsost/course/concepts/sound/)
 - Create an [audiocumentary](/tsost/course/assignments/assignment-1/) of your everyday soundscape
@@ -13,7 +13,7 @@ summary: "An elective on listening, sound design and distributed sound installat
 - Build a working wireless sensor-to-sound prototype
 - Add a smart object to a shared installation and observe what emerges
 
-## Before the course
+## Before the Course
 
 Watch these three videos:
 - [How This Woman Creates God of War's Sound Effects](https://youtu.be/WFVLWo5B81w)

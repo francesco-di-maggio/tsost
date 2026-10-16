@@ -17,7 +17,7 @@ OOCSI uses a **server** model — all devices connect to a central OOCSI server 
 
 For this course, OSC is simpler and sufficient — you are sending data from one ESP32 to one laptop on a shared hotspot. OOCSI becomes useful when you have many nodes that need to discover and talk to each other without manual configuration.
 
-## How it works
+## How It Works
 
 1. All devices connect to the OOCSI server (provided by TU/e or run locally)
 2. Your microcontroller publishes sensor data to a named channel (e.g. `TSOST-channel`)

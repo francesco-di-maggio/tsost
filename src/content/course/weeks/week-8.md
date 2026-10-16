@@ -7,7 +7,7 @@ facts: [["Location", "Lucid.Bar"]]
 summary: "Furniture Music at the Lucid.Bar"
 ---
 
-## The event
+## The Event
 
 The final week. Your objects are in place. The sensors are running. 
 
@@ -26,7 +26,7 @@ Each pair sets up independently:
 
 There is no central system. No coordination. Each object runs on its own.
 
-## In class
+## In Class
 
 - Set up and test your prototype on location
 - [Furniture Music](/tsost/course/concepts/furniture-music/) at the Lucid.Bar (interactive demo)

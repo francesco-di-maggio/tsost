@@ -7,7 +7,7 @@ summary: "Mapping is the design decision of how one parameter space connects to 
 
 The same input can produce very different results depending on how it is mapped.
 
-## Types of mapping
+## Types of Mapping
 
 <img src="/tsost/course/media/mapping.svg" alt="Mapping">
 
@@ -19,7 +19,7 @@ The same input can produce very different results depending on how it is mapped.
 
 **Many-to-many** — multiple inputs → multiple outputs. Hard to predict and control.
 
-## Shaping the signal
+## Shaping the Signal
 
 How an input value is transformed before it reaches the output.
 
@@ -35,7 +35,7 @@ How an input value is transformed before it reaches the output.
 
 **Direction** — a mapping can rise or fall with the input.
 
-## Continuous and triggered
+## Continuous and Triggered
 
 Two basic relationships between input and output.
 

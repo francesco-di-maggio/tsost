@@ -7,7 +7,7 @@ summary: "The Serial Monitor is built into the Arduino IDE."
 
 It displays text sent from your microcontroller over USB. Use it to verify your sensor is working before adding wireless complexity.
 
-## How to use it
+## How to Use It
 
 In your sketch, initialize serial communication in `setup()`:
 
@@ -25,7 +25,7 @@ Open the Serial Monitor: **Tools → Serial Monitor** (or Cmd+Shift+M). Set the 
 
 You should see values updating in real time.
 
-## What to check
+## What to Check
 
 - Is the value changing when you interact with the sensor?
 - What is the range — minimum, maximum, typical?
@@ -33,7 +33,7 @@ You should see values updating in real time.
 
 Answer these before moving on to wireless. A noisy or flat signal is usually a hardware problem. 
 
-## Setup in this course
+## Setup in This Course
 
 **On the microcontroller (Arduino):**
 
@@ -52,11 +52,11 @@ Use the `comport` external for connecting Arduino to Plugdata. You can find it b
  
 Tutorial: [Max to Arduino | Pure Data to Arduino](https://www.youtube.com/watch?v=VYWQaqf6yL0)
 
-## One reader at a time
+## One Reader at a Time
 
 The serial port can only be open in one place at a time. If the Arduino Serial Monitor is open, Max or Plugdata cannot read from the same port — and vice versa. Close the Serial Monitor before trying to receive serial data in your patch.
 
-## Serial as a fallback
+## Serial as a Fallback
 
 If Wi-Fi drops during the event, USB serial is a reliable fallback. Max and Plugdata can both receive serial data.
 

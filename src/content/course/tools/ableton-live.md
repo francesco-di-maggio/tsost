@@ -8,7 +8,7 @@ summary: "Ableton Live is a digital audio workstation (DAW)."
 
 It is widely used for live electronic performance, sound design, and music production. It is organised around two views: a non-linear Session View for triggering clips and a traditional linear Arrangement View.
 
-## In this course
+## In This Course
 
 Ableton Live is optional. The mapping and OSC reception stay in [Max](/tsost/course/tools/max/) or [Plugdata](/tsost/course/tools/plugdata/). Live can sit alongside as a sound-design environment — driven by MIDI (or OSC via Max for Live) from your patch.
 
@@ -18,12 +18,12 @@ Use it if you want:
 - A familiar DAW workflow for shaping timbre, dynamics, and processing
 - Clear separation between *mapping logic* (Max/Plugdata) and *sound* (Live)
 
-## Getting started
+## Getting Started
 
 - Educational licences are available at reduced cost
 - Intro edition is sufficient for this course
 
-## Relevant to this course
+## Relevant to This Course
 
 - Sound design and synthesis using built-in instruments (Wavetable, Operator, samplers)
 - Effect chains for shaping the character of a sound

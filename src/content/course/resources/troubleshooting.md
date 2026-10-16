@@ -7,7 +7,7 @@ summary: "Common problems and fixes."
 
 Work through these before asking for help.
 
-## Sensor reads 0 or a fixed value
+## Sensor Reads 0 or a Fixed Value
 
 - Check your wiring — is the sensor connected to the correct pin?
 - Check the pin number in your sketch matches your wiring
@@ -15,21 +15,21 @@ Work through these before asking for help.
 - For analog sensors: make sure you are using an ADC-capable pin (on ESP32: GPIO 32–39)
 - For I2C sensors: check the I2C address in your sketch matches the sensor (use an I2C scanner sketch to confirm)
 
-## Serial Monitor shows garbage or nothing
+## Serial Monitor Shows Garbage or Nothing
 
 - Check the baud rate in the Serial Monitor matches `Serial.begin()` in your sketch (should be 115200)
 - Make sure you selected the correct port: Tools → Port
 - Try unplugging and replugging the USB cable
 - If using CodeCell or a clone board, you may need to install a USB driver (CP2102 or CH340)
 
-## Wi-Fi won't connect
+## Wi-Fi Won't Connect
 
 - Double-check your SSID and password in the sketch — they are case-sensitive
 - Make sure your phone hotspot is on and visible
 - Do not use eduroam — it blocks device-to-device communication
 - After uploading, open the Serial Monitor to see the connection status — it will print the assigned IP address when connected
 
-## Max or Plugdata not receiving OSC
+## Max or Plugdata Not Receiving OSC
 
 - Confirm your laptop's IP address on the hotspot: System Settings → Network → Wi-Fi → Details
 - Check that the IP in your sketch matches your laptop's current IP — it changes each time you reconnect
@@ -37,14 +37,14 @@ Work through these before asking for help.
 - Make sure your laptop and ESP32 are on the same network (the same hotspot)
 - The Serial Monitor and Max/Plugdata cannot read the same serial port simultaneously — close one before opening the other
 
-## Sensor signal is noisy or jumpy
+## Sensor Signal Is Noisy or Jumpy
 
 - Increase the `SMOOTHING` value in the [Starter Sketch](/tsost/course/resources/starter-sketch/) (e.g. from 0.1 to 0.05 for more smoothing)
 - Check your wiring for loose connections
 - For capacitive sensors: keep wires short and away from power lines
 - For analog sensors: add a small capacitor between signal and GND to filter noise
 
-## Sound stops or cuts out during the installation
+## Sound Stops or Cuts Out During the Installation
 
 - If Wi-Fi drops, fall back to USB serial — see [Serial Monitor](/tsost/course/tools/serial/)
 - Make sure your power bank has enough capacity — the ESP32 draws more current when transmitting Wi-Fi

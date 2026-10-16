@@ -5,7 +5,7 @@ order: 0
 summary: "Sound is a mechanical wave — a vibration that propagates through a medium (air, water, solid matter) as a series of compressions and rarefactions."
 ---
 
-## Physical properties
+## Physical Properties
 
 <img src="/tsost/course/media/sound.svg" alt="Sound">
 

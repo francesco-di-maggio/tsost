@@ -7,13 +7,13 @@ facts: [["Location", "Neuron 0.356"]]
 summary: "Feedback + Hands-on Prototyping"
 ---
 
-## In class
+## In Class
 
 - Feedback session — present your working prototype
 - Hands-on iteration and troubleshooting
 - Details on final deliverables and submission
 
-## Deliverables reminder
+## Deliverables Reminder
 
 Final submission deadline: **25 June 2026, 17:00**, on Canvas.
 
@@ -22,7 +22,7 @@ Final submission deadline: **25 June 2026, 17:00**, on Canvas.
 
 See [Assignment 2](/tsost/course/assignments/assignment-2/) | [Assignment 3](/tsost/course/assignments/assignment-3/) for full briefs.
 
-## Homework — pairs
+## Homework — Pairs
 
 Finalize your prototype. It should arrive at [Week 8](/tsost/course/weeks/week-8/) working and tested.
 

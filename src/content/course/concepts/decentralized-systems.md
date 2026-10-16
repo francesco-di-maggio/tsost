@@ -13,7 +13,7 @@ Each node operates according to local rules, responding to its immediate environ
 - **Ant colonies** — no ant knows the plan, each follows simple chemical signals. 
 - **Markets** — prices emerge from millions of individual decisions, not from a central authority.
 
-## In design
+## In Design
 
 Designing a decentralized system means designing *rules*, not *outcomes*. Each node's local behavior is defined — what it senses, what it responds to, what it produces — and the system runs from there.
 

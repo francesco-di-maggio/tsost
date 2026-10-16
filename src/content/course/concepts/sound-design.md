@@ -5,7 +5,7 @@ order: 0
 summary: "Sound design is the practice of creating and shaping sound purposefully for a given context."
 ---
 
-## Symbolic vs expressive
+## Symbolic vs Expressive
 
 **Symbolic sound** — sounds that carry agreed meaning: alarms, notifications, status tones. The meaning is learned. A beep means *something happened*.
 
